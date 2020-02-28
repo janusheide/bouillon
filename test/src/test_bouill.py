@@ -3,14 +3,12 @@
 #
 # Copyright Janue heide 2020
 
-# import bouillon
 
-
-def test_version():
+ def test_version():
 
     pass
     # assert(bouillon.__version__)
 
 
-def test_find_requirements():
+def test_cli():
     pass

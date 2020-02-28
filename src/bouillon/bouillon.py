@@ -11,14 +11,28 @@ def find_requirements_files():
     return glob.glob('**/*requirements.txt', recursive=True)
 
 
-def check_requirements_files(requirement_files):
+def check_environment_modules(requirement_files):
     for r in requirement_files:
-        subprocess.run(f"requirementz --file {r}", shell=True, check=True)
+        subprocess.run(
+            f'requirementz --file {r}',
+            shell=True,
+            check=True
+        )
 
 
-def update_requirements_files():
-    pass
+def check_module_licenses(requirement_files):
+    for r in requirement_files:
+        subprocess.run(
+            f'liccheck -s cicd/licenses.ini -r {r}',
+            shell=True,
+            check=True
+        )
 
 
-def check_for_test_files():
+def update_requirements_files(requirement_files):
+    for r in requirement_files:
+        subprocess.run(f"pur -r {r}", shell=True, check=True)
+
+
+def check_for_test_files(src_path, test_path):
     pass
