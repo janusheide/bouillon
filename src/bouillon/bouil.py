@@ -77,7 +77,16 @@ def _test(**kwargs):
         if kwargs["unittests"]:
             print('>> Running unittests.')
             subprocess.run(
-                'pytest test --cov-fail-under=100 --durations=5 -vv',
+                'pytest test/src --cov=bouillon --cov-fail-under=10 --durations=5 \
+                -vv',
+                shell=True,
+                check=True
+            )
+
+        if kwargs["unittests"]:
+            print('>> Running cicd tests.')
+            subprocess.run(
+                'pytest test/cicd --durations=5 -vv',
                 shell=True,
                 check=True
             )

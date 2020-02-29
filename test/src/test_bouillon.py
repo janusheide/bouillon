@@ -8,14 +8,17 @@ import bouillon
 
 
 def test_version():
+    assert(bouillon.__version__)
 
+
+def test_name():
+    assert(bouillon.__name__ == 'bouillon')
+
+
+def test_get_repository_name():
     pass
-    # assert(bouillon.__version__)
+    # assert(bouillon.get_repository_name() == 'bouillon')
 
 
 def test_find_requirements():
     pass
-
-
-def test_get_repository_name():
-    assert(bouillon.__name__ == 'bouillon')
