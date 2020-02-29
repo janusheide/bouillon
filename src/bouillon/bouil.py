@@ -1,19 +1,23 @@
 #! /usr/bin/env python3
 # encoding: utf-8
 #
-# Copyright Janue heide 2020
+# Copyright Janue Heide 2020
 
 import argparse
+import glob
 import subprocess
 
 import bouillon
+
+
+_repository_name = 'bouillion'
 
 
 def _setup(**kwargs):
     """
     Setup the environment installing all dependencies in the requirement files.
     """
-    for r in bouillon.find_requirements_files():
+    for r in bouillon.find_requirement_files():
         print(f'# Installing dependencies from {r}')
         subprocess.run(f'pip install -r {r}', shell=True, check=True)
 
@@ -28,18 +32,6 @@ def _test(**kwargs):
     """
 
     try:
-
-        if kwargs["requirements"]:
-            print('>> Checking installed dependencies versions.')
-            bouillon.check_environment_modules(
-                bouillon.find_requirements_files()
-            )
-
-        if kwargs["licenses"]:
-            print('>> Checking license of dependencies.')
-            bouillon.check_module_licenses(
-                bouillon.find_requirements_files()
-            )
 
         if kwargs["pep8"]:
             print('>> Checking pep8 conformance.')
@@ -57,9 +49,30 @@ def _test(**kwargs):
                 check=True
             )
 
+        if kwargs["requirements"]:
+            print('>> Checking installed dependencies versions.')
+            for r in bouillon.find_requirement_files():
+                subprocess.run(
+                    f'requirementz --file {r}',
+                    shell=True,
+                    check=True
+                )
+
+        if kwargs["licenses"]:
+            print('>> Checking license of dependencies.')
+            for r in bouillon.find_requirement_files():
+                subprocess.run(
+                    f'liccheck -s cicd/licenses.ini -r {r}',
+                    shell=True,
+                    check=True
+                )
+
         if kwargs["test_files"]:
             print('>> Checking for test files for all source files.')
-            bouillon.check_test_files("src/", "test/src/")
+            bouillon.check_test_files(
+                glob.glob(f'src/{_repository_name}/**/*.py', recursive=True),
+                glob.glob('test/src/**/test_*.py', recursive=True)
+            )
 
         if kwargs["unittests"]:
             print('>> Running unittests.')
@@ -89,35 +102,36 @@ def _upgrade(**kwargs):
 
     if kwargs['dependencies']:
         print('>> Updating module versions in requirement files.')
-        bouillon.update_requirements_files(
-            bouillon.find_requirements_files()
-        )
+
+        for r in bouillon.find_requirements_files():
+            subprocess.run(f"pur -r {r}", shell=True, check=True)
 
     if kwargs['bouillon']:
-        raise Exception('Upgrade of bouillon not implemented')
+        print('>> Upgrading Bouillion version.')
+        bouillon.upgrade_bouillion()
 
 
 def cli():
 
     parser = argparse.ArgumentParser(description='Bouillon')
 
-    def print_help(**kwargs):
+    def _print_help(**kwargs):
         parser.print_help()
 
-    parser.set_defaults(func=print_help)
+    parser.set_defaults(function=_print_help)
     subparsers = parser.add_subparsers(help='Sub commands')
 
     parser_setup = subparsers.add_parser('setup', help='Run setup.')
-    parser_setup.set_defaults(func=_setup)
+    parser_setup.set_defaults(function=_setup)
 
     parser_test = subparsers.add_parser('build', help='Run build')
-    parser_test.set_defaults(func=_build)
+    parser_test.set_defaults(function=_build)
 
     parser_test = subparsers.add_parser('install', help='Install')
-    parser_test.set_defaults(func=_install)
+    parser_test.set_defaults(function=_install)
 
     parser_test = subparsers.add_parser('test', help='Run tests')
-    parser_test.set_defaults(func=_test)
+    parser_test.set_defaults(function=_test)
 
     parser_test.add_argument(
         '--no-requirements',
@@ -158,7 +172,7 @@ def cli():
     parser_upgrade = subparsers.add_parser(
         'update', help='upgrade dependencies and bouillon.'
     )
-    parser_upgrade.set_defaults(func=_upgrade)
+    parser_upgrade.set_defaults(function=_upgrade)
 
     parser_upgrade.add_argument(
         '--no-dependencies',
@@ -175,14 +189,11 @@ def cli():
     )
 
     parser_release = subparsers.add_parser('release', help='release me.')
-    parser_release.set_defaults(func=_release)
+    parser_release.set_defaults(function=_release)
 
     return parser.parse_args()
 
 
 if __name__ == '__main__':
-
-    print("bouil")
     args = cli()
-
-    args.func(**vars(args))
+    args.function(**vars(args))

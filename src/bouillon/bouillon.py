@@ -1,38 +1,34 @@
 #! /usr/bin/env python3
 # encoding: utf-8
 #
-# Copyright Janue heide 2020
+# Copyright Janue Heide 2020
+
+# Various helpers
 
 import glob
-import subprocess
+
+# import subprocess
 
 
-def find_requirements_files():
+_repository_name = 'bouillon'
+
+
+def find_requirement_files():
     return glob.glob('**/*requirements.txt', recursive=True)
 
 
-def check_environment_modules(requirement_files):
-    for r in requirement_files:
-        subprocess.run(
-            f'requirementz --file {r}',
-            shell=True,
-            check=True
-        )
+def check_for_test_files(src_paths, test_paths):
+
+    if len(src_paths) != len(test_paths):
+        raise Exception('Not all src files have a test file')
+
+    # Todo find the missing file(s)
 
 
-def check_module_licenses(requirement_files):
-    for r in requirement_files:
-        subprocess.run(
-            f'liccheck -s cicd/licenses.ini -r {r}',
-            shell=True,
-            check=True
-        )
-
-
-def update_requirements_files(requirement_files):
-    for r in requirement_files:
-        subprocess.run(f"pur -r {r}", shell=True, check=True)
-
-
-def check_for_test_files(src_path, test_path):
+def get_repository_name():
     pass
+    # return .__name__
+
+
+def upgrade_bouillion():
+    raise Exception('Upgrade of Bouillion not implemented')

@@ -3,7 +3,8 @@
 #
 # Copyright Janue heide 2020
 
-# import bouillon
+# from bouillon
+import bouillon
 
 
 def test_version():
@@ -14,3 +15,7 @@ def test_version():
 
 def test_find_requirements():
     pass
+
+
+def test_get_repository_name():
+    assert(bouillon.__name__ == 'bouillon')
