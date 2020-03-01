@@ -6,6 +6,8 @@
 # Contains various helpers
 
 import glob
+import shutil
+import subprocess
 import typing
 
 
@@ -22,8 +24,38 @@ def check_for_test_files(src_paths: str, test_paths: str) -> None:
 
 
 def get_repository_name() -> str:
-    pass
+    raise Exception('Get repo name not implmented')
     # return .__name__
+
+
+def get_commit_id() -> str:
+    raise Exception('Get commit Id not implemented')
+    # return .__name__
+
+
+def docker_build_release(image: str, tag: str, registry: str) -> None:
+
+    if shutil.which('docker') is None:
+        raise Exception(
+            '"docker" command was not found, verify that Docker is installed.')
+
+    subprocess.run(
+        f'docker build -t {image} .',
+        shell=True,
+        check=True
+    )
+
+    subprocess.run(
+        f'docker tag {image} {registry}/{image}:{tag}',
+        shell=True,
+        check=True
+    )
+
+    subprocess.run(
+        f'docker push {registry}/{image}:{tag}',
+        shell=True,
+        check=True
+    )
 
 
 def upgrade_bouillion() -> None:
