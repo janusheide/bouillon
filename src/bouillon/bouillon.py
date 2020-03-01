@@ -5,14 +5,11 @@
 
 # Contains various helpers
 
-import glob
+
+# import glob
 import shutil
 import subprocess
 import typing
-
-
-def find_requirement_files() -> typing.List[str]:
-    return glob.glob('**/*requirements.txt', recursive=True)
 
 
 def check_for_test_files(src_paths: str, test_paths: str) -> None:
@@ -57,6 +54,3 @@ def docker_build_release(image: str, tag: str, registry: str) -> None:
         check=True
     )
 
-
-def upgrade_bouillion() -> None:
-    raise Exception('Upgrade of Bouillion not implemented')
