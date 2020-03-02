@@ -1,2 +1,7 @@
-requirementz==0.3.4
+flake8==3.7.9
+liccheck==0.4.2
+mypy==0.761
 pur==5.3.0
+pytest==5.3.5
+pytest-cov==2.8.1
+requirementz==0.3.4

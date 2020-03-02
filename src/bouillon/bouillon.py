@@ -11,25 +11,27 @@ import subprocess
 import typing
 
 
-def run(args: typing.List[str], **kwargs) -> None:
+def run(args: typing.List[str], verbose: bool, continue_on_error: bool,
+        dry_run: bool, **kwargs) -> None:
 
-    if kwargs['verbose']:
+    if verbose:
         raise Exception('Verbose not implemented')
 
-    if kwargs['dry_run']:
+    if dry_run:
         return
 
     try:
         subprocess.run(args, shell=True, check=True)
 
     except subprocess.CalledProcessError as e:
-        if kwargs['continue_on_error'] is False:
+        if continue_on_error:
             exit(e.returncode)
 
         # raise e
 
 
-def check_for_test_files(src_paths: str, test_paths: str) -> None:
+def check_for_test_files(src_paths: typing.List[str],
+                         test_paths: typing.List[str]) -> None:
 
     if len(src_paths) != len(test_paths):
         raise Exception('Not all src files have a test file')
@@ -47,12 +49,13 @@ def get_commit_id() -> str:
     # return .__name__
 
 
-def docker_build_release(image: str, tag: str, registry: str) -> None:
+def docker_build_release(image: str, tag: str, registry: str,
+                         **kwargs) -> None:
 
     if shutil.which('docker') is None:
         raise Exception(
             '"docker" command was not found, verify that Docker is installed.')
 
-    run([f'docker build -t {image} .'])
-    run([f'docker tag {image} {registry}/{image}:{tag}'])
-    run([f'docker push {registry}/{image}:{tag}'])
+    run([f'docker build -t {image} .'], **kwargs)
+    run([f'docker tag {image} {registry}/{image}:{tag}'], **kwargs)
+    run([f'docker push {registry}/{image}:{tag}'], **kwargs)
