@@ -3,7 +3,7 @@
 from __future__ import absolute_import
 from pkg_resources import get_distribution
 
-from bouillon.bouillon import get_repository_name
+# from bouillon.bouillon import get_repository_name
 # import bouillon
 
 

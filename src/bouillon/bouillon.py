@@ -6,10 +6,13 @@
 # Contains various helpers
 
 
-# import glob
 import shutil
 import subprocess
 import typing
+
+
+def run(args: typing.List[str], **kwargs) -> None:
+    subprocess.run(args, shell=True, check=True)
 
 
 def check_for_test_files(src_paths: str, test_paths: str) -> None:
@@ -36,21 +39,6 @@ def docker_build_release(image: str, tag: str, registry: str) -> None:
         raise Exception(
             '"docker" command was not found, verify that Docker is installed.')
 
-    subprocess.run(
-        f'docker build -t {image} .',
-        shell=True,
-        check=True
-    )
-
-    subprocess.run(
-        f'docker tag {image} {registry}/{image}:{tag}',
-        shell=True,
-        check=True
-    )
-
-    subprocess.run(
-        f'docker push {registry}/{image}:{tag}',
-        shell=True,
-        check=True
-    )
-
+    run(f'docker build -t {image} .')
+    run([f'docker tag {image} {registry}/{image}:{tag}'])
+    run([f'docker push {registry}/{image}:{tag}'])
