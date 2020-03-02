@@ -7,9 +7,10 @@ import argparse
 import glob
 from importlib import util
 import typing
+# import subprocess
 
 # import bouillon modlue if it can be found. This permits setup to be run
-optional_modules=['bouillon']
+optional_modules = ['bouillon']
 bouillon_loader = util.find_spec('bouillon')
 if bouillon_loader is not None:
     import bouillon
@@ -29,11 +30,11 @@ def _setup(**kwargs):
     """
     for r in _find_requirement_files():
         print(f'# Installing dependencies from {r}')
-        bouillon.run(f'pip install -r {r}')
+        bouillon.run([f'pip install -r {r}'])
 
 
 def _install(**kwargs):
-    bouillon.run(f'pip install -e .')
+    bouillon.run([f'pip install -e .'])
 
 
 def _test(**kwargs):
@@ -41,46 +42,47 @@ def _test(**kwargs):
     Run tests
     """
 
-    try:
+    # try:
 
-        if kwargs["pep8"]:
-            print('>> Checking pep8 conformance.')
-            bouillon.run([f'flake8', '--per-file-ignores="__init__.py:F401"'])
+    if kwargs["pep8"]:
+        print('>> Checking pep8 conformance.')
+        bouillon.run(
+            [f'flake8', '--per-file-ignores="__init__.py:F401"'], **kwargs)
 
-        if kwargs["static"]:
-            print('>> Running static analysis check.')
-            bouillon.run(['mypy **/*.py', '--config-file cicd/mypy.ini'])
+    if kwargs["static"]:
+        print('>> Running static analysis check.')
+        bouillon.run(['mypy **/*.py', '--config-file cicd/mypy.ini'])
 
-        if kwargs["requirements"]:
-            print('>> Checking installed dependencies versions.')
-            for r in _find_requirement_files():
-                bouillon.run([f'requirementz --file {r}'])
+    if kwargs["requirements"]:
+        print('>> Checking installed dependencies versions.')
+        for r in _find_requirement_files():
+            bouillon.run([f'requirementz --file {r}'])
 
-        if kwargs["licenses"]:
-            print('>> Checking license of dependencies.')
-            for r in _find_requirement_files():
-                bouillon.run([f'liccheck -s cicd/licenses.ini -r {r}'])
+    if kwargs["licenses"]:
+        print('>> Checking license of dependencies.')
+        for r in _find_requirement_files():
+            bouillon.run([f'liccheck -s cicd/licenses.ini -r {r}'])
 
-        if kwargs["test_files"]:
-            print('>> Checking for test files for all source files.')
-            bouillon.check_test_files(
-                glob.glob(f'src/{_repository_name}/**/*.py', recursive=True),
-                glob.glob('test/src/**/test_*.py', recursive=True)
-            )
+    if kwargs["test_files"]:
+        print('>> Checking for test files for all source files.')
+        bouillon.check_test_files(
+            glob.glob(f'src/{_repository_name}/**/*.py', recursive=True),
+            glob.glob('test/src/**/test_*.py', recursive=True)
+        )
 
-        if kwargs["unittests"]:
-            print('>> Running unittests.')
-            bouillon.run(
-                ['pytest', 'test/src', '--cov=bouillon', '--cov-fail-under=10',
-                    '--durations=5', '-vv']
-            )
+    if kwargs["unittests"]:
+        print('>> Running unittests.')
+        bouillon.run(
+            ['pytest', 'test/src', '--cov=bouillon', '--cov-fail-under=10',
+                '--durations=5', '-vv']
+        )
 
-        if kwargs["unittests"]:
-            print('>> Running cicd tests.')
-            bouillon.run(['pytest', 'test/cicd', '--durations=5', '-vv'])
+    if kwargs["unittests"]:
+        print('>> Running cicd tests.')
+        bouillon.run(['pytest', 'test/cicd', '--durations=5', '-vv'])
 
-    except subprocess.CalledProcessError as e:
-        exit(e.returncode)
+    # except subprocess.CalledProcessError as e:
+        # exit(e.returncode)
 
 
 def _build(**kwargs):
@@ -98,12 +100,12 @@ def _clean(**kwargs):
 
 def _upgrade(**kwargs):
 
-    if kwargs['dependencies']:
+    if kwargs['dependencies'] is True:
         print('>> Updating module versions in requirement files.')
         for r in _find_requirement_files():
             bouillon.run([f'pur -r {r}', '--skip bouillon'])
 
-    if kwargs['bouillon']:
+    if kwargs['bouillon'] is True:
         print('>> Upgrading Bouillion version.')
         bouillon.run([f'pur -r cicd/requirements.txt', '--only bouillon'])
 
@@ -116,9 +118,10 @@ def cli():
         parser.print_help()
 
     parser.set_defaults(function=_print_help)
-    parser.add_argument('--dry-run', action='store_false')
-    parser.add_argument('--silent', action='store_false')
-    parser.add_argument('--verbose', action='store_false')
+    parser.add_argument('--continue-on-error', action='store_false')
+    parser.add_argument('--dry-run', action='store_true')
+    parser.add_argument('--silent', action='store_true')
+    parser.add_argument('--verbose', action='store_true')
 
     subparsers = parser.add_subparsers(help='Sub commands')
 

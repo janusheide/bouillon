@@ -12,7 +12,21 @@ import typing
 
 
 def run(args: typing.List[str], **kwargs) -> None:
-    subprocess.run(args, shell=True, check=True)
+
+    if kwargs['verbose']:
+        raise Exception('Verbose not implemented')
+
+    if kwargs['dry_run']:
+        return
+
+    try:
+        subprocess.run(args, shell=True, check=True)
+
+    except subprocess.CalledProcessError as e:
+        if kwargs['continue_on_error'] is False:
+            exit(e.returncode)
+
+        # raise e
 
 
 def check_for_test_files(src_paths: str, test_paths: str) -> None:
@@ -39,6 +53,6 @@ def docker_build_release(image: str, tag: str, registry: str) -> None:
         raise Exception(
             '"docker" command was not found, verify that Docker is installed.')
 
-    run(f'docker build -t {image} .')
+    run([f'docker build -t {image} .'])
     run([f'docker tag {image} {registry}/{image}:{tag}'])
     run([f'docker push {registry}/{image}:{tag}'])
