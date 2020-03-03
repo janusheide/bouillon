@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 # encoding: utf-8
 #
-# Copyright Janue Heide 2020
+# Copyright (c) Janus Heide 2020.
+# All rights reserved.
 
 import argparse
 import glob
@@ -23,62 +24,50 @@ def _find_requirement_files() -> typing.List[str]:
 
 
 def _setup(**kwargs):
-    """
-    Setup the environment installing all dependencies in the requirement files.
-    """
+
     for r in _find_requirement_files():
-        print(f'>> Installing dependencies from {r}')
         bouillon.run([f'pip install -r {r}'], **kwargs)
 
 
 def _test(pep8: bool, static: bool, requirements: bool, licenses: bool,
           test_files: bool, unittests: bool, **kwargs) -> None:
-    """
-    Run tests
-    """
 
     if pep8:
-        print('>> Checking pep8 conformance.')
-        bouillon.run(
-            [f'flake8'], **kwargs)
+        bouillon.run([f'flake8'], **kwargs)
 
     if static:
-        print('>> Running static analysis check.')
         bouillon.run(['mypy **/*.py', '--config-file cicd/mypy.ini'], **kwargs)
 
     if requirements:
-        print('>> Checking installed dependencies versions.')
         for r in _find_requirement_files():
             bouillon.run([f'requirementz --file {r}'], **kwargs)
 
     if licenses:
-        print('>> Checking license of dependencies.')
         for r in _find_requirement_files():
             bouillon.run([f'liccheck -s cicd/licenses.ini -r {r}'], **kwargs)
 
     if test_files:
-        print('>> Checking for test files for all source files.')
-        bouillon.check_for_test_files(
-            glob.glob(os.path.join('src', _repository_name, '**', '*.py'),
-                      recursive=True),
-            glob.glob(os.path.join('test/src/**', 'test_*.py'), recursive=True)
-        )
+        bouillon.check_for_test_files(os.path.join('src', _repository_name),
+                                      os.path.join('test', 'src'))
 
     if unittests:
-        print('>> Running unittests.')
-        bouillon.run([
-            'pytest', os.path.join('test', 'src'), '--cov=bouillon',
-            '--cov-fail-under=10', '--durations=5', '-vv'], **kwargs)
+        bouillon.run(
+            ['pytest', os.path.join('test', 'src'), '--cov=bouillon',
+                '--cov-fail-under=10', '--durations=5', '-vv'],
+            **kwargs)
 
     if unittests:
-        print('>> Running cicd tests.')
-        bouillon.run(['pytest', os.path.join('test/cicd'),
-                     '--durations=5', '-vv'], **kwargs)
+        bouillon.run(
+            ['pytest', os.path.join('test/cicd'), '--durations=5', '-vv'],
+            **kwargs)
 
 
 def _build(**kwargs):
-    pass
-    # raise Exception("build step not implemented")
+    raise Exception("build step not implemented")
+
+
+def _train(**kwargs):
+    raise Exception("train step not implemented")
 
 
 def _release(**kwargs):
@@ -92,12 +81,10 @@ def _clean(**kwargs):
 def _upgrade(upgrade_dependencies: bool, upgrade_bouillon: bool, **kwargs):
 
     if upgrade_dependencies:
-        print('>> Updating module versions in requirement files.')
         for r in _find_requirement_files():
             bouillon.run([f'pur -r {r}', '--skip bouillon'], **kwargs)
 
     if upgrade_bouillon:
-        print('>> Upgrading Bouillion version.')
         bouillon.run(
             [f'pur -r cicd/requirements.txt', '--only bouillon'], **kwargs)
 
@@ -116,11 +103,14 @@ def cli():
 
     subparsers = parser.add_subparsers(help='Sub commands')
 
-    parser_setup = subparsers.add_parser('setup', help='Run setup.')
+    parser_setup = subparsers.add_parser('setup', help='Run setup step.')
     parser_setup.set_defaults(function=_setup)
 
-    parser_test = subparsers.add_parser('build', help='Run build')
-    parser_test.set_defaults(function=_build)
+    parser_build = subparsers.add_parser('build', help='Run build step.')
+    parser_build.set_defaults(function=_build)
+
+    parser_train = subparsers.add_parser('train', help='Run train step.')
+    parser_train.set_defaults(function=_train)
 
     parser_test = subparsers.add_parser('test', help='Run tests')
     parser_test.set_defaults(function=_test)
@@ -163,7 +153,7 @@ def cli():
 
     parser_upgrade = subparsers.add_parser(
         'upgrade', help='upgrade dependencies and bouillon.'
-    )
+        )
     parser_upgrade.set_defaults(function=_upgrade)
 
     parser_upgrade.add_argument(
@@ -171,7 +161,7 @@ def cli():
         dest='upgrade_dependencies',
         action='store_false',
         help='Do not upgrade versions in requirement files.'
-    )
+        )
 
     parser_upgrade.add_argument(
         '--no-bouillon',

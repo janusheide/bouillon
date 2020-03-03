@@ -1,7 +1,9 @@
 #! /usr/bin/env python3
 # encoding: utf-8
 #
-# Copyright Janue Heide 2020
+# Copyright (c) Janus Heide 2020.
+# All rights reserved.
+
 
 import io
 

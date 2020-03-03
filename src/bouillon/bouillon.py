@@ -1,11 +1,13 @@
 #! /usr/bin/env python3
 # encoding: utf-8
 #
-# Copyright Janue Heide 2020
+# Copyright (c) Janus Heide 2020.
+# All rights reserved.
 
 # Contains various helpers
 
-
+import glob
+import os
 import shutil
 import subprocess
 import typing
@@ -27,11 +29,18 @@ def run(args: typing.List[str], verbose: bool, dry_run: bool,
         exit(e.returncode)
 
 
-def check_for_test_files(src_paths: typing.List[str],
-                         test_paths: typing.List[str]) -> None:
+def check_for_test_files(src_path: str, test_path: str) -> None:
 
-    if len(src_paths) != len(test_paths):
-        raise Exception('Not all src files have a test file')
+    s = glob.glob(os.path.join(src_path, '**/*.py'), recursive=True),
+    t = glob.glob(os.path.join(test_path, '**/test_*.py'), recursive=True)
+
+    print(s)
+    print(t)
+
+    assert(s == [])
+
+    # if len(src_paths) != len(test_paths):
+    # raise Exception('Not all src files have a test file')
 
     # Todo find the missing file(s)
 
