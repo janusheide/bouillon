@@ -6,15 +6,13 @@
 import argparse
 import glob
 from importlib import util
+import os
 import typing
-# import subprocess
 
-# import bouillon modlue if it can be found. This permits setup to be run
-optional_modules = ['bouillon']
+# import bouillon if found, ebables running setup without bouillon.
 bouillon_loader = util.find_spec('bouillon')
 if bouillon_loader is not None:
     import bouillon
-    optional_modules.remove('bouillon')
 
 
 _repository_name = 'bouillon'
@@ -29,7 +27,7 @@ def _setup(**kwargs):
     Setup the environment installing all dependencies in the requirement files.
     """
     for r in _find_requirement_files():
-        print(f'# Installing dependencies from {r}')
+        print(f'>> Installing dependencies from {r}')
         bouillon.run([f'pip install -r {r}'], **kwargs)
 
 
@@ -42,7 +40,7 @@ def _test(pep8: bool, static: bool, requirements: bool, licenses: bool,
     if pep8:
         print('>> Checking pep8 conformance.')
         bouillon.run(
-            [f'flake8', '--per-file-ignores="__init__.py:F401"'], **kwargs)
+            [f'flake8'], **kwargs)
 
     if static:
         print('>> Running static analysis check.')
@@ -61,19 +59,21 @@ def _test(pep8: bool, static: bool, requirements: bool, licenses: bool,
     if test_files:
         print('>> Checking for test files for all source files.')
         bouillon.check_for_test_files(
-            glob.glob(f'src/{_repository_name}/**/*.py', recursive=True),
-            glob.glob('test/src/**/test_*.py', recursive=True)
+            glob.glob(os.path.join('src', _repository_name, '**', '*.py'),
+                      recursive=True),
+            glob.glob(os.path.join('test/src/**', 'test_*.py'), recursive=True)
         )
 
     if unittests:
         print('>> Running unittests.')
         bouillon.run([
-            'pytest', 'test/src', '--cov=bouillon', '--cov-fail-under=10',
-            '--durations=5', '-vv'], **kwargs)
+            'pytest', os.path.join('test', 'src'), '--cov=bouillon',
+            '--cov-fail-under=10', '--durations=5', '-vv'], **kwargs)
 
     if unittests:
         print('>> Running cicd tests.')
-        bouillon.run(['pytest', 'test/cicd', '--durations=5', '-vv'], **kwargs)
+        bouillon.run(['pytest', os.path.join('test/cicd'),
+                     '--durations=5', '-vv'], **kwargs)
 
 
 def _build(**kwargs):
@@ -110,7 +110,6 @@ def cli():
         parser.print_help()
 
     parser.set_defaults(function=_print_help)
-    parser.add_argument('--continue-on-error', action='store_false')
     parser.add_argument('--dry-run', action='store_true')
     parser.add_argument('--silent', action='store_true')
     parser.add_argument('--verbose', action='store_true')
@@ -190,9 +189,9 @@ def cli():
 if __name__ == '__main__':
     args = cli()
 
-    if args.function != _setup:
-        for f in optional_modules:
-            print(f'Failed importing {f}, run "boil setup" first.')
-            exit(1)
+    # Unless we are running setup, make sure that bouillon was imported
+    if args.function != _setup and bouillon_loader is None:
+        print(f'Failed to import bouillon, run "boil setup" first.')
+        exit(1)
 
     args.function(**vars(args))

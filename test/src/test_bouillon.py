@@ -3,7 +3,6 @@
 #
 # Copyright Janue heide 2020
 
-# from bouillon
 import bouillon
 
 
@@ -13,6 +12,11 @@ def test_version():
 
 def test_name():
     assert(bouillon.__name__ == 'bouillon')
+
+
+def test_run():
+    bouillon.run("ls", verbose=True, dry_run=True)
+    bouillon.run("ls", verbose=False, dry_run=False)
 
 
 def test_get_repository_name():

@@ -11,11 +11,11 @@ import subprocess
 import typing
 
 
-def run(args: typing.List[str], verbose: bool, continue_on_error: bool,
-        dry_run: bool, **kwargs) -> None:
+def run(args: typing.List[str], verbose: bool, dry_run: bool,
+        **kwargs) -> None:
 
-    if verbose:
-        raise Exception('Verbose not implemented')
+    if verbose or dry_run:
+        print('>> Command to execute: ' + str(' ').join(args))
 
     if dry_run:
         return
@@ -24,10 +24,7 @@ def run(args: typing.List[str], verbose: bool, continue_on_error: bool,
         subprocess.run(args, shell=True, check=True)
 
     except subprocess.CalledProcessError as e:
-        if continue_on_error:
-            exit(e.returncode)
-
-        # raise e
+        exit(e.returncode)
 
 
 def check_for_test_files(src_paths: typing.List[str],
