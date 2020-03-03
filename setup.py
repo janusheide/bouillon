@@ -13,7 +13,8 @@ with io.open('README.rst', encoding='utf-8') as fd:
 setup(
     name='bouillon',
     use_scm_version=True,
-    description=("Tool for managing fast pased python projects."),
+    description=("Tool for managing machine learning model and service"
+                 "projects and other fast pased python projects."),
     long_description=long_description,
     url='https://github.com/janusheide/bouillion',
     author='Janus Heide',
@@ -31,7 +32,7 @@ setup(
         'Topic :: Scientific/Engineering :: Information Analysis',
     ],
     entry_points={
-        'console_scripts': ['bouil=bouil.__main__:run'],
+        'console_scripts': ['boil=boil.__main__:run'],
     },
     keywords=('building', 'maintaince', 'utility'),
     packages=find_packages(where='src', exclude=['test']),

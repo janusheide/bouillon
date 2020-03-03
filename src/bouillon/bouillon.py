@@ -5,17 +5,30 @@
 
 # Contains various helpers
 
-import glob
+
 import shutil
 import subprocess
 import typing
 
 
-def find_requirement_files() -> typing.List[str]:
-    return glob.glob('**/*requirements.txt', recursive=True)
+def run(args: typing.List[str], verbose: bool, dry_run: bool,
+        **kwargs) -> None:
+
+    if verbose or dry_run:
+        print('>> Command to execute: ' + str(' ').join(args))
+
+    if dry_run:
+        return
+
+    try:
+        subprocess.run(args, shell=True, check=True)
+
+    except subprocess.CalledProcessError as e:
+        exit(e.returncode)
 
 
-def check_for_test_files(src_paths: str, test_paths: str) -> None:
+def check_for_test_files(src_paths: typing.List[str],
+                         test_paths: typing.List[str]) -> None:
 
     if len(src_paths) != len(test_paths):
         raise Exception('Not all src files have a test file')
@@ -33,30 +46,13 @@ def get_commit_id() -> str:
     # return .__name__
 
 
-def docker_build_release(image: str, tag: str, registry: str) -> None:
+def docker_build_release(image: str, tag: str, registry: str,
+                         **kwargs) -> None:
 
     if shutil.which('docker') is None:
         raise Exception(
             '"docker" command was not found, verify that Docker is installed.')
 
-    subprocess.run(
-        f'docker build -t {image} .',
-        shell=True,
-        check=True
-    )
-
-    subprocess.run(
-        f'docker tag {image} {registry}/{image}:{tag}',
-        shell=True,
-        check=True
-    )
-
-    subprocess.run(
-        f'docker push {registry}/{image}:{tag}',
-        shell=True,
-        check=True
-    )
-
-
-def upgrade_bouillion() -> None:
-    raise Exception('Upgrade of Bouillion not implemented')
+    run([f'docker build -t {image} .'], **kwargs)
+    run([f'docker tag {image} {registry}/{image}:{tag}'], **kwargs)
+    run([f'docker push {registry}/{image}:{tag}'], **kwargs)
