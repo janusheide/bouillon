@@ -36,34 +36,22 @@ def check_for_test_files(src_path, test_path, prefix='test_') -> bool:
     assert os.path.exists(src_path), f'path does not exist {src_path}'
     assert os.path.exists(test_path), f'path does not exist {test_path}'
 
-    print('>> Looking for test files')
-
-    print(os.path.join(src_path, '**/*.py'))
     srcs = glob.glob(os.path.join(src_path, '**/*.py'), recursive=True)
+    assert len(srcs) > 0, 'No test files found.'
+    relative_srcs = list(map(lambda s: os.path.relpath(s, src_path), srcs))
+
     tests = glob.glob(os.path.join(test_path, '**/test_*.py'), recursive=True)
-
-    assert len(srcs) > 0, f'No files found in src_path: {src_path}'
-    assert len(tests) > 0
-
     relative_tests = map(lambda t: os.path.relpath(t, test_path), tests)
-    relative_srcs = map(lambda s: os.path.relpath(s, src_path), srcs)
+    tests_no_prefix = map(lambda t: t.replace(prefix, ''),  relative_tests)
 
-    missing = 0
+    for t in tests_no_prefix:
+        relative_srcs.remove(t)
 
-    for s in relative_srcs:
-        for t in relative_tests:
-            if s in t.replace(prefix, ''):
-                break
-            else:
-                missing = missing + 1
-                print(f'Not test file for {s}')
-                return False
+    if len(relative_srcs) == 0:
+        return True
 
-    if missing > 0:
-        raise Exception(f'Missing test files for {missing} source files')
-
-    print('should not happen')
-    return True
+    print(f'Missing tests for files: {relative_srcs}')
+    return False
 
 
 def get_repository_name() -> str:

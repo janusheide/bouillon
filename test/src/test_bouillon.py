@@ -22,20 +22,34 @@ def test_run():
     bouillon.run("ls", verbose=False, dry_run=False)
 
 
-def test_check_for_test_files(tmpdir):
+def test_check_for_test_files_fail(tmpdir):
     src = tmpdir.mkdir('src')
-    a = src.mkdir('foo').join('a.py')
-
-    # src.mkdir('bar')
+    a = src.join('a.py')
+    b = src.mkdir('foo').join('b.py')
+    a.write('a')
+    b.write('b')
 
     test = tmpdir.mkdir('test')
-    # test.mkdir('foo').join('test_a.py')
-    # test.mkdir('bar')
+    test_a = test.join('test_a.py')
+    test_a.write('test_a')
 
-    print(src)
-    print(a)
+    assert(not bouillon.check_for_test_files(src, test))
 
-    bouillon.check_for_test_files(src, test)
+
+def test_check_for_test_files(tmpdir):
+    src = tmpdir.mkdir('src')
+    a = src.join('a.py')
+    b = src.mkdir('foo').join('b.py')
+    a.write('a')
+    b.write('b')
+
+    test = tmpdir.mkdir('test')
+    test_a = test.join('test_a.py')
+    test_b = test.mkdir('foo').join('test_b.py')
+    test_a.write('test_a')
+    test_b.write('test_b')
+
+    assert(bouillon.check_for_test_files(src, test))
 
 
 def test_get_repository_name():

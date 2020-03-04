@@ -36,7 +36,8 @@ def _test(pep8: bool, static: bool, requirements: bool, licenses: bool,
         bouillon.run([f'flake8'], **kwargs)
 
     if static:
-        bouillon.run(['mypy **/*.py', '--config-file cicd/mypy.ini'], **kwargs)
+        bouillon.run(['mypy src/**/*.py', '--config-file cicd/mypy.ini'],
+                     **kwargs)
 
     if requirements:
         for r in _find_requirement_files():
@@ -72,14 +73,6 @@ def _train(**kwargs):
     raise Exception("train step not implemented")
 
 
-def _release(**kwargs):
-    raise Exception('relase step not implemented')
-
-
-def _clean(**kwargs):
-    raise Exception('Clean step not implemented')
-
-
 def _upgrade(upgrade_dependencies: bool, upgrade_bouillon: bool, **kwargs):
 
     if upgrade_dependencies:
@@ -89,6 +82,23 @@ def _upgrade(upgrade_dependencies: bool, upgrade_bouillon: bool, **kwargs):
     if upgrade_bouillon:
         bouillon.run(
             [f'pur -r cicd/requirements.txt', '--only bouillon'], **kwargs)
+
+
+def _release(**kwargs):
+
+    _upgrade(upgrade_dependencies=True, upgrade_bouillon=True)
+
+    _test(pep8=True, static=True, requirements=True, licenses=True,
+          test_files=True, unittests=True)
+
+    _build()
+
+    raise Exception('release step not implemented')
+    # Todo upload it to pip
+
+
+def _clean(**kwargs):
+    raise Exception('Clean step not implemented')
 
 
 def cli():
