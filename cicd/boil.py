@@ -39,10 +39,12 @@ def _test(pep8: bool, static: bool, requirements: bool, licenses: bool,
         bouillon.run(['mypy', 'src/**/*.py', '--config-file cicd/mypy.ini'],
                      **kwargs)
 
+    # https://pypi.org/project/Requirementz/
     if requirements:
         for r in _find_requirement_files():
             bouillon.run([f'requirementz', f'--file {r}'], **kwargs)
 
+    # https://github.com/dhatim/python-license-check
     if licenses:
         for r in _find_requirement_files():
             bouillon.run(
@@ -75,25 +77,21 @@ def _train(**kwargs):
     raise Exception("train step not implemented")
 
 
-def _upgrade(upgrade_dependencies: bool, upgrade_bouillon: bool, **kwargs):
+def _upgrade(**kwargs):
 
-    if upgrade_dependencies:
-        for r in _find_requirement_files():
-            bouillon.run([f'pur -r {r}', '--skip bouillon'], **kwargs)
-
-    if upgrade_bouillon:
-        bouillon.run(
-            [f'pur -r cicd/requirements.txt', '--only bouillon'], **kwargs)
+    # https://github.com/alanhamlett/pip-update-requirements
+    for r in _find_requirement_files():
+        bouillon.run([f'pur -r {r}'], **kwargs)
 
 
 def _release(**kwargs):
 
-    _upgrade(upgrade_dependencies=True, upgrade_bouillon=True)
+    _upgrade(**kwargs)
 
     _test(pep8=True, static=True, requirements=True, licenses=True,
-          test_files=True, unittests=True)
+          test_files=True, unittests=True, **kwargs)
 
-    _build()
+    _build(**kwargs)
 
     raise Exception('release step not implemented')
     # Todo upload it to pip
@@ -129,52 +127,34 @@ def cli():
     parser_test = subparsers.add_parser('test', help='Run tests')
     parser_test.set_defaults(function=_test)
 
-    parser_test.add_argument(
-        '--no-requirements',
-        dest='requirements',
-        action='store_false',
-    )
+    parser_test.add_argument('--no-requirements',
+                             dest='requirements',
+                             action='store_false')
 
-    parser_test.add_argument(
-        '--no-pep8-check',
-        dest='pep8',
-        action='store_false')
+    parser_test.add_argument('--no-pep8-check',
+                             dest='pep8',
+                             action='store_false')
 
-    parser_test.add_argument(
-        '--no-static-check',
-        dest='static',
-        action='store_false')
+    parser_test.add_argument('--no-static-check',
+                             dest='static',
+                             action='store_false')
 
-    parser_test.add_argument(
-        '--no-license-check',
-        dest='licenses',
-        action='store_false')
+    parser_test.add_argument('--no-license-check',
+                             dest='licenses',
+                             action='store_false')
 
-    parser_test.add_argument(
-        '--no-test-files-check',
-        dest='test_files',
-        action='store_false')
+    parser_test.add_argument('--no-test-files-check',
+                             dest='test_files',
+                             action='store_false')
 
-    parser_test.add_argument(
-        '--no-unittests',
-        dest='unittests',
-        action='store_false')
+    parser_test.add_argument('--no-unittests',
+                             dest='unittests',
+                             action='store_false')
 
     parser_upgrade = subparsers.add_parser(
-        'upgrade', help='upgrade dependencies and bouillon.')
+        'upgrade',
+        help='upgrade dependencies and bouillon.')
     parser_upgrade.set_defaults(function=_upgrade)
-
-    parser_upgrade.add_argument(
-        '--no-dependencies',
-        dest='upgrade_dependencies',
-        action='store_false',
-        help='Do not upgrade versions in requirement files.')
-
-    parser_upgrade.add_argument(
-        '--no-bouillon',
-        dest='upgrade_bouillon',
-        action='store_false',
-        help='Do not upgrade bouillon.')
 
     parser_release = subparsers.add_parser('release', help='release me.')
     parser_release.set_defaults(function=_release)
