@@ -16,7 +16,7 @@ if bouillon_loader is not None:
     import bouillon
 
 
-_repository_name = 'bouillon'
+_repository = 'bouillon'
 
 
 def _find_requirement_files() -> typing.List[str]:
@@ -36,20 +36,22 @@ def _test(pep8: bool, static: bool, requirements: bool, licenses: bool,
         bouillon.run([f'flake8'], **kwargs)
 
     if static:
-        bouillon.run(['mypy src/**/*.py', '--config-file cicd/mypy.ini'],
+        bouillon.run(['mypy', 'src/**/*.py', '--config-file cicd/mypy.ini'],
                      **kwargs)
 
     if requirements:
         for r in _find_requirement_files():
-            bouillon.run([f'requirementz --file {r}'], **kwargs)
+            bouillon.run([f'requirementz', f'--file {r}'], **kwargs)
 
     if licenses:
         for r in _find_requirement_files():
-            bouillon.run([f'liccheck -s cicd/licenses.ini -r {r}'], **kwargs)
+            bouillon.run(
+                [f'liccheck', '-s cicd/licenses.ini', f'-r {r}'], **kwargs)
 
     if test_files:
-        bouillon.check_for_test_files(os.path.join('src', _repository_name),
-                                      os.path.join('test', 'src'))
+        if not bouillon.check_for_test_files(os.path.join('src', _repository),
+                                             os.path.join('test', 'src')):
+            exit(1)
 
     if unittests:
         bouillon.run(

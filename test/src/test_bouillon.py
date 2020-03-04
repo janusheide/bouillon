@@ -18,8 +18,8 @@ def test_name():
 
 
 def test_run():
-    bouillon.run("ls", verbose=True, dry_run=True)
-    bouillon.run("ls", verbose=False, dry_run=False)
+    bouillon.run(['ls'], verbose=True, dry_run=True)
+    bouillon.run(['ls'], verbose=False, dry_run=False)
 
 
 def test_check_for_test_files_fail(tmpdir):
