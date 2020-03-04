@@ -63,7 +63,9 @@ def _test(pep8: bool, static: bool, requirements: bool, licenses: bool,
 
 
 def _build(**kwargs):
-    raise Exception("build step not implemented")
+
+    bouillon.run('python setup.py sdist', **kwargs)
+    bouillon.run('python setup.py bdist_wheel --universal', **kwargs)
 
 
 def _train(**kwargs):
@@ -122,53 +124,45 @@ def cli():
     )
 
     parser_test.add_argument(
-        '--no-pep8-check',
-        dest='pep8',
-        action='store_false',
-    )
+        '--no-pep8-check', 
+        dest='pep8', 
+        action='store_false')
 
     parser_test.add_argument(
         '--no-static-check',
         dest='static',
-        action='store_false',
-    )
+        action='store_false')
 
     parser_test.add_argument(
         '--no-license-check',
         dest='licenses',
-        action='store_false',
-    )
+        action='store_false')
 
     parser_test.add_argument(
         '--no-test-files-check',
         dest='test_files',
-        action='store_true',
-    )
+        action='store_false')
 
     parser_test.add_argument(
         '--no-unittests',
         dest='unittests',
-        action='store_false',
-    )
+        action='store_false')
 
     parser_upgrade = subparsers.add_parser(
-        'upgrade', help='upgrade dependencies and bouillon.'
-        )
+        'upgrade', help='upgrade dependencies and bouillon.')
     parser_upgrade.set_defaults(function=_upgrade)
 
     parser_upgrade.add_argument(
         '--no-dependencies',
         dest='upgrade_dependencies',
         action='store_false',
-        help='Do not upgrade versions in requirement files.'
-        )
+        help='Do not upgrade versions in requirement files.')
 
     parser_upgrade.add_argument(
         '--no-bouillon',
         dest='upgrade_bouillon',
         action='store_false',
-        help='Do not upgrade bouillon.'
-    )
+        help='Do not upgrade bouillon.')
 
     parser_release = subparsers.add_parser('release', help='release me.')
     parser_release.set_defaults(function=_release)
