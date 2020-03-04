@@ -124,8 +124,8 @@ def cli():
     )
 
     parser_test.add_argument(
-        '--no-pep8-check', 
-        dest='pep8', 
+        '--no-pep8-check',
+        dest='pep8',
         action='store_false')
 
     parser_test.add_argument(

@@ -24,15 +24,18 @@ def test_run():
 
 def test_check_for_test_files(tmpdir):
     src = tmpdir.mkdir('src')
-    src.mkdir('foo').join('a.py')
+    a = src.mkdir('foo').join('a.py')
 
     # src.mkdir('bar')
 
     test = tmpdir.mkdir('test')
-    test.mkdir('foo').join('test_a.py')
+    # test.mkdir('foo').join('test_a.py')
     # test.mkdir('bar')
 
-    # bouillon.check_for_test_files(src, test)
+    print(src)
+    print(a)
+
+    bouillon.check_for_test_files(src, test)
 
 
 def test_get_repository_name():

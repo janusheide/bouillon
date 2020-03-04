@@ -16,6 +16,8 @@ import typing
 def run(args: typing.List[str], verbose: bool, dry_run: bool,
         **kwargs) -> None:
 
+    assert len(args) > 0, 'No arguments provided'
+
     if verbose or dry_run:
         print('>> Command to execute: ' + str(' ').join(args))
 
@@ -29,20 +31,39 @@ def run(args: typing.List[str], verbose: bool, dry_run: bool,
         exit(e.returncode)
 
 
-def check_for_test_files(src_path: str, test_path: str) -> None:
+def check_for_test_files(src_path, test_path, prefix='test_') -> bool:
 
-    s = glob.glob(os.path.join(src_path, '**/*.py'), recursive=True),
-    t = glob.glob(os.path.join(test_path, '**/test_*.py'), recursive=True)
+    assert os.path.exists(src_path), f'path does not exist {src_path}'
+    assert os.path.exists(test_path), f'path does not exist {test_path}'
 
-    print(s)
-    print(t)
+    print('>> Looking for test files')
 
-    assert(s == [])
+    print(os.path.join(src_path, '**/*.py'))
+    srcs = glob.glob(os.path.join(src_path, '**/*.py'), recursive=True)
+    tests = glob.glob(os.path.join(test_path, '**/test_*.py'), recursive=True)
 
-    # if len(src_paths) != len(test_paths):
-    # raise Exception('Not all src files have a test file')
+    assert len(srcs) > 0, f'No files found in src_path: {src_path}'
+    assert len(tests) > 0
 
-    # Todo find the missing file(s)
+    relative_tests = map(lambda t: os.path.relpath(t, test_path), tests)
+    relative_srcs = map(lambda s: os.path.relpath(s, src_path), srcs)
+
+    missing = 0
+
+    for s in relative_srcs:
+        for t in relative_tests:
+            if s in t.replace(prefix, ''):
+                break
+            else:
+                missing = missing + 1
+                print(f'Not test file for {s}')
+                return False
+
+    if missing > 0:
+        raise Exception(f'Missing test files for {missing} source files')
+
+    print('should not happen')
+    return True
 
 
 def get_repository_name() -> str:
