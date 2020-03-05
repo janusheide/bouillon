@@ -8,46 +8,61 @@
 
 import glob
 import os
-import shutil
 import subprocess
 import typing
 
 
-def run(args: typing.List[str], verbose: bool, dry_run: bool,
-        **kwargs) -> None:
+def run(args: typing.Any, dry_run: bool = False, verbose: bool = False,
+        **kwargs: typing.Any) -> subprocess.CompletedProcess:
 
-    if verbose or dry_run:
-        print('>> Command to execute: ' + str(' ').join(args))
+    if dry_run or verbose:
+        print(f'Command to executed: {str(" ").join(args)}')
 
     if dry_run:
-        return
+        return subprocess.run('true', **kwargs)
 
     try:
-        subprocess.run(args, shell=True, check=True)
-
+        return subprocess.run(args, **kwargs)
     except subprocess.CalledProcessError as e:
         exit(e.returncode)
 
 
-def check_for_test_files(src_path: str, test_path: str) -> None:
+def check_for_test_files(src_path: str, test_path: str, *,
+                         prefix: str = 'test_', suffix: str = 'py') -> bool:
+    """
+    Check that all source files have a correponding test file.
+    """
+    assert os.path.exists(src_path), f'path does not exist {src_path}'
+    assert os.path.exists(test_path), f'path does not exist {test_path}'
 
-    s = glob.glob(os.path.join(src_path, '**/*.py'), recursive=True),
-    t = glob.glob(os.path.join(test_path, '**/test_*.py'), recursive=True)
+    # Find all soruce files
+    srcs = glob.glob(os.path.join(src_path, f'**/*.{suffix}'), recursive=True)
+    assert len(srcs) > 0, 'No source files found.'
+    relative_srcs = list(map(lambda s: os.path.relpath(s, src_path), srcs))
 
-    print(s)
-    print(t)
+    # Find all test files
+    tests = glob.glob(os.path.join(test_path, f'**/test_*.{suffix}'),
+                      recursive=True)
+    relative_tests = map(lambda t: os.path.relpath(t, test_path), tests)
+    tests_no_prefix = map(lambda t: t.replace(prefix, ''),  relative_tests)
 
-    assert(s == [])
+    # Remove all tests files from the list of source files
+    for t in tests_no_prefix:
+        relative_srcs.remove(t)
 
-    # if len(src_paths) != len(test_paths):
-    # raise Exception('Not all src files have a test file')
+    if len(relative_srcs) == 0:
+        return True
 
-    # Todo find the missing file(s)
+    print(f'Missing tests for files: {relative_srcs}')
+    return False
 
 
-def get_repository_name() -> str:
-    raise Exception('Get repo name not implmented')
-    # return .__name__
+def repository_name(**kwargs: typing.Any) -> typing.Any:
+
+    r = run(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE,
+            **kwargs)
+
+    return os.path.split(r.stdout.decode().rstrip())[-1]
 
 
 def get_commit_id() -> str:
@@ -55,12 +70,8 @@ def get_commit_id() -> str:
     # return .__name__
 
 
-def docker_build_release(image: str, tag: str, registry: str,
-                         **kwargs) -> None:
-
-    if shutil.which('docker') is None:
-        raise Exception(
-            '"docker" command was not found, verify that Docker is installed.')
+def docker_build_release(*, image: str, tag: str, registry: str,
+                         **kwargs: typing.Any) -> None:
 
     run([f'docker build -t {image} .'], **kwargs)
     run([f'docker tag {image} {registry}/{image}:{tag}'], **kwargs)
