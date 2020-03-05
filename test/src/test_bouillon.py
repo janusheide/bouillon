@@ -5,10 +5,7 @@
 # All rights reserved.
 
 
-# from src import bouillon
 import bouillon
-
-# import subprocess
 
 
 def test_version():

@@ -16,9 +16,6 @@ if bouillon_loader is not None:
     import bouillon
 
 
-_repository = 'bouillon'
-
-
 def _find_requirement_files() -> typing.List[str]:
     return glob.glob('**/*requirements.txt', recursive=True)
 
@@ -70,8 +67,8 @@ def _test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
 
 def _build(**kwargs):
 
-    bouillon.run('python setup.py sdist', **kwargs)
-    bouillon.run('python setup.py bdist_wheel --universal', **kwargs)
+    bouillon.run(['python setup.py sdist'], **kwargs)
+    bouillon.run(['python setup.py bdist_wheel --universal'], **kwargs)
 
 
 def _train(**kwargs):
