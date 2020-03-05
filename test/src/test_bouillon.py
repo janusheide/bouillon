@@ -8,6 +8,8 @@
 # from src import bouillon
 import bouillon
 
+# import subprocess
+
 
 def test_version():
     assert(bouillon.__version__)
@@ -18,8 +20,8 @@ def test_name():
 
 
 def test_run():
-    bouillon.run(['ls'], verbose=True, dry_run=True)
-    bouillon.run(['ls'], verbose=False, dry_run=False)
+    bouillon.run(['ls'], )
+    bouillon.run(['ls'], dry_run=True)
 
 
 def test_check_for_test_files_fail(tmpdir):
@@ -52,9 +54,8 @@ def test_check_for_test_files(tmpdir):
     assert(bouillon.check_for_test_files(src, test))
 
 
-def test_get_repository_name():
-    pass
-    # assert(bouillon.get_repository_name() == 'bouillon')
+def test_repository_name():
+    assert(bouillon.repository_name() == 'bouillon')
 
 
 def test_find_requirements():

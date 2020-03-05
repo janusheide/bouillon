@@ -29,41 +29,42 @@ def _setup(**kwargs):
         bouillon.run([f'pip install -r {r}'], **kwargs)
 
 
-def _test(pep8: bool, static: bool, requirements: bool, licenses: bool,
+def _test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
           test_files: bool, unittests: bool, **kwargs) -> None:
 
     if pep8:
         bouillon.run([f'flake8'], **kwargs)
 
     if static:
-        bouillon.run(['mypy', 'src/**/*.py', '--config-file cicd/mypy.ini'],
+        bouillon.run(['mypy src/**/*.py', '--config-file cicd/mypy.ini'],
                      **kwargs)
 
     # https://pypi.org/project/Requirementz/
     if requirements:
         for r in _find_requirement_files():
-            bouillon.run([f'requirementz', f'--file {r}'], **kwargs)
+            bouillon.run([f'requirementz --file {r}'], **kwargs)
 
     # https://github.com/dhatim/python-license-check
     if licenses:
         for r in _find_requirement_files():
             bouillon.run(
-                [f'liccheck', '-s cicd/licenses.ini', f'-r {r}'], **kwargs)
+                [f'liccheck -s cicd/licenses.ini -r {r}'], **kwargs)
 
     if test_files:
-        if not bouillon.check_for_test_files(os.path.join('src', _repository),
-                                             os.path.join('test', 'src')):
+        if not bouillon.check_for_test_files(
+            os.path.join('src', bouillon.repository_name()),
+                os.path.join('test', 'src')):
             exit(1)
 
     if unittests:
         bouillon.run(
-            ['pytest', os.path.join('test', 'src'), '--cov=bouillon',
+            [f'pytest {os.path.join("test", "src")}', '--cov=bouillon',
                 '--cov-fail-under=10', '--durations=5', '-vv'],
             **kwargs)
 
     if unittests:
         bouillon.run(
-            ['pytest', os.path.join('test/cicd'), '--durations=5', '-vv'],
+            [f'pytest {os.path.join("test", "cicd")}', '--durations=5', '-vv'],
             **kwargs)
 
 
@@ -109,8 +110,9 @@ def cli():
         parser.print_help()
 
     parser.set_defaults(function=_print_help)
+    parser.set_defaults(shell=True)
+    parser.set_defaults(check=True)
     parser.add_argument('--dry-run', action='store_true')
-    parser.add_argument('--silent', action='store_true')
     parser.add_argument('--verbose', action='store_true')
 
     subparsers = parser.add_subparsers(help='Sub commands')
@@ -162,6 +164,10 @@ def cli():
     return parser.parse_args()
 
 
+def _call(function, **kwargs):
+    function(**kwargs)
+
+
 if __name__ == '__main__':
     args = cli()
 
@@ -170,4 +176,4 @@ if __name__ == '__main__':
         print(f'Failed to import bouillon, run "boil setup" first.')
         exit(1)
 
-    args.function(**vars(args))
+    _call(**vars(args))
