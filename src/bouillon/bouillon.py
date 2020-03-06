@@ -57,7 +57,7 @@ def check_for_test_files(src_path: str, test_path: str, *,
     return False
 
 
-def repository_name(**kwargs: typing.Any) -> typing.Any:
+def git_repository_name(**kwargs: typing.Any) -> str:
 
     r = run(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE,
             **kwargs)
@@ -65,9 +65,11 @@ def repository_name(**kwargs: typing.Any) -> typing.Any:
     return os.path.split(r.stdout.decode().rstrip())[-1]
 
 
-def get_commit_id() -> str:
-    raise Exception('Get commit Id not implemented')
-    # return .__name__
+def git_commit_id(**kwargs: typing.Any) -> str:
+
+    r = run(['git', 'rev-parse', 'HEAD'], stdout=subprocess.PIPE, **kwargs)
+
+    return r.stdout.decode().rstrip()
 
 
 def docker_build_release(*, image: str, tag: str, registry: str,

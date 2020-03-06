@@ -27,7 +27,8 @@ def _setup(**kwargs):
 
 
 def _test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
-          test_files: bool, unittests: bool, **kwargs) -> None:
+          test_files: bool, unit_tests: bool, cicd_tests: bool,
+          **kwargs) -> None:
 
     if pep8:
         bouillon.run([f'flake8'], **kwargs)
@@ -49,17 +50,16 @@ def _test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
 
     if test_files:
         if not bouillon.check_for_test_files(
-            os.path.join('src', bouillon.repository_name()),
+            os.path.join('src', bouillon.git_repository_name()),
                 os.path.join('test', 'src')):
             exit(1)
 
-    if unittests:
+    if unit_tests:
         bouillon.run(
             [f'pytest {os.path.join("test", "src")}', '--cov=bouillon',
-                '--cov-fail-under=10', '--durations=5', '-vv'],
-            **kwargs)
+                '--cov-fail-under=10', '--durations=5', '-vv'], **kwargs)
 
-    if unittests:
+    if cicd_tests:
         bouillon.run(
             [f'pytest {os.path.join("test", "cicd")}', '--durations=5', '-vv'],
             **kwargs)
@@ -87,11 +87,11 @@ def _release(**kwargs):
     _upgrade(**kwargs)
 
     _test(pep8=True, static=True, requirements=True, licenses=True,
-          test_files=True, unittests=True, **kwargs)
+          test_files=True, unit_tests=True, cicd_tests=True, **kwargs)
 
     _build(**kwargs)
 
-    raise Exception('release step not implemented')
+    # raise Exception('release step not implemented')
     # Todo upload it to pip
 
 
@@ -109,50 +109,58 @@ def cli():
     parser.set_defaults(function=_print_help)
     parser.set_defaults(shell=True)
     parser.set_defaults(check=True)
-    parser.add_argument('--dry-run', action='store_true')
-    parser.add_argument('--verbose', action='store_true')
+    parser.add_argument(
+        '--dry-run', action='store_true', help='Perform a dry run.')
+    parser.add_argument(
+        '--verbose', action='store_true', help='More verbose printing')
 
-    subparsers = parser.add_subparsers(help='Sub commands')
+    subparsers = parser.add_subparsers(help='Available sub commands')
 
-    parser_setup = subparsers.add_parser('setup', help='Run setup step.')
+    parser_setup = subparsers.add_parser(
+        'setup',
+        help='Setup installing dependencies, this will execute pip commands.')
     parser_setup.set_defaults(function=_setup)
 
-    parser_build = subparsers.add_parser('build', help='Run build step.')
+    parser_build = subparsers.add_parser('build', help='Build.')
     parser_build.set_defaults(function=_build)
 
-    parser_train = subparsers.add_parser('train', help='Run train step.')
+    parser_train = subparsers.add_parser('train', help='Train.')
     parser_train.set_defaults(function=_train)
 
     parser_test = subparsers.add_parser('test', help='Run tests')
     parser_test.set_defaults(function=_test)
 
-    parser_test.add_argument('--no-requirements',
-                             dest='requirements',
-                             action='store_false')
+    parser_test.add_argument(
+        '--no-requirements', dest='requirements', action='store_false',
+        help='Do not check installed modules against requirements files')
 
-    parser_test.add_argument('--no-pep8-check',
-                             dest='pep8',
-                             action='store_false')
+    parser_test.add_argument(
+        '--no-pep8', dest='pep8', action='store_false',
+        help='Do not check pep8 conformance.')
 
-    parser_test.add_argument('--no-static-check',
-                             dest='static',
-                             action='store_false')
+    parser_test.add_argument(
+        '--no-static-check', dest='static', action='store_false',
+        help='Do not perform static code analysis.')
 
-    parser_test.add_argument('--no-license-check',
-                             dest='licenses',
-                             action='store_false')
+    parser_test.add_argument(
+        '--no-license-check', dest='licenses', action='store_false',
+        help='Do not check that licenses of all used modules.')
 
-    parser_test.add_argument('--no-test-files-check',
-                             dest='test_files',
-                             action='store_false')
+    parser_test.add_argument(
+        '--no-test-files-check', dest='test_files', action='store_false',
+        help='Do not check that for each source file there is a test file')
 
-    parser_test.add_argument('--no-unittests',
-                             dest='unittests',
-                             action='store_false')
+    parser_test.add_argument(
+        '--no-unit-tests', dest='unit_tests', action='store_false',
+        help='Do not run unit tests.')
+
+    parser_test.add_argument(
+        '--no-cicd-tests', dest='cicd_tests', action='store_false',
+        help='Do not run CICD tests.')
 
     parser_upgrade = subparsers.add_parser(
         'upgrade',
-        help='upgrade dependencies and bouillon.')
+        help='upgrade all dependencies (including bouillon).')
     parser_upgrade.set_defaults(function=_upgrade)
 
     parser_release = subparsers.add_parser('release', help='release me.')

@@ -32,7 +32,7 @@ def test_check_for_test_files_fail(tmpdir):
     test_a = test.join('test_a.py')
     test_a.write('test_a')
 
-    assert(not bouillon.check_for_test_files(src, test))
+    assert not bouillon.check_for_test_files(src, test)
 
 
 def test_check_for_test_files(tmpdir):
@@ -48,11 +48,16 @@ def test_check_for_test_files(tmpdir):
     test_a.write('test_a')
     test_b.write('test_b')
 
-    assert(bouillon.check_for_test_files(src, test))
+    assert bouillon.check_for_test_files(src, test)
 
 
-def test_repository_name():
-    assert(bouillon.repository_name() == 'bouillon')
+def test_git_repository_name():
+    assert bouillon.git_repository_name() == 'bouillon'
+
+
+def test_commit_id():
+
+    assert len(bouillon.git_commit_id()) == 40
 
 
 def test_find_requirements():
