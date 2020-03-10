@@ -76,6 +76,18 @@ def git_commit_id(**kwargs: typing.Any) -> str:
     return str(r.stdout.decode().rstrip())
 
 
+def git_tags(**kwargs: typing.Any) -> typing.Union[typing.List[str], None]:
+
+    r = run(['git', 'tag', '--list'], stdout=subprocess.PIPE, **kwargs)
+
+    tags: typing.List[str] = r.stdout.decode().rstrip().split('\n')
+
+    if tags == ['']:
+        return None
+
+    return tags
+
+
 def docker_build_release(*, image: str, tag: str, registry: str,
                          **kwargs: typing.Any) -> None:
 

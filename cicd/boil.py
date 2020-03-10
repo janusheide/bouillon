@@ -23,8 +23,14 @@ def _find_requirement_files() -> typing.List[str]:
 
 def _setup(*, dry_run, verbose, **kwargs):
 
-    if bouillon_loader is None:
-        subprocess.run(['pip', 'install', '-e', '.'], check=True)
+    if dry_run or verbose:
+        print('Installing dependencies')
+
+    if dry_run:
+        exit(0)
+
+    # Install the local project, for your project add bouillon to requirements
+    subprocess.run(['pip', 'install', '-e', '.'], **kwargs)
 
     for r in _find_requirement_files():
         subprocess.run([f'pip', 'install', '-r', f'{r}'], **kwargs)
@@ -82,10 +88,15 @@ def _upgrade(**kwargs):
 
     # https://github.com/alanhamlett/pip-update-requirements
     for r in _find_requirement_files():
-        bouillon.run([f'pur -r {r}'], **kwargs)
+        bouillon.run([f'pur', '-r', f'{r}', '--force'], **kwargs)
 
 
-def _release(**kwargs):
+def _release(*, version, **kwargs):
+
+    print(f'Releasing with version {version}')
+    print(f'Current git commit id is {bouillon.git_commit_id()}')
+    print(f'Current tags {bouillon.git_tags()}')
+    return(0)
 
     _upgrade(**kwargs)
 
@@ -166,12 +177,15 @@ def cli():
     parser_upgrade.set_defaults(function=_upgrade)
 
     parser_release = subparsers.add_parser('release', help='release me.')
+    parser_release.add_argument('--version', type=str,
+                                help='release version.')
+
     parser_release.set_defaults(function=_release)
 
     return parser.parse_args()
 
 
-def _call(function, **kwargs):
+def _call(*, function, **kwargs):
     function(**kwargs)
 
 

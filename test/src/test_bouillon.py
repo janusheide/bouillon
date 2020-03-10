@@ -55,9 +55,12 @@ def test_git_repository_name():
     assert bouillon.git_repository_name() == 'bouillon'
 
 
-def test_commit_id():
-
+def test_git_commit_id():
     assert len(bouillon.git_commit_id()) == 40
+
+
+def test_git_tags():
+    assert bouillon.git_tags() is None
 
 
 def test_find_requirements():
