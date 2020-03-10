@@ -38,7 +38,7 @@ def _test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
         bouillon.run([f'flake8'], **kwargs)
 
     if static:
-        bouillon.run(['mypy', 'src', '--config-file', 'cicd/mypy.ini'],
+        bouillon.run(['mypy', 'src', f'--config-file', 'cicd/mypy.ini'],
                      **kwargs)
 
     # https://pypi.org/project/Requirementz/
