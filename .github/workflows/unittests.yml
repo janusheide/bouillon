@@ -26,7 +26,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: Setup environment
-      run: python cicd/boil setup
+      run: python cicd/boil.py setup
 
     - name: Run unit tests 
-      run: python cicd/boil test
+      run: python cicd/boil.py test
