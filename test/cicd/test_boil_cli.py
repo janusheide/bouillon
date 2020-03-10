@@ -20,20 +20,20 @@ def test_boil_setup():
 
 
 def test_boil_test():
-    subprocess.run('python boil --dry-run test', check=True)
+    subprocess.run(['python', 'boil', '--dry-run', 'test'], check=True)
 
 
 def test_boil_build():
-    subprocess.run('python boil --dry-run build', check=True)
+    subprocess.run(['python', 'boil', '--dry-run', 'build'], check=True)
 
 
 def test_boil_train():
     pass
-    # subprocess.run('python boil --dry-run train', shell=True, check=True)
+    # subprocess.run('python', 'boil', '--dry-run', 'train', check=True)
 
 
 def test_boil_upgrade():
-    subprocess.run('python boil --dry-run upgrade', check=True)
+    subprocess.run(['python', 'boil', '--dry-run', 'upgrade'], check=True)
 
 
 def test_boil_release():
