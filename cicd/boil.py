@@ -23,8 +23,8 @@ def _find_requirement_files() -> typing.List[str]:
 
 def _setup(*, dry_run, verbose, **kwargs):
 
-    # if bouillon_loader is None:
-    #     subprocess.run(['pip', 'install', '-e', '.'], check=True)
+    if bouillon_loader is None:
+        subprocess.run(['pip', 'install', '-e', '.'], check=True)
 
     for r in _find_requirement_files():
         subprocess.run([f'pip', 'install', '-r', f'{r}'], **kwargs)
