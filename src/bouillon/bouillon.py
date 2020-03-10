@@ -8,23 +8,27 @@
 
 import glob
 import os
+import shutil
 import subprocess
 import typing
 
 
-def run(args: typing.Any, dry_run: bool = False, verbose: bool = False,
-        **kwargs: typing.Any) -> subprocess.CompletedProcess:
+def run(args: typing.List[str], dry_run: bool = False, verbose: bool = False,
+        shell: bool = False, **kwargs: typing.Any
+        ) -> subprocess.CompletedProcess:
+
+    assert shell is False, 'Setting shell to True can cause problems.'
 
     if dry_run or verbose:
-        print(f'Command to executed: {str(" ").join(args)}')
+        print(f'Command to execute: {str(" ").join(args)}')
+
+    if shutil.which(args[0]) is None:
+        print(f'Command "{args[0]}" was not found.')
 
     if dry_run:
-        return subprocess.run('true', **kwargs)
+        return subprocess.CompletedProcess('', 0)
 
-    try:
-        return subprocess.run(args, **kwargs)
-    except subprocess.CalledProcessError as e:
-        exit(e.returncode)
+    return subprocess.run(args, **kwargs)
 
 
 def check_for_test_files(src_path: str, test_path: str, *,
@@ -62,14 +66,14 @@ def git_repository_name(**kwargs: typing.Any) -> str:
     r = run(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE,
             **kwargs)
 
-    return os.path.split(r.stdout.decode().rstrip())[-1]
+    return str(os.path.split(r.stdout.decode().rstrip())[-1])
 
 
 def git_commit_id(**kwargs: typing.Any) -> str:
 
     r = run(['git', 'rev-parse', 'HEAD'], stdout=subprocess.PIPE, **kwargs)
 
-    return r.stdout.decode().rstrip()
+    return str(r.stdout.decode().rstrip())
 
 
 def docker_build_release(*, image: str, tag: str, registry: str,
