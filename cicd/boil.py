@@ -21,13 +21,13 @@ def _find_requirement_files() -> typing.List[str]:
     return glob.glob('**/*requirements.txt', recursive=True)
 
 
-def _setup(**kwargs):
+def _setup(*, dry_run, verbose, **kwargs):
 
-    if bouillon_loader is None:
-        subprocess.run(['pip', 'install', '-e', '.'], check=True)
+    # if bouillon_loader is None:
+    #     subprocess.run(['pip', 'install', '-e', '.'], check=True)
 
     for r in _find_requirement_files():
-        bouillon.run([f'pip', 'install', '-r', f'{r}'], **kwargs)
+        subprocess.run([f'pip', 'install', '-r', f'{r}'], **kwargs)
 
 
 def _test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
