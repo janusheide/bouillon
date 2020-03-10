@@ -8,6 +8,7 @@ import argparse
 import glob
 from importlib import util
 import os
+import subprocess
 import typing
 
 # import bouillon if found, ebables running setup without bouillon.
@@ -22,8 +23,11 @@ def _find_requirement_files() -> typing.List[str]:
 
 def _setup(**kwargs):
 
+    if bouillon_loader is None:
+        subprocess.run(['pip', 'install', '-e', '.'], check=True)
+
     for r in _find_requirement_files():
-        bouillon.run([f'pip install -r {r}'], **kwargs)
+        bouillon.run([f'pip', 'install', '-r', f'{r}'], **kwargs)
 
 
 def _test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
