@@ -9,17 +9,13 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        os: [ubuntu-latest, windows-2016]
+        # It appears there are some errors on the gitlab windows runners 
+        # https://github.com/facebook/jest/issues/9413
+        os: [ubuntu-latest]
         python-version: [3.6, 3.7, 3.8]
         exclude:
           - os: windows-latest
             python-version: 3.6
-          - os: windows-latest
-            python-version: 3.8
-          - os: ubuntu-latest
-            python-version: 3.6
-          - os: ubuntu -latest
-            python-version: 3.8
 
     steps:
     - uses: actions/checkout@v1
