@@ -8,6 +8,7 @@ import argparse
 import glob
 from importlib import util
 import os
+import subprocess
 import typing
 
 # import bouillon if found, ebables running setup without bouillon.
@@ -20,10 +21,13 @@ def _find_requirement_files() -> typing.List[str]:
     return glob.glob('**/*requirements.txt', recursive=True)
 
 
-def _setup(**kwargs):
+def _setup(*, dry_run, verbose, **kwargs):
+
+    if bouillon_loader is None:
+        subprocess.run(['pip', 'install', '-e', '.'], check=True)
 
     for r in _find_requirement_files():
-        bouillon.run([f'pip install -r {r}'], **kwargs)
+        subprocess.run([f'pip', 'install', '-r', f'{r}'], **kwargs)
 
 
 def _test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
@@ -34,19 +38,19 @@ def _test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
         bouillon.run([f'flake8'], **kwargs)
 
     if static:
-        bouillon.run(['mypy src/**/*.py', '--config-file cicd/mypy.ini'],
+        bouillon.run(['mypy', 'src', f'--config-file', 'cicd/mypy.ini'],
                      **kwargs)
 
     # https://pypi.org/project/Requirementz/
     if requirements:
         for r in _find_requirement_files():
-            bouillon.run([f'requirementz --file {r}'], **kwargs)
+            bouillon.run([f'requirementz', f'--file', f'{r}'], **kwargs)
 
     # https://github.com/dhatim/python-license-check
     if licenses:
         for r in _find_requirement_files():
-            bouillon.run(
-                [f'liccheck -s cicd/licenses.ini -r {r}'], **kwargs)
+            bouillon.run([f'liccheck', f'-s', f'cicd/licenses.ini',
+                          f'-r', f'{r}'], **kwargs)
 
     if test_files:
         if not bouillon.check_for_test_files(
@@ -56,13 +60,12 @@ def _test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
 
     if unit_tests:
         bouillon.run(
-            [f'pytest {os.path.join("test", "src")}', '--cov=bouillon',
-                '--cov-fail-under=10', '--durations=5', '-vv'], **kwargs)
+            [f'pytest', f'{os.path.join("test", "src")}', '--cov=bouillon',
+                '--cov-fail-under=90', '--durations=5', '-vv'], **kwargs)
 
     if cicd_tests:
-        bouillon.run(
-            [f'pytest {os.path.join("test", "cicd")}', '--durations=5', '-vv'],
-            **kwargs)
+        bouillon.run([f'pytest', f'{os.path.join("test", "cicd")}',
+                      '--durations=5', '-vv'], **kwargs)
 
 
 def _build(**kwargs):
@@ -107,7 +110,6 @@ def cli():
         parser.print_help()
 
     parser.set_defaults(function=_print_help)
-    parser.set_defaults(shell=True)
     parser.set_defaults(check=True)
     parser.add_argument(
         '--dry-run', action='store_true', help='Perform a dry run.')
