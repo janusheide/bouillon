@@ -4,8 +4,10 @@
 Bouillon
 ========
 
-![Unit tests](https://github.com/janusheide/bouillon/workflows/Unit%20tests/badge.svg)  
-
+.. image:: https://github.com/janusheide/bouillon/workflows/Unit%20tests/badge.svg
+    :target: https://github.com/janusheide/bouillon/commits/master
+    :alt: Unit tests
+ 
 Bouillon contains; a) a project structure, b) a script for building, testing, 
 etc., that are easy to adapt and, c) a module that provides helper 
 functionality when writing your script.
