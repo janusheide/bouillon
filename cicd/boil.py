@@ -10,6 +10,7 @@ import argparse
 import glob
 from importlib import util
 import os
+import shutil
 import subprocess
 import typing
 
@@ -19,11 +20,11 @@ if bouillon_loader is not None:
     import bouillon
 
 
-def _find_requirement_files() -> typing.List[str]:
+def find_requirement_files() -> typing.List[str]:
     return glob.glob('**/*requirements.txt', recursive=True)
 
 
-def _setup(*, dry_run, verbose, **kwargs):
+def setup(*, dry_run, verbose, **kwargs):
 
     if dry_run or verbose:
         print('Installing dependencies')
@@ -34,13 +35,13 @@ def _setup(*, dry_run, verbose, **kwargs):
     # Install the local project, for your project add bouillon to requirements
     subprocess.run(['pip', 'install', '-e', '.'], **kwargs)
 
-    for r in _find_requirement_files():
+    for r in find_requirement_files():
         subprocess.run([f'pip', 'install', '-r', f'{r}'], **kwargs)
 
 
-def _test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
-          test_files: bool, unit_tests: bool, cicd_tests: bool,
-          **kwargs) -> None:
+def test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
+         test_files: bool, unit_tests: bool, cicd_tests: bool,
+         **kwargs) -> None:
 
     if pep8:
         bouillon.run([f'flake8'], **kwargs)
@@ -51,12 +52,12 @@ def _test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
 
     # https://pypi.org/project/Requirementz/
     if requirements:
-        for r in _find_requirement_files():
+        for r in find_requirement_files():
             bouillon.run([f'requirementz', f'--file', f'{r}'], **kwargs)
 
     # https://github.com/dhatim/python-license-check
     if licenses:
-        for r in _find_requirement_files():
+        for r in find_requirement_files():
             bouillon.run([f'liccheck', f'-s', f'cicd/licenses.ini',
                           f'-r', f'{r}'], **kwargs)
 
@@ -76,43 +77,54 @@ def _test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
                       '--durations=5', '-vv'], **kwargs)
 
 
-def _build(**kwargs):
+def build(**kwargs):
 
-    bouillon.run(['python setup.py sdist'], **kwargs)
-    bouillon.run(['python setup.py bdist_wheel --universal'], **kwargs)
+    bouillon.run(['python', 'setup.py', 'sdist'], **kwargs)
+    bouillon.run(['python', 'setup.py', 'bdist_wheel', '--universal'],
+                 **kwargs)
 
 
-def _train(**kwargs):
+def train(**kwargs):
     raise Exception("train step not implemented")
 
 
-def _upgrade(**kwargs):
+def upgrade(**kwargs):
 
     # https://github.com/alanhamlett/pip-update-requirements
-    for r in _find_requirement_files():
+    for r in find_requirement_files():
         bouillon.run([f'pur', '-r', f'{r}', '--force'], **kwargs)
 
 
-def _release(*, version, **kwargs):
+def clean(**kwargs):
+
+    shutil.rmtree('build', 'dist')
+
+
+def release(*, version, **kwargs):
 
     print(f'Releasing with version {version}')
     print(f'Current git commit id is {bouillon.git_commit_id()}')
     print(f'Current tags {bouillon.git_tags()}')
-    return(0)
+    # return(0)
 
-    _upgrade(**kwargs)
+    # TODO
+    # Check version against existing releases (must be different)
 
-    _test(pep8=True, static=True, requirements=True, licenses=True,
-          test_files=True, unit_tests=True, cicd_tests=True, **kwargs)
+    clean(**kwargs)
 
-    _build(**kwargs)
+    test(pep8=True, static=True, requirements=True, licenses=True,
+         test_files=True, unit_tests=True, cicd_tests=True, **kwargs)
+
+    build(**kwargs)
+
+    # TODO
+    # create and push version tag
+
+    # TODO upload 
+    # bouillon.run(['python', 'twine', 'upload', 'dist/*'], **kwargs)
 
     # raise Exception('release step not implemented')
     # Todo upload it to pip
-
-
-def _clean(**kwargs):
-    raise Exception('Clean step not implemented')
 
 
 def cli():
@@ -134,16 +146,16 @@ def cli():
     parser_setup = subparsers.add_parser(
         'setup',
         help='Setup installing dependencies, this will execute pip commands.')
-    parser_setup.set_defaults(function=_setup)
+    parser_setup.set_defaults(function=setup)
 
     parser_build = subparsers.add_parser('build', help='Build.')
-    parser_build.set_defaults(function=_build)
+    parser_build.set_defaults(function=build)
 
     parser_train = subparsers.add_parser('train', help='Train.')
-    parser_train.set_defaults(function=_train)
+    parser_train.set_defaults(function=train)
 
     parser_test = subparsers.add_parser('test', help='Run tests')
-    parser_test.set_defaults(function=_test)
+    parser_test.set_defaults(function=test)
 
     parser_test.add_argument(
         '--no-requirements', dest='requirements', action='store_false',
@@ -176,18 +188,20 @@ def cli():
     parser_upgrade = subparsers.add_parser(
         'upgrade',
         help='upgrade all dependencies (including bouillon).')
-    parser_upgrade.set_defaults(function=_upgrade)
+    parser_upgrade.set_defaults(function=upgrade)
+
+    parser_clean = subparsers.add_parser('clean', help='Clean temp files.')
+    parser_clean.set_defaults(function=clean)
 
     parser_release = subparsers.add_parser('release', help='release me.')
     parser_release.add_argument('--version', type=str,
                                 help='release version.')
-
-    parser_release.set_defaults(function=_release)
+    parser_release.set_defaults(function=release)
 
     return parser.parse_args()
 
 
-def _call(*, function, **kwargs):
+def call(*, function, **kwargs):
     function(**kwargs)
 
 
@@ -195,8 +209,8 @@ if __name__ == '__main__':
     args = cli()
 
     # Unless we are running setup, make sure that bouillon was imported
-    if args.function != _setup and bouillon_loader is None:
+    if args.function != setup and bouillon_loader is None:
         print(f'Failed to import bouillon, run "boil setup" first.')
         exit(1)
 
-    _call(**vars(args))
+    call(**vars(args))

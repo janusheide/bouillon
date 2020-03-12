@@ -22,7 +22,7 @@ setup(
     url='https://github.com/janusheide/bouillion',
     author='Janus Heide',
     author_email='janusheide@gmail.com',
-    license='',
+    license='License :: OSI Approved :: BSD License',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
