@@ -15,85 +15,70 @@ functionality when writing your script.
 Features
 --------
 
-The script provides various usful functionality using various projects, e.g.:
+The script provides various useful functionality using various projects, e.g.:
 
 * Pep8 syntax enforcement.
 * Static Code Analysis.
-* Verfifcation of installed dependencies against refined dequirements.
-* Verfification of licenses in included modules.
+* Verification of installed dependencies against requirements.
+* Verification of licenses in included modules.
 * Execution of unit tests.
-* Converage of unit tests.
+* Coverage of unit tests.
 * API documentation.
 * Updating of dependencies.
 
-Objectives
-----------
+Goals
+-----
 
-The use is intended, but not limited to, projecs with frequently releases, e.g. 
-ML models and services. 
-The goal is to make it quick and easy to set up a new project with the basic testing and releasing functionality.
+The primary use is intended for, but not limited to, projects with frequently 
+releases, e.g. ML models and services. 
+The goal is to make it quick and easy to set up a new project with the basic
+testing and releasing functionality.
 
-User Friendly
-.............
+User Friendliness
+.................
 
-The example script is plain Python with the intension of using modules that 
-many will already be familiar with.
+* Make the life of the user easier.
+* Use plain Python and modules that many are familiar with.
+* Quick and easy to setup and run repetitive tasks.
+* All tasks should be possible locally.
 
-Should be convininent to setup and run both locally and remotely
-
-Reproduceability
+Reproducibility
 ................
 
-The master should always be green, stable point to work from.
-Depends on merge policies which should be setup in your repository of choice.
-
-All dependcies shoud be hard (versioned).
-
+* Make results and builds reproducible.
+* All dependencies must be hard (versioned).
+* The master should always be green.
 
 Simplicity
 ..........
 
-Prefer simpler options to make it easier for more users.
-
-Essentially a bunch of small buildingin blocks, ensure that components can be exchanged quickly.
-
+* Simplicity over features.
+* Components should be easy to replace. 
 
 Automation
 ..........
 
-Mininize the maintaince burden by 
-
-Easy to upgrade dependencies
-
-This is primarily 
-
-Setup triggerede and scheduled actions 
-
-periodic try to update
-
-
+* Reduce maintenance, repetitive tasks, and human errors.
+* Easy to upgrade dependencies.
+* Use merge policies and triggered and scheduled events.
 
 Getting Started
 ---------------
-
 
 ::
 
     git clone git@github.com:janusheide/bouillon.git
     cd bouillon 
 
-    python boul --help
+    python boil --help
 
-    python boil setup (will pip install packages, so a venv is recommended)
+    python boil setup (will pip install packages, a venv is recommended)
     python boil test
-
-
 
 Start A New Project
 ...................
 
 You can use this repository as a template
-
 https://help.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template
 
 
@@ -143,8 +128,8 @@ as indicated below.
             └── test_bouillon.py
 
 
-At some point it might be convininent to fork the reposiotry, make any changes 
-you need and use that as your template reposiotry.
+At some point it might be convenient to fork the repository, make any changes 
+you need and use that as your template repository.
 
 
 Ways of Inclusion
@@ -168,7 +153,6 @@ The module can be installed prior to running any script commands, but this
 requires an extra step and means that the script setup step only partly setup 
 the environment.
 
-
 Copy Module Source
 ..................
 
@@ -177,10 +161,9 @@ from the local file in your script. Consequently you will have to manually
 update the module or implement a way to push a new module version into multiple 
 repositories.
 
-
 Copy Module Source Into Script
 ..............................
 
-Copy the module implementation or the fnuctionality you need into your script. 
-While it is simple but even more inconvinient to keep the module functionality 
+Copy the module implementation or the functionality you need into your script. 
+While it is simple but even more inconvenient to keep the module functionality 
 up to date.
