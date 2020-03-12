@@ -26,41 +26,6 @@ The script provides various useful functionality using various projects, e.g.:
 * API documentation.
 * Updating of dependencies.
 
-Goals
------
-
-The primary use is intended for, but not limited to, projects with frequently 
-releases, e.g. ML models and services. 
-The goal is to make it quick and easy to set up a new project with the basic
-testing and releasing functionality.
-
-User Friendliness
-.................
-
-* Make the life of the user easier.
-* Use plain Python and modules that many are familiar with.
-* Quick and easy to setup and run repetitive tasks.
-* All tasks should be possible locally.
-
-Reproducibility
-................
-
-* Make results and builds reproducible.
-* All dependencies must be hard (versioned).
-* The master should always be green.
-
-Simplicity
-..........
-
-* Simplicity over features.
-* Components should be easy to replace. 
-
-Automation
-..........
-
-* Reduce maintenance, repetitive tasks, and human errors.
-* Easy to upgrade dependencies.
-* Use merge policies and triggered and scheduled events.
 
 Getting Started
 ---------------
@@ -167,3 +132,41 @@ Copy Module Source Into Script
 Copy the module implementation or the functionality you need into your script. 
 While it is simple but even more inconvenient to keep the module functionality 
 up to date.
+
+
+Goals
+-----
+
+The primary use is intended for, but not limited to, projects with frequently 
+releases, e.g. ML models and services. 
+The goal is to make it quick and easy to set up a new project with the basic
+testing and releasing functionality.
+
+User Friendliness
+.................
+
+* Make the life of the user easier.
+* Use plain Python and modules that many are familiar with.
+* Quick and easy to setup and run repetitive tasks.
+* All tasks should be possible locally.
+
+Reproducibility
+................
+
+* Make results and builds reproducible.
+* All dependencies must be hard (versioned).
+* The master should always be green.
+
+Simplicity
+..........
+
+* Simplicity over features.
+* Components should be easy to replace. 
+
+Automation
+..........
+
+* Reduce maintenance, repetitive tasks, and human errors.
+* Easy to upgrade dependencies.
+* Use merge policies and triggered and scheduled events.
+    
