@@ -4,7 +4,7 @@
 # Copyright (c) 2020, Janus Heide.
 # All rights reserved.
 #
-# Distributed under the "BSD 3-Clause License", see LICENSE.txt..
+# Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
 import argparse
 import glob
@@ -25,7 +25,7 @@ def find_requirement_files() -> typing.List[str]:
     return glob.glob('**/*requirements.txt', recursive=True)
 
 
-def setup(*, dry_run: bool, verbose: bool, **kwargs):
+def setup(*, dry_run: bool, verbose: bool, **kwargs) -> None:
 
     if dry_run or verbose:
         print('Installing dependencies')
@@ -78,30 +78,30 @@ def test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
                       '--durations=5', '-vv'], **kwargs)
 
 
-def build(**kwargs):
+def build(**kwargs) -> None:
 
     bouillon.run(['python', 'setup.py', 'sdist'], **kwargs)
     bouillon.run(['python', 'setup.py', 'bdist_wheel', '--universal'],
                  **kwargs)
 
 
-def train(**kwargs):
+def train(**kwargs) -> None:
     raise Exception("train step not implemented")
 
 
-def upgrade(**kwargs):
+def upgrade(**kwargs) -> None:
 
     # https://github.com/alanhamlett/pip-update-requirements
     for r in find_requirement_files():
         bouillon.run([f'pur', '-r', f'{r}', '--force'], **kwargs)
 
 
-def clean(**kwargs):
+def clean(**kwargs) -> None:
 
     shutil.rmtree('build', 'dist')
 
 
-def release(*, version: str, **kwargs):
+def release(*, version: str, **kwargs) -> None:
     """
     Run tests, tag with version and push to repo and pypi.
     """
@@ -125,7 +125,7 @@ def release(*, version: str, **kwargs):
     bouillon.run(['python', 'twine', 'upload', 'dist/*'], **kwargs)
 
 
-def cli():
+def cli() -> None:
 
     parser = argparse.ArgumentParser(description='Bouillon')
 
@@ -199,7 +199,7 @@ def cli():
     return parser.parse_args()
 
 
-def call(*, function, **kwargs):
+def call(*, function: typing.Callable, **kwargs) -> None:
     function(**kwargs)
 
 
