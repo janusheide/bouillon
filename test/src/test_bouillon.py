@@ -4,7 +4,7 @@
 # Copyright (c) 2020, Janus Heide.
 # All rights reserved.
 #
-# Distributed under the "BSD 3-Clause License", see LICENSE.rst.
+# Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
 import bouillon
 
@@ -61,7 +61,7 @@ def test_git_commit_id():
 
 
 def test_git_tags():
-    assert bouillon.git_tags() is None
+    assert bouillon.git_tags() == ['']
 
 
 def test_find_requirements():

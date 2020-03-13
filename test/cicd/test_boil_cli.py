@@ -4,7 +4,7 @@
 # Copyright (c) 2020, Janus Heide.
 # All rights reserved.
 #
-# Distributed under the "BSD 3-Clause License", see LICENSE.rst.
+# Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
 import subprocess
 
@@ -38,7 +38,8 @@ def test_boil_upgrade():
 
 
 def test_boil_release():
-    subprocess.run(['python', 'boil', '--dry-run', 'release'], check=True)
+    subprocess.run(['python', 'boil', '--dry-run', 'release', '0.0.1'],
+                   check=True)
 
 
 def test_boil_clean():

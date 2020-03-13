@@ -4,12 +4,13 @@
 # Copyright (c) 2020, Janus Heide.
 # All rights reserved.
 #
-# Distributed under the "BSD 3-Clause License", see LICENSE.rst.
+# Distributed under the "BSD 3-Clause License", see LICENSE.txt..
 
 import argparse
 import glob
 from importlib import util
 import os
+import semver
 import shutil
 import subprocess
 import typing
@@ -24,7 +25,7 @@ def find_requirement_files() -> typing.List[str]:
     return glob.glob('**/*requirements.txt', recursive=True)
 
 
-def setup(*, dry_run, verbose, **kwargs):
+def setup(*, dry_run: bool, verbose: bool, **kwargs):
 
     if dry_run or verbose:
         print('Installing dependencies')
@@ -100,31 +101,28 @@ def clean(**kwargs):
     shutil.rmtree('build', 'dist')
 
 
-def release(*, version, **kwargs):
+def release(*, version: str, **kwargs):
+    """
+    Run tests, tag with version and push to repo and pypi.
+    """
 
-    print(f'Releasing with version {version}')
-    print(f'Current git commit id is {bouillon.git_commit_id()}')
-    print(f'Current tags {bouillon.git_tags()}')
-    # return(0)
+    # Check that version is a valid semver version
+    semver.parse(version)
 
-    # TODO
-    # Check version against existing releases (must be different)
+    if version in bouillon.git_tags():
+        assert "Tag already exists."
 
     clean(**kwargs)
 
     test(pep8=True, static=True, requirements=True, licenses=True,
          test_files=True, unit_tests=True, cicd_tests=True, **kwargs)
 
+    bouillon.run(['git', 'tag', f'{version}'], **kwargs)
+
     build(**kwargs)
 
-    # TODO
-    # create and push version tag
-
-    # TODO upload 
-    # bouillon.run(['python', 'twine', 'upload', 'dist/*'], **kwargs)
-
-    # raise Exception('release step not implemented')
-    # Todo upload it to pip
+    bouillon.run(['git', 'push', '--origin', f'{version}'], **kwargs)
+    bouillon.run(['python', 'twine', 'upload', 'dist/*'], **kwargs)
 
 
 def cli():
@@ -194,7 +192,7 @@ def cli():
     parser_clean.set_defaults(function=clean)
 
     parser_release = subparsers.add_parser('release', help='release me.')
-    parser_release.add_argument('--version', type=str,
+    parser_release.add_argument('version', type=str,
                                 help='release version.')
     parser_release.set_defaults(function=release)
 
