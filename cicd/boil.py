@@ -107,8 +107,8 @@ def release(*, version: str, **kwargs) -> None:
     Run tests, tag with version and push to repo and pypi.
     """
 
-    #TODO check that git repo is clean
-    #TODO ensure we are on master
+    # TODO check that git repo is clean
+    # TODO ensure we are on master
 
     # Check that version is a valid semver version
     semver.parse(version)
