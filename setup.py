@@ -19,7 +19,7 @@ setup(
     description=("Tool for managing machine learning model and service"
                  "projects and other fast parsed python projects."),
     long_description=long_description,
-    url='https://github.com/janusheide/bouillion',
+    url='https://github.com/janusheide/bouillon',
     author='Janus Heide',
     author_email='janusheide@gmail.com',
     classifiers=[
