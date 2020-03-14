@@ -99,6 +99,7 @@ def train(**kwargs) -> None:
 
 def clean(**kwargs) -> None:
 
+    shutil.rmtree('build', ignore_errors=True)
     shutil.rmtree('dist', ignore_errors=True)
 
 
@@ -107,8 +108,9 @@ def release(*, version: str, **kwargs) -> None:
     Run tests, tag with version and push to repo and pypi.
     """
 
-    # TODO check that git repo is clean
-    # TODO ensure we are on master
+    if kwargs['dry_run'] is False and bouillon.git_current_branch() != 'master':
+        print('Only release from the master branch')
+        exit(1)
 
     # Check that version is a valid semver version
     semver.parse(version)
