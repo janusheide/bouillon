@@ -107,6 +107,9 @@ def release(*, version: str, **kwargs) -> None:
     Run tests, tag with version and push to repo and pypi.
     """
 
+    #TODO check that git repo is clean
+    #TODO ensure we are on master
+
     # Check that version is a valid semver version
     semver.parse(version)
 
@@ -119,12 +122,11 @@ def release(*, version: str, **kwargs) -> None:
          test_files=True, unit_tests=True, cicd_tests=True, **kwargs)
 
     bouillon.run(['git', 'tag', f'{version}'], **kwargs)
-    bouillon.run(['git', 'checkout', f'{version}'], **kwargs)
 
     build(**kwargs)
 
-    # bouillon.run(['git', 'push', '--origin', f'{version}'], **kwargs)
-    # bouillon.run(['python', 'twine', 'upload', 'dist/*'], **kwargs)
+    bouillon.run(['git', 'push', '--origin', f'{version}'], **kwargs)
+    bouillon.run(['python', 'twine', 'upload', 'dist/*'], **kwargs)
 
 
 def cli() -> None:
