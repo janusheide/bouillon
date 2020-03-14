@@ -19,13 +19,13 @@ setup(
     description=("Tool for managing machine learning model and service"
                  "projects and other fast parsed python projects."),
     long_description=long_description,
-    url='https://github.com/janusheide/bouillion',
+    url='https://github.com/janusheide/bouillon',
     author='Janus Heide',
     author_email='janusheide@gmail.com',
-    license='License :: OSI Approved :: BSD License',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
+        'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
