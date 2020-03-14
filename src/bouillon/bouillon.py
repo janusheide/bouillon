@@ -4,7 +4,7 @@
 # Copyright (c) 2020, Janus Heide.
 # All rights reserved.
 #
-# Distributed under the "BSD 3-Clause License", see LICENSE.rst.
+# Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
 # Contains various helpers
 
@@ -38,6 +38,7 @@ def check_for_test_files(src_path: str, test_path: str, *,
     """
     Check that all source files have a correponding test file.
     """
+
     assert os.path.exists(src_path), f'path does not exist {src_path}'
     assert os.path.exists(test_path), f'path does not exist {test_path}'
 
@@ -64,6 +65,9 @@ def check_for_test_files(src_path: str, test_path: str, *,
 
 
 def git_repository_name(**kwargs: typing.Any) -> str:
+    """
+    Get git repository name
+    """
 
     r = run(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE,
             **kwargs)
@@ -72,14 +76,32 @@ def git_repository_name(**kwargs: typing.Any) -> str:
 
 
 def git_commit_id(**kwargs: typing.Any) -> str:
+    """
+    Get current git commit id
+    """
 
     r = run(['git', 'rev-parse', 'HEAD'], stdout=subprocess.PIPE, **kwargs)
 
     return str(r.stdout.decode().rstrip())
 
 
+def git_tags(**kwargs: typing.Any) -> typing.List[str]:
+    """
+    Get list of all git tags
+    """
+
+    r = run(['git', 'tag', '--list'], stdout=subprocess.PIPE, **kwargs)
+
+    tags: typing.List[str] = r.stdout.decode().rstrip().split('\n')
+
+    return tags
+
+
 def docker_build_release(*, image: str, tag: str, registry: str,
                          **kwargs: typing.Any) -> None:
+    """
+    Build, tag and push docker image
+    """
 
     run([f'docker build -t {image} .'], **kwargs)
     run([f'docker tag {image} {registry}/{image}:{tag}'], **kwargs)

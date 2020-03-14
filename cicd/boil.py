@@ -4,37 +4,46 @@
 # Copyright (c) 2020, Janus Heide.
 # All rights reserved.
 #
-# Distributed under the "BSD 3-Clause License", see LICENSE.rst.
+# Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
 import argparse
 import glob
 from importlib import util
 import os
+import shutil
 import subprocess
 import typing
 
 # import bouillon if found, ebables running setup without bouillon.
-bouillon_loader = util.find_spec('bouillon')
-if bouillon_loader is not None:
+if util.find_spec('bouillon') is not None:
     import bouillon
 
+if util.find_spec('semver') is not None:
+    import semver
 
-def _find_requirement_files() -> typing.List[str]:
+
+def find_requirement_files() -> typing.List[str]:
     return glob.glob('**/*requirements.txt', recursive=True)
 
 
-def _setup(*, dry_run, verbose, **kwargs):
+def setup(*, dry_run: bool, verbose: bool, **kwargs) -> None:
 
-    if bouillon_loader is None:
-        subprocess.run(['pip', 'install', '-e', '.'], check=True)
+    if dry_run or verbose:
+        print('Installing dependencies')
 
-    for r in _find_requirement_files():
+    if dry_run:
+        exit(0)
+
+    # Install the local project, for your project add bouillon to requirements
+    subprocess.run(['pip', 'install', '-e', '.'], **kwargs)
+
+    for r in find_requirement_files():
         subprocess.run([f'pip', 'install', '-r', f'{r}'], **kwargs)
 
 
-def _test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
-          test_files: bool, unit_tests: bool, cicd_tests: bool,
-          **kwargs) -> None:
+def test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
+         test_files: bool, unit_tests: bool, cicd_tests: bool,
+         **kwargs) -> None:
 
     if pep8:
         bouillon.run([f'flake8'], **kwargs)
@@ -45,12 +54,12 @@ def _test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
 
     # https://pypi.org/project/Requirementz/
     if requirements:
-        for r in _find_requirement_files():
+        for r in find_requirement_files():
             bouillon.run([f'requirementz', f'--file', f'{r}'], **kwargs)
 
     # https://github.com/dhatim/python-license-check
     if licenses:
-        for r in _find_requirement_files():
+        for r in find_requirement_files():
             bouillon.run([f'liccheck', f'-s', f'cicd/licenses.ini',
                           f'-r', f'{r}'], **kwargs)
 
@@ -70,41 +79,54 @@ def _test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
                       '--durations=5', '-vv'], **kwargs)
 
 
-def _build(**kwargs):
+def build(**kwargs) -> None:
 
-    bouillon.run(['python setup.py sdist'], **kwargs)
-    bouillon.run(['python setup.py bdist_wheel --universal'], **kwargs)
+    bouillon.run(['python', 'setup.py', 'sdist'], **kwargs)
+    bouillon.run(['python', 'setup.py', 'bdist_wheel', '--universal'],
+                 **kwargs)
 
 
-def _train(**kwargs):
+def train(**kwargs) -> None:
     raise Exception("train step not implemented")
 
 
-def _upgrade(**kwargs):
+def upgrade(**kwargs) -> None:
 
     # https://github.com/alanhamlett/pip-update-requirements
-    for r in _find_requirement_files():
-        bouillon.run([f'pur -r {r}'], **kwargs)
+    for r in find_requirement_files():
+        bouillon.run([f'pur', '-r', f'{r}', '--force'], **kwargs)
 
 
-def _release(**kwargs):
+def clean(**kwargs) -> None:
 
-    _upgrade(**kwargs)
-
-    _test(pep8=True, static=True, requirements=True, licenses=True,
-          test_files=True, unit_tests=True, cicd_tests=True, **kwargs)
-
-    _build(**kwargs)
-
-    # raise Exception('release step not implemented')
-    # Todo upload it to pip
+    shutil.rmtree('build', 'dist')
 
 
-def _clean(**kwargs):
-    raise Exception('Clean step not implemented')
+def release(*, version: str, **kwargs) -> None:
+    """
+    Run tests, tag with version and push to repo and pypi.
+    """
+
+    # Check that version is a valid semver version
+    semver.parse(version)
+
+    if version in bouillon.git_tags():
+        assert "Tag already exists."
+
+    clean(**kwargs)
+
+    test(pep8=True, static=True, requirements=True, licenses=True,
+         test_files=True, unit_tests=True, cicd_tests=True, **kwargs)
+
+    bouillon.run(['git', 'tag', f'{version}'], **kwargs)
+
+    build(**kwargs)
+
+    bouillon.run(['git', 'push', '--origin', f'{version}'], **kwargs)
+    bouillon.run(['python', 'twine', 'upload', 'dist/*'], **kwargs)
 
 
-def cli():
+def cli() -> None:
 
     parser = argparse.ArgumentParser(description='Bouillon')
 
@@ -123,16 +145,16 @@ def cli():
     parser_setup = subparsers.add_parser(
         'setup',
         help='Setup installing dependencies, this will execute pip commands.')
-    parser_setup.set_defaults(function=_setup)
+    parser_setup.set_defaults(function=setup)
 
     parser_build = subparsers.add_parser('build', help='Build.')
-    parser_build.set_defaults(function=_build)
+    parser_build.set_defaults(function=build)
 
     parser_train = subparsers.add_parser('train', help='Train.')
-    parser_train.set_defaults(function=_train)
+    parser_train.set_defaults(function=train)
 
     parser_test = subparsers.add_parser('test', help='Run tests')
-    parser_test.set_defaults(function=_test)
+    parser_test.set_defaults(function=test)
 
     parser_test.add_argument(
         '--no-requirements', dest='requirements', action='store_false',
@@ -165,15 +187,20 @@ def cli():
     parser_upgrade = subparsers.add_parser(
         'upgrade',
         help='upgrade all dependencies (including bouillon).')
-    parser_upgrade.set_defaults(function=_upgrade)
+    parser_upgrade.set_defaults(function=upgrade)
+
+    parser_clean = subparsers.add_parser('clean', help='Clean temp files.')
+    parser_clean.set_defaults(function=clean)
 
     parser_release = subparsers.add_parser('release', help='release me.')
-    parser_release.set_defaults(function=_release)
+    parser_release.add_argument('version', type=str,
+                                help='release version.')
+    parser_release.set_defaults(function=release)
 
     return parser.parse_args()
 
 
-def _call(function, **kwargs):
+def call(*, function: typing.Callable, **kwargs) -> None:
     function(**kwargs)
 
 
@@ -181,8 +208,8 @@ if __name__ == '__main__':
     args = cli()
 
     # Unless we are running setup, make sure that bouillon was imported
-    if args.function != _setup and bouillon_loader is None:
+    if args.function != setup and util.find_spec('bouillon') is None:
         print(f'Failed to import bouillon, run "boil setup" first.')
         exit(1)
 
-    _call(**vars(args))
+    call(**vars(args))

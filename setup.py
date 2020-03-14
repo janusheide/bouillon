@@ -4,7 +4,7 @@
 # Copyright (c) 2020, Janus Heide.
 # All rights reserved.
 #
-# Distributed under the "BSD 3-Clause License", see LICENSE.rst.
+# Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
 import io
 
@@ -17,16 +17,15 @@ setup(
     name='bouillon',
     use_scm_version=True,
     description=("Tool for managing machine learning model and service"
-                 "projects and other fast pased python projects."),
+                 "projects and other fast parsed python projects."),
     long_description=long_description,
     url='https://github.com/janusheide/bouillion',
     author='Janus Heide',
     author_email='janusheide@gmail.com',
-    license='',
+    license='License :: OSI Approved :: BSD License',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
-        'License ::',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
@@ -37,7 +36,7 @@ setup(
     entry_points={
         'console_scripts': ['boil=boil.__main__:run'],
     },
-    keywords=('building', 'maintaince', 'utility'),
+    keywords=('building', 'maintenance', 'utility'),
     packages=find_packages(where='src', exclude=['test']),
     package_dir={"": "src"},
     install_requires=[''],
