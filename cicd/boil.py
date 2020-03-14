@@ -99,7 +99,7 @@ def upgrade(**kwargs) -> None:
 
 def clean(**kwargs) -> None:
 
-    shutil.rmtree('build', 'dist')
+    shutil.rmtree('dist')
 
 
 def release(*, version: str, **kwargs) -> None:
