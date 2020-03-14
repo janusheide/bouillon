@@ -108,7 +108,8 @@ def release(*, version: str, **kwargs) -> None:
     Run tests, tag with version and push to repo and pypi.
     """
 
-    if kwargs['dry_run'] is False and bouillon.git_current_branch() != 'master':
+    if kwargs['dry_run'] is False and\
+            bouillon.git_current_branch() != 'master':
         print('Only release from the master branch')
         exit(1)
 
