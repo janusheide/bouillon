@@ -79,6 +79,13 @@ def test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
                       '--durations=5', '-vv'], **kwargs)
 
 
+def upgrade(**kwargs) -> None:
+
+    # https://github.com/alanhamlett/pip-update-requirements
+    for r in find_requirement_files():
+        bouillon.run([f'pur', '-r', f'{r}', '--force'], **kwargs)
+
+
 def build(**kwargs) -> None:
 
     bouillon.run(['python', 'setup.py', 'sdist'], **kwargs)
@@ -88,13 +95,6 @@ def build(**kwargs) -> None:
 
 def train(**kwargs) -> None:
     raise Exception("train step not implemented")
-
-
-def upgrade(**kwargs) -> None:
-
-    # https://github.com/alanhamlett/pip-update-requirements
-    for r in find_requirement_files():
-        bouillon.run([f'pur', '-r', f'{r}', '--force'], **kwargs)
 
 
 def clean(**kwargs) -> None:
@@ -125,8 +125,8 @@ def release(*, version: str, **kwargs) -> None:
 
     build(**kwargs)
 
+    bouillon.run(['twine', 'upload', 'dist/*'], **kwargs)
     bouillon.run(['git', 'push', 'origin', f'{version}'], **kwargs)
-    bouillon.run(['python', 'twine', 'upload', 'dist/*'], **kwargs)
 
 
 def cli() -> None:

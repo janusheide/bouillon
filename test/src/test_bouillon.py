@@ -61,7 +61,7 @@ def test_git_commit_id():
 
 
 def test_git_tags():
-    assert bouillon.git_tags() == ['']
+    assert '0.0.1' in bouillon.git_tags()
 
 
 def test_find_requirements():

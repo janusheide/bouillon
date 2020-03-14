@@ -36,7 +36,7 @@ setup(
     entry_points={
         'console_scripts': ['boil=boil.__main__:run'],
     },
-    keywords=('building', 'maintenance', 'utility'),
+    keywords=['building', 'maintenance', 'utility'],
     packages=find_packages(where='src', exclude=['test']),
     package_dir={"": "src"},
     install_requires=[''],
