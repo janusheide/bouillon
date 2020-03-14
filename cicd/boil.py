@@ -10,15 +10,16 @@ import argparse
 import glob
 from importlib import util
 import os
-import semver
 import shutil
 import subprocess
 import typing
 
 # import bouillon if found, ebables running setup without bouillon.
-bouillon_loader = util.find_spec('bouillon')
-if bouillon_loader is not None:
+if util.find_spec('bouillon') is not None:
     import bouillon
+
+if util.find_spec('semver') is not None:
+    import semver
 
 
 def find_requirement_files() -> typing.List[str]:
@@ -207,7 +208,7 @@ if __name__ == '__main__':
     args = cli()
 
     # Unless we are running setup, make sure that bouillon was imported
-    if args.function != setup and bouillon_loader is None:
+    if args.function != setup and util.find_spec('bouillon') is None:
         print(f'Failed to import bouillon, run "boil setup" first.')
         exit(1)
 
