@@ -125,7 +125,7 @@ def release(*, version: str, **kwargs) -> None:
 
     build(**kwargs)
 
-    bouillon.run(['git', 'push', '--origin', f'{version}'], **kwargs)
+    bouillon.run(['git', 'push', 'origin', f'{version}'], **kwargs)
     bouillon.run(['python', 'twine', 'upload', 'dist/*'], **kwargs)
 
 
