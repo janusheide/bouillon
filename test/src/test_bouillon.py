@@ -56,12 +56,16 @@ def test_git_repository_name():
     assert bouillon.git_repository_name() == 'bouillon'
 
 
+def test_git_current_branch():
+    assert isinstance(bouillon.git_current_branch(), str)
+
+
 def test_git_commit_id():
     assert len(bouillon.git_commit_id()) == 40
 
 
 def test_git_tags():
-    assert bouillon.git_tags() == ['']
+    assert '0.0.1' in bouillon.git_tags()
 
 
 def test_find_requirements():

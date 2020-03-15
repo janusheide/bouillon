@@ -75,6 +75,18 @@ def git_repository_name(**kwargs: typing.Any) -> str:
     return str(os.path.split(r.stdout.decode().rstrip())[-1])
 
 
+def git_current_branch(**kwargs: typing.Any) -> str:
+    """
+    Get git current branch
+    """
+
+    r = run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+            stdout=subprocess.PIPE,
+            **kwargs)
+
+    return str(r.stdout.decode().rstrip())
+
+
 def git_commit_id(**kwargs: typing.Any) -> str:
     """
     Get current git commit id

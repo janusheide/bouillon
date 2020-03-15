@@ -34,11 +34,11 @@ def setup(*, dry_run: bool, verbose: bool, **kwargs) -> None:
     if dry_run:
         exit(0)
 
-    # Install the local project, for your project add bouillon to requirements
-    subprocess.run(['pip', 'install', '-e', '.'], **kwargs)
-
     for r in find_requirement_files():
         subprocess.run([f'pip', 'install', '-r', f'{r}'], **kwargs)
+
+    # Install the local project, for your project add bouillon to requirements
+    subprocess.run(['pip', 'install', '-e', '.'], **kwargs)
 
 
 def test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
@@ -79,6 +79,13 @@ def test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
                       '--durations=5', '-vv'], **kwargs)
 
 
+def upgrade(**kwargs) -> None:
+
+    # https://github.com/alanhamlett/pip-update-requirements
+    for r in find_requirement_files():
+        bouillon.run([f'pur', '-r', f'{r}', '--force'], **kwargs)
+
+
 def build(**kwargs) -> None:
 
     bouillon.run(['python', 'setup.py', 'sdist'], **kwargs)
@@ -90,15 +97,9 @@ def train(**kwargs) -> None:
     raise Exception("train step not implemented")
 
 
-def upgrade(**kwargs) -> None:
-
-    # https://github.com/alanhamlett/pip-update-requirements
-    for r in find_requirement_files():
-        bouillon.run([f'pur', '-r', f'{r}', '--force'], **kwargs)
-
-
 def clean(**kwargs) -> None:
 
+    shutil.rmtree('build', ignore_errors=True)
     shutil.rmtree('dist', ignore_errors=True)
 
 
@@ -107,8 +108,10 @@ def release(*, version: str, **kwargs) -> None:
     Run tests, tag with version and push to repo and pypi.
     """
 
-    # TODO check that git repo is clean
-    # TODO ensure we are on master
+    if kwargs['dry_run'] is False and\
+            bouillon.git_current_branch() != 'master':
+        print('Only release from the master branch')
+        exit(1)
 
     # Check that version is a valid semver version
     semver.parse(version)
@@ -125,8 +128,11 @@ def release(*, version: str, **kwargs) -> None:
 
     build(**kwargs)
 
+    EDITOR = os.environ.get('EDITOR', 'nano')
+    bouillon.run([EDITOR, 'NEWS.rst'], **kwargs)
+
+    bouillon.run(['twine', 'upload', 'dist/*'], **kwargs)
     bouillon.run(['git', 'push', 'origin', f'{version}'], **kwargs)
-    bouillon.run(['python', 'twine', 'upload', 'dist/*'], **kwargs)
 
 
 def cli() -> None:
