@@ -38,7 +38,7 @@ def test_boil_upgrade():
 
 
 def test_boil_release():
-    subprocess.run(['python', 'boil', '--dry-run', 'release', '0.0.1'],
+    subprocess.run(['python', 'boil', '--dry-run', 'release', '9.9.9'],
                    check=True)
 
 

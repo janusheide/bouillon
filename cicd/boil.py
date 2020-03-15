@@ -41,8 +41,15 @@ def setup(*, dry_run: bool, verbose: bool, **kwargs) -> None:
     subprocess.run(['pip', 'install', '-e', '.'], **kwargs)
 
 
-def test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
-         test_files: bool, unit_tests: bool, cicd_tests: bool,
+def test(*,
+         cicd_tests: bool = True,
+         licenses: bool = True,
+         pep8: bool = True,
+         requirements: bool = True,
+         static: bool = True,
+         test_files: bool = True,
+         vulnerabilities: bool = True,
+         unit_tests: bool = True,
          **kwargs) -> None:
 
     if pep8:
@@ -62,6 +69,10 @@ def test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
         for r in find_requirement_files():
             bouillon.run([f'liccheck', f'-s', f'cicd/licenses.ini',
                           f'-r', f'{r}'], **kwargs)
+
+    # https://github.com/pyupio/safety
+    if vulnerabilities:
+        bouillon.run(['safety', 'check'], **kwargs)
 
     if test_files:
         if not bouillon.check_for_test_files(
@@ -121,8 +132,7 @@ def release(*, version: str, **kwargs) -> None:
 
     clean(**kwargs)
 
-    test(pep8=True, static=True, requirements=True, licenses=True,
-         test_files=True, unit_tests=True, cicd_tests=True, **kwargs)
+    test(**kwargs)
 
     bouillon.run(['git', 'tag', f'{version}'], **kwargs)
 
@@ -170,6 +180,10 @@ def cli() -> None:
         help='Do not check installed modules against requirements files')
 
     parser_test.add_argument(
+        '--no-vulnerabilities', dest='vulnerabilities', action='store_false',
+        help='Do not check installed modules for security vulnerabilities.')
+
+    parser_test.add_argument(
         '--no-pep8', dest='pep8', action='store_false',
         help='Do not check pep8 conformance.')
 
@@ -183,7 +197,7 @@ def cli() -> None:
 
     parser_test.add_argument(
         '--no-test-files-check', dest='test_files', action='store_false',
-        help='Do not check that for each source file there is a test file')
+        help='Do not check that for each source file there is a test file.')
 
     parser_test.add_argument(
         '--no-unit-tests', dest='unit_tests', action='store_false',
