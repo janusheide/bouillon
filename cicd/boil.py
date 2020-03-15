@@ -34,11 +34,11 @@ def setup(*, dry_run: bool, verbose: bool, **kwargs) -> None:
     if dry_run:
         exit(0)
 
-    # Install the local project, for your project add bouillon to requirements
-    subprocess.run(['pip', 'install', '-e', '.'], **kwargs)
-
     for r in find_requirement_files():
         subprocess.run([f'pip', 'install', '-r', f'{r}'], **kwargs)
+
+    # Install the local project, for your project add bouillon to requirements
+    subprocess.run(['pip', 'install', '-e', '.'], **kwargs)
 
 
 def test(*, pep8: bool, static: bool, requirements: bool, licenses: bool,
@@ -127,6 +127,9 @@ def release(*, version: str, **kwargs) -> None:
     bouillon.run(['git', 'tag', f'{version}'], **kwargs)
 
     build(**kwargs)
+
+    EDITOR = os.environ.get('EDITOR', 'nano')
+    bouillon.run([EDITOR, 'NEWS.rst'], **kwargs)
 
     bouillon.run(['twine', 'upload', 'dist/*'], **kwargs)
     bouillon.run(['git', 'push', 'origin', f'{version}'], **kwargs)
