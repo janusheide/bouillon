@@ -6,7 +6,12 @@
 #
 # Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
-# Contains various helpers
+"""
+Various helpers.
+
+Contains various helper functions that are intended to be usefull when writing
+scripts for managing (build, test, release etc.) a project.
+"""
 
 import glob
 import os
@@ -15,11 +20,20 @@ import subprocess
 import typing
 
 
-def run(args: typing.List[str], dry_run: bool = False, verbose: bool = False,
-        shell: bool = False, **kwargs: typing.Any
+def run(args: typing.List[str], *, dry_run: bool = False,
+        verbose: bool = False,
+        **kwargs: typing.Any
         ) -> subprocess.CompletedProcess:
+    """
+    Run a command.
 
-    assert shell is False, 'Setting shell to True can cause problems.'
+    Wrapper around subprocess.run, kwargs are forwarded to subprocess.run,
+    verbose = True, to print the command to be executed.
+    dry_run = True, to print the command to be executed instead of executing.
+    """
+    if 'shell' in kwargs:
+        assert kwargs['shell'] is False,\
+            'Setting shell to True can cause problems.'
 
     if dry_run or verbose:
         print(f'Command to execute: {str(" ").join(args)}')
@@ -35,10 +49,7 @@ def run(args: typing.List[str], dry_run: bool = False, verbose: bool = False,
 
 def check_for_test_files(src_path: str, test_path: str, *,
                          prefix: str = 'test_', suffix: str = 'py') -> bool:
-    """
-    Check that all source files have a correponding test file.
-    """
-
+    """Check that all source files have a correponding test file."""
     assert os.path.exists(src_path), f'path does not exist {src_path}'
     assert os.path.exists(test_path), f'path does not exist {test_path}'
 
@@ -65,10 +76,7 @@ def check_for_test_files(src_path: str, test_path: str, *,
 
 
 def git_repository_name(**kwargs: typing.Any) -> str:
-    """
-    Get git repository name
-    """
-
+    """Get git repository name."""
     r = run(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE,
             **kwargs)
 
@@ -76,10 +84,7 @@ def git_repository_name(**kwargs: typing.Any) -> str:
 
 
 def git_current_branch(**kwargs: typing.Any) -> str:
-    """
-    Get git current branch
-    """
-
+    """Get git current branch."""
     r = run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
             stdout=subprocess.PIPE,
             **kwargs)
@@ -88,20 +93,14 @@ def git_current_branch(**kwargs: typing.Any) -> str:
 
 
 def git_commit_id(**kwargs: typing.Any) -> str:
-    """
-    Get current git commit id
-    """
-
+    """Get current git commit id."""
     r = run(['git', 'rev-parse', 'HEAD'], stdout=subprocess.PIPE, **kwargs)
 
     return str(r.stdout.decode().rstrip())
 
 
 def git_tags(**kwargs: typing.Any) -> typing.List[str]:
-    """
-    Get list of all git tags
-    """
-
+    """Get list of all git tags."""
     r = run(['git', 'tag', '--list'], stdout=subprocess.PIPE, **kwargs)
 
     tags: typing.List[str] = r.stdout.decode().rstrip().split('\n')
@@ -111,10 +110,7 @@ def git_tags(**kwargs: typing.Any) -> typing.List[str]:
 
 def docker_build_release(*, image: str, tag: str, registry: str,
                          **kwargs: typing.Any) -> None:
-    """
-    Build, tag and push docker image
-    """
-
+    """Build, tag and push docker image."""
     run([f'docker build -t {image} .'], **kwargs)
     run([f'docker tag {image} {registry}/{image}:{tag}'], **kwargs)
     run([f'docker push {registry}/{image}:{tag}'], **kwargs)

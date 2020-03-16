@@ -6,6 +6,14 @@
 #
 # Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
+"""
+Command Line Interface (CLI) for project interaction.
+
+Run various commands, such as; test, build, release on your project. You should
+modify the steps that are relevant for your project, and the cli such that it
+reflects those steps. The cli specified here is used for the bouillon module.
+"""
+
 import argparse
 import glob
 from importlib import util
@@ -14,7 +22,9 @@ import shutil
 import subprocess
 import typing
 
-# import bouillon if found, ebables running setup without bouillon.
+# Modules that are not part of 'standard' Python is only installed if they can
+# be found, this allows us to run the setup step where they are installed
+# without importing the modules we are about to install.
 if util.find_spec('bouillon') is not None:
     import bouillon
 
@@ -23,11 +33,12 @@ if util.find_spec('semver') is not None:
 
 
 def find_requirement_files() -> typing.List[str]:
+    """Find all requirements.txt files."""
     return glob.glob('**/*requirements.txt', recursive=True)
 
 
 def setup(*, dry_run: bool, verbose: bool, **kwargs) -> None:
-
+    """Install dependencies. Since bouillon is also inste."""
     if dry_run or verbose:
         print('Installing dependencies')
 
@@ -35,9 +46,10 @@ def setup(*, dry_run: bool, verbose: bool, **kwargs) -> None:
         exit(0)
 
     for r in find_requirement_files():
-        subprocess.run([f'pip', 'install', '-r', f'{r}'], **kwargs)
+        subprocess.run(['pip', 'install', '-r', f'{r}'], **kwargs)
 
-    # Install the local project, for your project add bouillon to requirements
+    # NOTE Install the local project, for your project instead add bouillon
+    # to requirements.txt.
     subprocess.run(['pip', 'install', '-e', '.'], **kwargs)
 
 
@@ -51,12 +63,12 @@ def test(*,
          vulnerabilities: bool = True,
          unit_tests: bool = True,
          **kwargs) -> None:
-
+    """Run tests."""
     if pep8:
-        bouillon.run([f'flake8'], **kwargs)
+        bouillon.run(['flake8', 'src', 'cicd'], **kwargs)
 
     if static:
-        bouillon.run(['mypy', 'src', f'--config-file', 'cicd/mypy.ini'],
+        bouillon.run(['mypy', 'src', '--config-file', 'cicd/mypy.ini'],
                      **kwargs)
 
     # https://pypi.org/project/Requirementz/
@@ -67,8 +79,8 @@ def test(*,
     # https://github.com/dhatim/python-license-check
     if licenses:
         for r in find_requirement_files():
-            bouillon.run([f'liccheck', f'-s', f'cicd/licenses.ini',
-                          f'-r', f'{r}'], **kwargs)
+            bouillon.run(['liccheck', '-s', 'cicd/licenses.ini', '-r', f'{r}'],
+                         **kwargs)
 
     # https://github.com/pyupio/safety
     if vulnerabilities:
@@ -80,73 +92,83 @@ def test(*,
                 os.path.join('test', 'src')):
             exit(1)
 
+    # https://docs.pytest.org/en/latest/
+    # https://pytest-cov.readthedocs.io/en/latest/
     if unit_tests:
-        bouillon.run(
-            [f'pytest', f'{os.path.join("test", "src")}', '--cov=bouillon',
-                '--cov-fail-under=90', '--durations=5', '-vv'], **kwargs)
+        bouillon.run([
+            'pytest',
+            f'{os.path.join("test", "src")}',
+            '--cov=bouillon',
+            '--cov-fail-under=90',
+            '--durations=5',
+            '-vv'],
+            **kwargs)
 
     if cicd_tests:
-        bouillon.run([f'pytest', f'{os.path.join("test", "cicd")}',
-                      '--durations=5', '-vv'], **kwargs)
+        bouillon.run([
+            'pytest',
+            f'{os.path.join("test", "cicd")}',
+            '--durations=5',
+            '-vv'],
+            **kwargs)
 
 
 def upgrade(**kwargs) -> None:
-
+    """Upgrade the versions of the used modules."""
     # https://github.com/alanhamlett/pip-update-requirements
     for r in find_requirement_files():
         bouillon.run([f'pur', '-r', f'{r}', '--force'], **kwargs)
 
 
 def build(**kwargs) -> None:
-
+    """Build distributeables."""
     bouillon.run(['python', 'setup.py', 'sdist'], **kwargs)
     bouillon.run(['python', 'setup.py', 'bdist_wheel', '--universal'],
                  **kwargs)
 
 
 def train(**kwargs) -> None:
+    """Train a model."""
     raise Exception("train step not implemented")
 
 
 def clean(**kwargs) -> None:
-
+    """Remove files and dirs created during build."""
     shutil.rmtree('build', ignore_errors=True)
     shutil.rmtree('dist', ignore_errors=True)
 
 
 def release(*, version: str, **kwargs) -> None:
-    """
-    Run tests, tag with version and push to repo and pypi.
-    """
-
+    """Release the project."""
     if kwargs['dry_run'] is False and\
             bouillon.git_current_branch() != 'master':
         print('Only release from the master branch')
         exit(1)
 
-    # Check that version is a valid semver version
+    # Check that version is a valid semver version and was not used before.
     semver.parse(version)
-
     if version in bouillon.git_tags():
         assert "Tag already exists."
 
     clean(**kwargs)
-
     test(**kwargs)
 
+    # Tag the repo, as scm is used in setup.py this will be used when building.
     bouillon.run(['git', 'tag', f'{version}'], **kwargs)
 
     build(**kwargs)
 
+    # Edit the news file using default editor or nano
     EDITOR = os.environ.get('EDITOR', 'nano')
     bouillon.run([EDITOR, 'NEWS.rst'], **kwargs)
 
+    # upload builds to pypi and push tag to repo
     bouillon.run(['twine', 'upload', 'dist/*'], **kwargs)
     bouillon.run(['git', 'push', 'origin', f'{version}'], **kwargs)
 
 
-def cli() -> None:
-
+def cli() -> typing.Any:
+    """Build the cli."""
     parser = argparse.ArgumentParser(description='Bouillon')
 
     def _print_help(**kwargs):
@@ -224,6 +246,7 @@ def cli() -> None:
 
 
 def call(*, function: typing.Callable, **kwargs) -> None:
+    """Call a function."""
     function(**kwargs)
 
 

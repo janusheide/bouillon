@@ -16,7 +16,7 @@ with io.open('README.rst', encoding='utf-8') as fd:
 setup(
     name='bouillon',
     use_scm_version=True,
-    description=("Tool for managing machine learning model and service"
+    description=("Tool for managing machine learning model and service "
                  "projects and other fast parsed python projects."),
     long_description=long_description,
     url='https://github.com/janusheide/bouillon',
