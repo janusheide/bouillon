@@ -8,9 +8,9 @@ Latest
 * Major:
 * Minor:
 * Patch:
-* tbd
 
-* Minor: Added Security vulnerabilities check using 'safety'.
+* Minor: Added security vulnerabilities check using 'safety'.
+* Minor: Added docstrings check using 'flake8-docstrings'.
 
 0.0.1
 -----

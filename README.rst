@@ -11,9 +11,9 @@ Bouillon
     :target: https://github.com/janusheide/bouillon/commits/master
     :alt: Unit tests
  
-Bouillon contains; a) a project structure, b) a script for building, testing, 
-etc., that are easy to adapt and, c) a module that provides helper 
-functionality when writing your script.
+Bouillon contains; a) a project structure, b) a Command Line Interface (CLI) 
+for building, testing, etc., that are easy to adapt and, c) a module that 
+provides helper functionality when writing your script.
 
 Features
 --------
@@ -73,27 +73,29 @@ as indicated below.
 
 ::
 
-    ├── README.rst (replace)
     ├── boil -> cicd/boil.py
-    ├── cicd
-    │   ├── boil.py (modify commands as needed)
-    │   ├── licenses.ini (verify acceptable licenses)
+    ├── cicd (modify)
+    │   ├── boil.py
+    │   ├── licenses.ini
     │   ├── mypy.ini
     │   └── requirements.txt
-    ├── examples
+    ├── LICENSE.txt (replace)
+    ├── NEWS.rst (replace)
+    ├── README.rst (replace)
     ├── setup.py (modify)
-    ├── src
-    │   ├── bouillon (modify or replace files with you implementation)
-    │   │   ├── __init__.py
+    ├── src (replace)
+    │   ├── bouillon
     │   │   ├── bouillon.py
+    │   │   ├── __init__.py
     │   │   └── requirements.txt
-    └── test
+    └── test (replace)
         ├── cicd
-        │   └── test_boil_cli.py (modify to reflect your commands)
+        │   └── test_boil_cli.py
         ├── requirements.txt
-        └── src (replace with your tests)
-            ├── test___init__.py
-            └── test_bouillon.py
+        └── src
+            ├── test_bouillon.py
+            └── test___init__.py
+
 
 
 At some point it might be convenient to fork the repository, make any changes 
@@ -121,7 +123,7 @@ The module can be installed prior to running any script commands, but this
 requires an extra step and means that the script setup step only partly setup 
 the environment.
 
-Copy Module Source
+Copy Module File
 ..................
 
 Copy the module implementation (bouillon.py) into your project and import it 
@@ -129,10 +131,10 @@ from the local file in your script. Consequently you will have to manually
 update the module or implement a way to push a new module version into multiple 
 repositories.
 
-Copy Module Source Into Script
-..............................
+Copy Module Source Into CLI file
+................................
 
-Copy the module implementation or the functionality you need into your script. 
+Copy the module implementation or the functionality you need into your cli file. 
 While it is simple but even more inconvenient to keep the module functionality 
 up to date.
 
