@@ -155,17 +155,18 @@ def release(*, version: str, **kwargs) -> None:
     clean(**kwargs)
     test(**kwargs)
 
-    # Tag the repo, as scm is used in setup.py this will be used when building.
-    bouillon.run(['git', 'tag', f'{version}'], **kwargs)
-    build(**kwargs)
-
     # Edit the news file using default editor or nano
     EDITOR = os.environ.get('EDITOR', 'nano')
     bouillon.run([EDITOR, 'NEWS.rst'], **kwargs)
 
+    # Tag the repo, as scm is used in setup.py this will be used when building.
+    bouillon.run(['git', 'tag', f'{version}'], **kwargs)
+    bouillon.run(['git', 'push', 'origin', f'{version}'], **kwargs)
+
+    build(**kwargs)
+
     # upload builds to pypi and push tag to repo
     bouillon.run(['twine', 'upload', 'dist/*'], **kwargs)
-    bouillon.run(['git', 'push', 'origin', f'{version}'], **kwargs)
 
 
 def cli() -> typing.Any:
