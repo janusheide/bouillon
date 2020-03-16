@@ -13,17 +13,17 @@ from pkg_resources import get_distribution
 
 from bouillon.bouillon import run
 from bouillon.bouillon import check_for_test_files
-from bouillon.bouillon import git_repository_name
-from bouillon.bouillon import git_current_branch
-from bouillon.bouillon import git_commit_id
-from bouillon.bouillon import git_tags
+from bouillon.git import repository_name
+from bouillon.git import current_branch
+from bouillon.git import commit_id
+from bouillon.git import tags
 
 
 __version__ = get_distribution(__name__).version
 
 __all__ = ('run',
            'check_for_test_files',
-           'git_repository_name',
-           'git_current_branch',
-           'git_commit_id',
-           'git_tags')
+           'repository_name',
+           'current_branch',
+           'commit_id',
+           'tags')

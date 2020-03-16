@@ -11,6 +11,7 @@ Latest
 
 * Minor: Added security vulnerabilities check using 'safety'.
 * Minor: Added docstrings check using 'flake8-docstrings'.
+* Minon: Git releated functionality moved to bouillon.git.*
 
 0.0.1
 -----

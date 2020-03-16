@@ -88,7 +88,7 @@ def test(*,
 
     if test_files:
         if not bouillon.check_for_test_files(
-            os.path.join('src', bouillon.git_repository_name()),
+            os.path.join('src', bouillon.git.repository_name()),
                 os.path.join('test', 'src')):
             exit(1)
 
@@ -99,7 +99,9 @@ def test(*,
             'pytest',
             f'{os.path.join("test", "src")}',
             '--cov=bouillon',
-            '--cov-fail-under=90',
+            '--cov-report',
+            'term-missing',
+            '--cov-fail-under=89',
             '--durations=5',
             '-vv'],
             **kwargs)
@@ -141,13 +143,13 @@ def clean(**kwargs) -> None:
 def release(*, version: str, **kwargs) -> None:
     """Release the project."""
     if kwargs['dry_run'] is False and\
-            bouillon.git_current_branch() != 'master':
+            bouillon.git.current_branch() != 'master':
         print('Only release from the master branch')
         exit(1)
 
     # Check that version is a valid semver version and was not used before.
     semver.parse(version)
-    if version in bouillon.git_tags():
+    if version in bouillon.git.tags():
         assert "Tag already exists."
 
     clean(**kwargs)
@@ -155,7 +157,6 @@ def release(*, version: str, **kwargs) -> None:
 
     # Tag the repo, as scm is used in setup.py this will be used when building.
     bouillon.run(['git', 'tag', f'{version}'], **kwargs)
-
     build(**kwargs)
 
     # Edit the news file using default editor or nano

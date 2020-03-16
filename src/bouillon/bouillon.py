@@ -31,9 +31,8 @@ def run(args: typing.List[str], *, dry_run: bool = False,
     verbose = True, to print the command to be executed.
     dry_run = True, to print the command to be executed instead of executing.
     """
-    if 'shell' in kwargs:
-        assert kwargs['shell'] is False,\
-            'Setting shell to True can cause problems.'
+    assert 'shell' not in kwargs or kwargs['shell'] is False,\
+        'Setting shell to True can cause problems.'
 
     if dry_run or verbose:
         print(f'Command to execute: {str(" ").join(args)}')
@@ -73,44 +72,3 @@ def check_for_test_files(src_path: str, test_path: str, *,
 
     print(f'Missing tests for files: {relative_srcs}')
     return False
-
-
-def git_repository_name(**kwargs: typing.Any) -> str:
-    """Get git repository name."""
-    r = run(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE,
-            **kwargs)
-
-    return str(os.path.split(r.stdout.decode().rstrip())[-1])
-
-
-def git_current_branch(**kwargs: typing.Any) -> str:
-    """Get git current branch."""
-    r = run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
-            stdout=subprocess.PIPE,
-            **kwargs)
-
-    return str(r.stdout.decode().rstrip())
-
-
-def git_commit_id(**kwargs: typing.Any) -> str:
-    """Get current git commit id."""
-    r = run(['git', 'rev-parse', 'HEAD'], stdout=subprocess.PIPE, **kwargs)
-
-    return str(r.stdout.decode().rstrip())
-
-
-def git_tags(**kwargs: typing.Any) -> typing.List[str]:
-    """Get list of all git tags."""
-    r = run(['git', 'tag', '--list'], stdout=subprocess.PIPE, **kwargs)
-
-    tags: typing.List[str] = r.stdout.decode().rstrip().split('\n')
-
-    return tags
-
-
-def docker_build_release(*, image: str, tag: str, registry: str,
-                         **kwargs: typing.Any) -> None:
-    """Build, tag and push docker image."""
-    run([f'docker build -t {image} .'], **kwargs)
-    run([f'docker tag {image} {registry}/{image}:{tag}'], **kwargs)
-    run([f'docker push {registry}/{image}:{tag}'], **kwargs)

@@ -20,6 +20,7 @@ def test_name():
 def test_run():
     bouillon.run(['ls'], )
     bouillon.run(['ls'], dry_run=True)
+    bouillon.run(['unknown'], dry_run=True)
 
 
 def test_check_for_test_files_fail(tmpdir):
@@ -50,22 +51,6 @@ def test_check_for_test_files(tmpdir):
     test_b.write('test_b')
 
     assert bouillon.check_for_test_files(src, test)
-
-
-def test_git_repository_name():
-    assert bouillon.git_repository_name() == 'bouillon'
-
-
-def test_git_current_branch():
-    assert isinstance(bouillon.git_current_branch(), str)
-
-
-def test_git_commit_id():
-    assert len(bouillon.git_commit_id()) == 40
-
-
-def test_git_tags():
-    assert '0.0.1' in bouillon.git_tags()
 
 
 def test_find_requirements():
