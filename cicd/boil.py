@@ -147,6 +147,8 @@ def release(*, version: str, **kwargs) -> None:
         print('Only release from the master branch')
         exit(1)
 
+    # TODO check clean commit
+
     # Check that version is a valid semver version and was not used before.
     semver.parse(version)
     if version in bouillon.git.tags():
@@ -160,13 +162,14 @@ def release(*, version: str, **kwargs) -> None:
     bouillon.run([EDITOR, 'NEWS.rst'], **kwargs)
 
     # Tag the repo, as scm is used in setup.py this will be used when building.
-    bouillon.run(['git', 'tag', f'{version}'], **kwargs)
-    bouillon.run(['git', 'push', 'origin', f'{version}'], **kwargs)
+    bouillon.run(['git', 'tag', '-a', f'{version}', '-m',
+                  f'creating tag {version} for new release'], **kwargs)
 
     build(**kwargs)
 
     # upload builds to pypi and push tag to repo
-    bouillon.run(['twine', 'upload', 'dist/*'], **kwargs)
+    # bouillon.run(['twine', 'upload', 'dist/*'], **kwargs)
+    # bouillon.run(['git', 'push', 'origin', f'{version}'], **kwargs)
 
 
 def cli() -> typing.Any:
