@@ -168,8 +168,8 @@ def release(*, version: str, **kwargs) -> None:
     build(**kwargs)
 
     # upload builds to pypi and push tag to repo
-    # bouillon.run(['twine', 'upload', 'dist/*'], **kwargs)
-    # bouillon.run(['git', 'push', 'origin', f'{version}'], **kwargs)
+    bouillon.run(['twine', 'upload', 'dist/*'], **kwargs)
+    bouillon.run(['git', 'push', 'origin', f'{version}'], **kwargs)
 
 
 def cli() -> typing.Any:
