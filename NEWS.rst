@@ -9,7 +9,7 @@ Latest
 * Minor:
 * Patch:
 
-0.0.4
+0.0.5
 -----
 
 * Minor: Added security vulnerabilities check using 'safety'.
