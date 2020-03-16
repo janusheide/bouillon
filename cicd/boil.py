@@ -46,7 +46,7 @@ def setup(*, dry_run: bool, verbose: bool, **kwargs) -> None:
         exit(0)
 
     for r in find_requirement_files():
-        subprocess.run([f'pip', 'install', '-r', f'{r}'], **kwargs)
+        subprocess.run(['pip', 'install', '-r', f'{r}'], **kwargs)
 
     # NOTE Install the local project, for your project instead add bouillon
     # to requirements.txt.
@@ -65,10 +65,10 @@ def test(*,
          **kwargs) -> None:
     """Run tests."""
     if pep8:
-        bouillon.run([f'flake8', 'src', 'cicd'], **kwargs)
+        bouillon.run(['flake8', 'src', 'cicd'], **kwargs)
 
     if static:
-        bouillon.run(['mypy', 'src', f'--config-file', 'cicd/mypy.ini'],
+        bouillon.run(['mypy', 'src', '--config-file', 'cicd/mypy.ini'],
                      **kwargs)
 
     # https://pypi.org/project/Requirementz/
@@ -96,7 +96,7 @@ def test(*,
     # https://pytest-cov.readthedocs.io/en/latest/
     if unit_tests:
         bouillon.run([
-            f'pytest',
+            'pytest',
             f'{os.path.join("test", "src")}',
             '--cov=bouillon',
             '--cov-fail-under=90',
@@ -139,29 +139,30 @@ def clean(**kwargs) -> None:
 
 
 def release(*, version: str, **kwargs) -> None:
-    """Run tests, tag with version and push to repo and pypi."""
+    """Release the project."""
     if kwargs['dry_run'] is False and\
             bouillon.git_current_branch() != 'master':
         print('Only release from the master branch')
         exit(1)
 
-    # Check that version is a valid semver version
+    # Check that version is a valid semver version and was not used before.
     semver.parse(version)
-
     if version in bouillon.git_tags():
         assert "Tag already exists."
 
     clean(**kwargs)
-
     test(**kwargs)
 
+    # Tag the repo, as scm is used in setup.py this will be used when building.
     bouillon.run(['git', 'tag', f'{version}'], **kwargs)
 
     build(**kwargs)
 
+    # Edit the news file using default editor or nano
     EDITOR = os.environ.get('EDITOR', 'nano')
     bouillon.run([EDITOR, 'NEWS.rst'], **kwargs)
 
+    # upload builds to pypi and push tag to repo
     bouillon.run(['twine', 'upload', 'dist/*'], **kwargs)
     bouillon.run(['git', 'push', 'origin', f'{version}'], **kwargs)
 
