@@ -9,6 +9,10 @@ Latest
 * Minor:
 * Patch:
 
+0.1.0
+-----
+* Minor: Added checks during release
+
 0.0.5
 -----
 
