@@ -17,7 +17,7 @@ setup(
     name='bouillon',
     use_scm_version=True,
     description=("Tool for managing machine learning model and service "
-                 "projects and other fast parsed python projects."),
+                 "projects and other fast paced python projects."),
     long_description=long_description,
     url='https://github.com/janusheide/bouillon',
     author='Janus Heide',
