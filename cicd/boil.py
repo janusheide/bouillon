@@ -147,7 +147,8 @@ def release(*, version: str, **kwargs) -> None:
         print('Only release from the master branch')
         exit(1)
 
-    # TODO check clean commit
+    # Ensure that branch is clean
+    bouillon.run(['git', 'diff', '--quiet', '--exit-code'], **kwargs)
 
     # Check that version is a valid semver version and was not used before.
     semver.parse(version)
@@ -160,15 +161,18 @@ def release(*, version: str, **kwargs) -> None:
     # Edit the news file using default editor or nano
     EDITOR = os.environ.get('EDITOR', 'nano')
     bouillon.run([EDITOR, 'NEWS.rst'], **kwargs)
+    bouillon.run(['git', 'add', 'NEWS.rst'], **kwargs)
+    bouillon.run(['git', 'commit', '-m', '"preparing release"'], **kwargs)
 
-    # Tag the repo, as scm is used in setup.py this will be used when building.
+    # Create an annotated tag, scm in setup.py will use this during build.
     bouillon.run(['git', 'tag', '-a', f'{version}', '-m',
                   f'creating tag {version} for new release'], **kwargs)
 
     build(**kwargs)
 
-    # upload builds to pypi and push tag to repo
+    # upload builds to pypi and push commit and tag to repo
     bouillon.run(['twine', 'upload', 'dist/*'], **kwargs)
+    bouillon.run(['git', 'push'], **kwargs)
     bouillon.run(['git', 'push', 'origin', f'{version}'], **kwargs)
 
 
@@ -245,6 +249,7 @@ def cli() -> typing.Any:
     parser_release = subparsers.add_parser('release', help='release me.')
     parser_release.add_argument('version', type=str,
                                 help='release version.')
+
     parser_release.set_defaults(function=release)
 
     return parser.parse_args()

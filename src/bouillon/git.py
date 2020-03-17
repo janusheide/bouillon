@@ -32,6 +32,13 @@ def current_branch(**kwargs: typing.Any) -> str:
     return str(r.stdout.decode().rstrip())
 
 
+# def all_committed(**kwargs: typing.Any) -> bool:
+#     """Check that there are no uncomitted changes."""
+#     r = bouillon.run(['git', 'diff', '--quiet', '--exit-code'], **kwargs)
+
+#     return r.exitcode()
+
+
 def commit_id(**kwargs: typing.Any) -> str:
     """Get current git commit id."""
     r = bouillon.run(['git', 'rev-parse', 'HEAD'],
