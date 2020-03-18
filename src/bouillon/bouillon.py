@@ -61,7 +61,7 @@ def check_for_test_files(src_path: str, test_path: str, *,
     tests = glob.glob(os.path.join(test_path, f'**/test_*.{suffix}'),
                       recursive=True)
     relative_tests = map(lambda t: os.path.relpath(t, test_path), tests)
-    tests_no_prefix = map(lambda t: t.replace(prefix, ''),  relative_tests)
+    tests_no_prefix = map(lambda t: t.replace(prefix, ''), relative_tests)
 
     # Remove all tests files from the list of source files
     for t in tests_no_prefix:

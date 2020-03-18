@@ -48,8 +48,7 @@ def setup(*, dry_run: bool, verbose: bool, **kwargs) -> None:
     for r in find_requirement_files():
         subprocess.run(['pip', 'install', '-r', f'{r}'], **kwargs)
 
-    # NOTE Install the local project, for your project instead add bouillon
-    # to requirements.txt.
+    # NOTE For your project instead add bouillon to requirements.txt.
     subprocess.run(['pip', 'install', '-e', '.'], **kwargs)
 
 
