@@ -8,10 +8,11 @@
 
 """Git related stuff."""
 
-import bouillon
 import os
 import subprocess
 import typing
+
+import bouillon
 
 
 def repository_name(**kwargs: typing.Any) -> str:

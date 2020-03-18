@@ -8,12 +8,13 @@
 
 """Docker related stuff."""
 
-import bouillon
 import typing
 
+import bouillon
 
-def docker_build_release(*, image: str, tag: str, registry: str,
-                         **kwargs: typing.Any) -> None:
+
+def build_release(*, image: str, tag: str, registry: str,
+                  **kwargs: typing.Any) -> None:
     """Build, tag and push docker image."""
     bouillon.run([f'docker build -t {image} .'], **kwargs)
     bouillon.run([f'docker tag {image} {registry}/{image}:{tag}'], **kwargs)
