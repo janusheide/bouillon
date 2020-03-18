@@ -45,12 +45,11 @@ def setup(*, dry_run: bool, verbose: bool, **kwargs) -> None:
     if dry_run:
         exit(0)
 
+    for r in find_requirement_files():
+        subprocess.run(['pip', 'install', '-r', f'{r}'], **kwargs)
+
     # NOTE For your project instead add bouillon to requirements.txt.
     subprocess.run(['pip', 'install', '-e', '.'], **kwargs)
-    import bouillon
-
-    for r in find_requirement_files():
-        bouillon.run(['pip', 'install', '-r', f'{r}'], **kwargs)
 
 
 def test(*,
