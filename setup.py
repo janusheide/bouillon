@@ -18,6 +18,7 @@ setup(
     use_scm_version=True,
     description=("Tool for managing machine learning model and service "
                  "projects and other fast paced python projects."),
+    license='BSD-3-Clause',
     long_description=long_description,
     url='https://github.com/janusheide/bouillon',
     author='Janus Heide',
