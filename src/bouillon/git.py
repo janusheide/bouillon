@@ -17,11 +17,11 @@ import bouillon
 
 def repository_name(**kwargs: typing.Any) -> str:
     """Get git repository name."""
-    r = bouillon.run(['git', 'rev-parse', '--show-toplevel'],
+    r = bouillon.run(['git', 'config', '--get', 'remote.origin.url'],
                      stdout=subprocess.PIPE,
                      **kwargs)
 
-    return str(os.path.split(r.stdout.decode().rstrip())[-1])
+    return str(os.path.split(r.stdout.decode())[-1].split('.')[0])
 
 
 def current_branch(**kwargs: typing.Any) -> str:
