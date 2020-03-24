@@ -20,9 +20,12 @@ import subprocess
 import typing
 
 
-def run(args: typing.List[str], *, dry_run: bool = False,
-        verbose: bool = False,
-        **kwargs: typing.Any
+def run(
+    args: typing.List[str],
+    *,
+    dry_run: bool = False,
+    verbose: bool = False,
+    **kwargs: typing.Any
         ) -> subprocess.CompletedProcess:
     """
     Run a command.
@@ -46,19 +49,30 @@ def run(args: typing.List[str], *, dry_run: bool = False,
     return subprocess.run(args, **kwargs)
 
 
-def check_for_test_files(src_path: str, test_path: str, *,
-                         prefix: str = 'test_', suffix: str = 'py') -> bool:
-    """Check that all source files have a correponding test file."""
+def check_for_test_files(
+    src_path: str,
+    test_path: str,
+    *,
+    prefix: str = 'test_',
+    suffix: str = '.py'
+        ) -> bool:
+    """
+    Check for test files.
+
+    Check that all source files, all files in src_path with the defined suffix,
+    have a correponding test file in the test_path with the defined prefix and
+    suffix.
+    """
     assert os.path.exists(src_path), f'path does not exist {src_path}'
     assert os.path.exists(test_path), f'path does not exist {test_path}'
 
     # Find all soruce files
-    srcs = glob.glob(os.path.join(src_path, f'**/*.{suffix}'), recursive=True)
+    srcs = glob.glob(os.path.join(src_path, f'**/*{suffix}'), recursive=True)
     assert len(srcs) > 0, 'No source files found.'
     relative_srcs = list(map(lambda s: os.path.relpath(s, src_path), srcs))
 
     # Find all test files
-    tests = glob.glob(os.path.join(test_path, f'**/test_*.{suffix}'),
+    tests = glob.glob(os.path.join(test_path, f'**/{prefix}*{suffix}'),
                       recursive=True)
     relative_tests = map(lambda t: os.path.relpath(t, test_path), tests)
     tests_no_prefix = map(lambda t: t.replace(prefix, ''), relative_tests)

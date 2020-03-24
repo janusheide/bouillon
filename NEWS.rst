@@ -10,10 +10,11 @@ Latest
 * Patch:
 
 * Minor: Tested on MacOs.
+* Patch: Fixed used of prefix in check_for_test_files.
 
 0.1.0
 -----
-* Minor: Added checks during release
+* Minor: Added checks during release.
 
 0.0.5
 -----

@@ -45,23 +45,25 @@ def setup(*, dry_run: bool, verbose: bool, **kwargs) -> None:
     if dry_run:
         exit(0)
 
-    for r in find_requirement_files():
-        subprocess.run(['pip', 'install', '-r', f'{r}'], **kwargs)
-
     # NOTE For your project instead add bouillon to requirements.txt.
     subprocess.run(['pip', 'install', '-e', '.'], **kwargs)
 
+    for r in find_requirement_files():
+        subprocess.run(['pip', 'install', '-r', f'{r}'], **kwargs)
 
-def test(*,
-         cicd_tests: bool = True,
-         licenses: bool = True,
-         pep8: bool = True,
-         requirements: bool = True,
-         static: bool = True,
-         test_files: bool = True,
-         vulnerabilities: bool = True,
-         unit_tests: bool = True,
-         **kwargs) -> None:
+
+def test(
+    *,
+    cicd_tests: bool = True,
+    licenses: bool = True,
+    pep8: bool = True,
+    requirements: bool = True,
+    static: bool = True,
+    test_files: bool = True,
+    vulnerabilities: bool = True,
+    unit_tests: bool = True,
+    **kwargs
+        ) -> None:
     """Run tests."""
     if pep8:
         bouillon.run(['flake8', 'src', 'cicd'], **kwargs)
