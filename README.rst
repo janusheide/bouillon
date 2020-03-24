@@ -18,6 +18,7 @@ provides helper functionality when writing your cli.
 The idea is that you together with your project ship a program that assist the
 developers to setup a development environment, run tests, release the project,
 and other tedious tasks. 
+
 * Reduce time spent on repetetive tasks
 * Guareentee a well defined development environement, reducing human error.
 * Simple to setup CI/CD, as the same commands are used remotely as locally.
