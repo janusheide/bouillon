@@ -9,6 +9,8 @@ Latest
 * Minor:
 * Patch:
 
+0.2.0
+-----
 * Minor: Tested on MacOs.
 * Minor: Warn instead of assert if shell==True in run.
 * Patch: Fixed used of prefix in check_for_test_files.
