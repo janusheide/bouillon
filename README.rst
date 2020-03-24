@@ -13,12 +13,20 @@ Bouillon
  
 Bouillon contains; a) a project structure, b) a Command Line Interface (CLI) 
 for building, testing, etc., that are easy to adapt and, c) a module that 
-provides helper functionality when writing your script.
+provides helper functionality when writing your cli.
+
+The idea is that you together with your project ship a program that assist the
+developers to setup a development environment, run tests, release the project,
+and other tedious tasks. 
+* Reduce time spent on repetetive tasks
+* Guareentee a well defined development environement, reducing human error.
+* Simple to setup CI/CD, as the same commands are used remotely as locally.
+
 
 Features
 --------
 
-The script provides various useful functionality using various projects, e.g.:
+The cli provides various useful functionality using various projects, e.g.:
 
 * Pep8 syntax enforcement.
 * Static Code Analysis.
