@@ -9,6 +9,8 @@ Latest
 * Minor:
 * Patch:
 
+* Minor: Tested on MacOs.
+
 0.1.0
 -----
 * Minor: Added checks during release
