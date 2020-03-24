@@ -40,6 +40,7 @@ setup(
     keywords=['building', 'maintenance', 'utility'],
     packages=find_packages(where='src', exclude=['test']),
     package_dir={"": "src"},
+    python_requires='>=3.6',
     install_requires=[''],
     setup_requires=['setuptools_scm'],
 )

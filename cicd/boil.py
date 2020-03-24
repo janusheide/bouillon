@@ -124,7 +124,7 @@ def upgrade(**kwargs) -> None:
 def build(**kwargs) -> None:
     """Build distributeables."""
     bouillon.run(['python', 'setup.py', 'sdist'], **kwargs)
-    bouillon.run(['python', 'setup.py', 'bdist_wheel', '--universal'],
+    bouillon.run(['python', 'setup.py', 'bdist_wheel'],
                  **kwargs)
 
 
