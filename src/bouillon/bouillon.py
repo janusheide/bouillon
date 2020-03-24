@@ -34,8 +34,8 @@ def run(
     verbose = True, to print the command to be executed.
     dry_run = True, to print the command to be executed instead of executing.
     """
-    assert 'shell' not in kwargs or kwargs['shell'] is False,\
-        'Setting shell to True can cause problems.'
+    if 'shell' in kwargs and kwargs['shell'] is True:
+        print('Warning: setting shell to True can cause problems.')
 
     if dry_run or verbose:
         print(f'Command to execute: {str(" ").join(args)}')

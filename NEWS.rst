@@ -10,6 +10,7 @@ Latest
 * Patch:
 
 * Minor: Tested on MacOs.
+* Minor: Warn instead of assert if shell==True in run.
 * Patch: Fixed used of prefix in check_for_test_files.
 * Patch: Fixed repository_name function.
 

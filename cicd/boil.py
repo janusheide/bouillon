@@ -102,7 +102,7 @@ def test(
             '--cov=bouillon',
             '--cov-report',
             'term-missing',
-            '--cov-fail-under=89',
+            '--cov-fail-under=88',
             '--durations=5',
             '-vv'],
             **kwargs)
