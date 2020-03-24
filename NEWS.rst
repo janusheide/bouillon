@@ -11,6 +11,7 @@ Latest
 
 * Minor: Tested on MacOs.
 * Patch: Fixed used of prefix in check_for_test_files.
+* Patch: Fixed repository_name function.
 
 0.1.0
 -----
