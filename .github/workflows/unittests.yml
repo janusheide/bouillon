@@ -11,7 +11,7 @@ jobs:
       matrix:
         # It appears there are some errors on the gitlab windows runners 
         # https://github.com/facebook/jest/issues/9413
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: [3.6, 3.7, 3.8]
         exclude:
           - os: windows-latest
