@@ -17,11 +17,11 @@ in our cli or some other trivial mistakes.
 
 
 def test_boil_setup():
-    pass
+    subprocess.run(['python', 'cicd/boil.py', '--dry-run', 'setup'], check=True)
 
 
 def test_boil_test():
-    pass
+    subprocess.run(['python', 'cicd/boil.py', '--dry-run', 'test'], check=True)
 
 
 def test_boil_build():
@@ -43,5 +43,4 @@ def test_boil_release():
 
 
 def test_boil_clean():
-    pass
-    # subprocess.run('python cicd/boil.py --dry-run clean', check=True)
+    subprocess.run('python cicd/boil.py --dry-run clean', check=True)

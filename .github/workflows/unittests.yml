@@ -1,5 +1,5 @@
 name: Unit tests
- 
+
 on:
   pull_request:
     branches:
@@ -16,12 +16,7 @@ jobs:
       max-parallel: 20
       matrix:
         python-version: [3.6, 3.7, 3.8]
-        # It appears there are some errors on the gitlab windows runners 
-        # https://github.com/facebook/jest/issues/9413
         os: [ubuntu-latest, macos-latest, windows-latest]
-        exclude:
-          - os: windows-latest
-            python-version: 3.6
 
     steps:
     - uses: actions/checkout@v1
@@ -38,6 +33,7 @@ jobs:
       if: ${{ matrix.os != 'windows-latest' }}
       run: python cicd/boil.py test
 
+    # "safety check" fails on the github windows runner.
     - name: Run unit tests 
       if: ${{ matrix.os == 'windows-latest' }}
       run: python cicd/boil.py test --no-vulnerabilities
