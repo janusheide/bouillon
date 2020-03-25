@@ -43,4 +43,5 @@ def test_boil_release():
 
 
 def test_boil_clean():
-    subprocess.run('python cicd/boil.py --dry-run clean', check=True)
+    subprocess.run(['python', 'cicd/boil.py', '--dry-run', 'clean'], 
+                   check=True)
