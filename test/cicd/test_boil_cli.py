@@ -17,31 +17,31 @@ in our cli or some other trivial mistakes.
 
 
 def test_boil_setup():
-    pass
+    subprocess.run(['python', 'cicd/boil.py', '--dry-run', 'setup'], check=True)
 
 
 def test_boil_test():
-    pass
+    subprocess.run(['python', 'cicd/boil.py', '--dry-run', 'test'], check=True)
 
 
 def test_boil_build():
-    subprocess.run(['python', 'boil', '--dry-run', 'build'], check=True)
+    subprocess.run(['python', 'cicd/boil.py', '--dry-run', 'build'], check=True)
 
 
 def test_boil_train():
     pass
-    # subprocess.run('python', 'boil', '--dry-run', 'train', check=True)
+    # subprocess.run('python', 'cicd/boil.py', '--dry-run', 'train', check=True)
 
 
 def test_boil_upgrade():
-    subprocess.run(['python', 'boil', '--dry-run', 'upgrade'], check=True)
+    subprocess.run(['python', 'cicd/boil.py', '--dry-run', 'upgrade'], check=True)
 
 
 def test_boil_release():
-    subprocess.run(['python', 'boil', '--dry-run', 'release', '9.9.9'],
+    subprocess.run(['python', 'cicd/boil.py', '--dry-run', 'release', '9.9.9'],
                    check=True)
 
 
 def test_boil_clean():
-    pass
-    # subprocess.run('python boil --dry-run clean', check=True)
+    subprocess.run(['python', 'cicd/boil.py', '--dry-run', 'clean'], 
+                   check=True)

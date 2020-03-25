@@ -9,6 +9,8 @@ Latest
 * Minor:
 * Patch:
 
+* Minor: Tested on Windows (excluding 'safety check').
+
 0.2.0
 -----
 * Minor: Tested on MacOs.
