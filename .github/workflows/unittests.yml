@@ -35,9 +35,9 @@ jobs:
       run: python cicd/boil.py setup
 
     - name: Run unit tests 
-      if: ${{ matrix.os }} != windows-latest
+      if: ${{ matrix.os != windows-latest }}
       run: python cicd/boil.py test
 
     - name: Run unit tests 
-      if: ${{ matrix.os }} == windows-latest
+      if: ${{ matrix.os == windows-latest }}
       run: python cicd/boil.py test --no-vulnerabilities
