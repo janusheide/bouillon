@@ -9,7 +9,7 @@ Latest
 * Minor:
 * Patch:
 
-* Minor: Tested on Windows.
+* Minor: Tested on Windows (excluding 'safety check').
 
 0.2.0
 -----
