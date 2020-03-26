@@ -143,18 +143,20 @@ def clean(**kwargs) -> None:
 
 def release(*, version: str, **kwargs) -> None:
     """Release the project."""
-    if kwargs['dry_run'] is False and\
-            bouillon.git.current_branch() != 'master':
-        print('Only release from the master branch')
-        exit(1)
+    semver.parse(version)  # check valid semver version
 
-    # Ensure that branch is clean
-    bouillon.run(['git', 'diff', '--quiet', '--exit-code'], **kwargs)
+    if kwargs['dry_run'] is False:
+        if bouillon.git.current_branch() != 'master':
+            print('Only release from the master branch')
+            exit(1)
 
-    # Check that version is a valid semver version and was not used before.
-    semver.parse(version)
-    if version in bouillon.git.tags():
-        assert "Tag already exists."
+        if not bouillon.git.working_directory_clean(**kwargs):
+            print('Unstaged changes in the working directory, exiting.')
+            exit(1)
+
+        if version in bouillon.git.tags():
+            print("Tag already exists.")
+            exit(1)
 
     clean(**kwargs)
     test(**kwargs)

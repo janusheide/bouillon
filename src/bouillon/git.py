@@ -33,6 +33,15 @@ def current_branch(**kwargs: typing.Any) -> str:
     return str(r.stdout.decode().rstrip())
 
 
+def working_directory_clean(**kwargs: typing.Any) -> bool:
+    """Check if the working directory is clean."""
+    r = bouillon.run(['git', 'diff', '--quiet', '--exit-code'],
+                     stdout=subprocess.PIPE,
+                     **kwargs)
+
+    return not r.returncode
+
+
 def commit_id(**kwargs: typing.Any) -> str:
     """Get current git commit id."""
     r = bouillon.run(['git', 'rev-parse', 'HEAD'],
