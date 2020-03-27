@@ -44,7 +44,8 @@ def run(
         print(f'Command "{args[0]}" was not found.')
 
     if dry_run:
-        return subprocess.CompletedProcess('', 0)
+        return subprocess.CompletedProcess(
+            args, 2, 'dry-run output', 'dry-run error')
 
     return subprocess.run(args, **kwargs)
 

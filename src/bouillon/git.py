@@ -15,48 +15,47 @@ import typing
 import bouillon
 
 
-def repository_name(**kwargs: typing.Any) -> str:
+def repository_name() -> str:
     """Get git repository name."""
     r = bouillon.run(['git', 'config', '--get', 'remote.origin.url'],
                      stdout=subprocess.PIPE,
-                     **kwargs)
+                     check=True)
 
     return str(os.path.split(r.stdout.decode().rstrip())[-1].split('.')[0])
 
 
-def current_branch(**kwargs: typing.Any) -> str:
+def current_branch() -> str:
     """Get git current branch."""
     r = bouillon.run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
                      stdout=subprocess.PIPE,
-                     **kwargs)
+                     check=True)
 
     return str(r.stdout.decode().rstrip())
 
 
-def working_directory_clean(**kwargs: typing.Any) -> bool:
+def working_directory_clean() -> bool:
     """Check if the working directory is clean."""
     r = bouillon.run(['git', 'diff', '--quiet', '--exit-code'],
                      stdout=subprocess.PIPE,
-                     **kwargs)
+                     check=True)
 
     return not r.returncode
 
 
-def commit_id(**kwargs: typing.Any) -> str:
+def commit_id() -> str:
     """Get current git commit id."""
     r = bouillon.run(['git', 'rev-parse', 'HEAD'],
                      stdout=subprocess.PIPE,
-                     **kwargs)
+                     check=True)
 
     return str(r.stdout.decode().rstrip())
 
 
-def tags(**kwargs: typing.Any) -> typing.List[str]:
+def tags() -> typing.List[str]:
     """Get list of all git tags."""
     r = bouillon.run(['git', 'tag', '--list'],
                      stdout=subprocess.PIPE,
-                     **kwargs)
+                     check=True)
 
     tags: typing.List[str] = r.stdout.decode().rstrip().split('\n')
-
     return tags

@@ -150,7 +150,7 @@ def release(*, version: str, **kwargs) -> None:
             print('Only release from the master branch')
             exit(1)
 
-        if not bouillon.git.working_directory_clean(**kwargs):
+        if not bouillon.git.working_directory_clean():
             print('Unstaged changes in the working directory, exiting.')
             exit(1)
 
