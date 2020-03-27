@@ -13,6 +13,12 @@ def test_repository_name():
     assert bouillon.git.repository_name() == 'bouillon'
 
 
+def test_working_directory_clean(tmpdir):
+    bouillon.run(['git', 'stash'])
+    assert bouillon.git.working_directory_clean() == True
+    bouillon.run(['git', 'stash', 'apply'])
+
+
 def test_current_branch():
     assert isinstance(bouillon.git.current_branch(), str)
 
