@@ -1,4 +1,4 @@
-    ..  Copyright (c) 2020, Janus Heide.
+..  Copyright (c) 2020, Janus Heide.
 ..  All rights reserved.
 .. 
 .. Distributed under the "BSD 3-Clause License", see LICENSE.rst.
@@ -7,7 +7,7 @@
 Bouillon
 ========
 
-.. image:: https://github.com/janusheide/bouillon/workflows/Unit%20tests/badge.svg
+.. image:: https://github.com/janusheide/bouillon/workflows/Unit%20tests/badge.svg?branch=master
     :target: https://github.com/janusheide/bouillon/commits/master
     :alt: Unit tests
  
@@ -49,7 +49,8 @@ Getting Started
 
     python boil --help
 
-    > Will pip install packages, a venv is recommended
+Will pip install packages, a venv is recommended::
+
     python boil setup 
     python boil test
 
@@ -150,22 +151,25 @@ up to date.
 Logging
 -------
 
-Set the log level to ``debug``.::
+Supports standard log levels; DEBUG, INFO, WARING, ERROR, CRITICAL, and writing 
+log to a file.
+
+Set the log level to ``debug``::
 
     python boil --log-level=DEBUG test
 
 Set the log level to ``debug`` and redirect output from executed commands to
-``bar.log.``::
+``bar.log``::
 
     python boil --log-level=DEBUG test >> bar.log
 
 Set the log level to ``debug`` and redirect output from executed commands to
-``bar.log`` and log information to ``foo.log``.::
+``bar.log`` and log information to ``foo.log``::
 
     python boil --log-level=DEBUG --log-file=foo.log test >> bar.log
 
 Set the log level to ``debug`` and redirect output from executed commands and
-log information to ``foo.log``.::
+log information to ``foo.log``::
 
     python boil --log-level=DEBUG --log-file=foo.log test >> foo.log
 
