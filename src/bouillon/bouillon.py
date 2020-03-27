@@ -14,6 +14,7 @@ scripts for managing (build, test, release etc.) a project.
 """
 
 import glob
+import logging
 import os
 import shutil
 import subprocess
@@ -24,24 +25,21 @@ def run(
     args: typing.List[str],
     *,
     dry_run: bool = False,
-    verbose: bool = False,
     **kwargs: typing.Any
         ) -> subprocess.CompletedProcess:
     """
     Run a command.
 
     Wrapper around subprocess.run, kwargs are forwarded to subprocess.run,
-    verbose = True, to print the command to be executed.
-    dry_run = True, to print the command to be executed instead of executing.
+    dry_run = True, do not execute commands that make changes.
     """
     if 'shell' in kwargs and kwargs['shell'] is True:
-        print('Warning: setting shell to True can cause problems.')
+        logging.warning('setting shell to True can cause problems.')
 
-    if dry_run or verbose:
-        print(f'Command to execute: {str(" ").join(args)}')
+    logging.info(f' executing: {str(" ").join(args)}')
 
     if shutil.which(args[0]) is None:
-        print(f'Command "{args[0]}" was not found.')
+        logging.error(f'Command "{args[0]}" was not found.')
 
     if dry_run:
         return subprocess.CompletedProcess(
@@ -67,9 +65,10 @@ def check_for_test_files(
     assert os.path.exists(src_path), f'path does not exist {src_path}'
     assert os.path.exists(test_path), f'path does not exist {test_path}'
 
-    # Find all soruce files
+    # Find all source files
     srcs = glob.glob(os.path.join(src_path, f'**/*{suffix}'), recursive=True)
-    assert len(srcs) > 0, 'No source files found.'
+    if len(srcs) == 0:
+        logging.warning('No source files found.')
     relative_srcs = list(map(lambda s: os.path.relpath(s, src_path), srcs))
 
     # Find all test files
@@ -85,5 +84,5 @@ def check_for_test_files(
     if len(relative_srcs) == 0:
         return True
 
-    print(f'Missing tests for files: {relative_srcs}')
+    logging.warning(f'Missing tests for files: {relative_srcs}')
     return False

@@ -17,6 +17,7 @@ reflects those steps. The cli specified here is used for the bouillon module.
 import argparse
 import glob
 from importlib import util
+import logging
 import os
 import shutil
 import subprocess
@@ -37,10 +38,9 @@ def find_requirement_files() -> typing.List[str]:
     return glob.glob('**/*requirements.txt', recursive=True)
 
 
-def setup(*, dry_run: bool, verbose: bool, **kwargs) -> None:
+def setup(*, dry_run: bool, **kwargs) -> None:
     """Install dependencies. Since bouillon is also inste."""
-    if dry_run or verbose:
-        print('Installing dependencies')
+    logging.info('Installing dependencies')
 
     if dry_run:
         exit(0)
@@ -102,7 +102,7 @@ def test(
             '--cov=bouillon',
             '--cov-report',
             'term-missing',
-            '--cov-fail-under=88',
+            '--cov-fail-under=85',
             '--durations=5',
             '-vv'],
             **kwargs)
@@ -125,6 +125,7 @@ def upgrade(**kwargs) -> None:
 
 def build(**kwargs) -> None:
     """Build distributeables."""
+    logging.info('Building source and binary distributions')
     bouillon.run(['python', 'setup.py', 'sdist'], **kwargs)
     bouillon.run(['python', 'setup.py', 'bdist_wheel'],
                  **kwargs)
@@ -132,48 +133,52 @@ def build(**kwargs) -> None:
 
 def train(**kwargs) -> None:
     """Train a model."""
-    raise Exception("train step not implemented")
+    logging.critical("train step not implemented.")
 
 
 def clean(**kwargs) -> None:
     """Remove files and dirs created during build."""
+    logging.info('Deleting "build" and "dist" directories.')
     shutil.rmtree('build', ignore_errors=True)
     shutil.rmtree('dist', ignore_errors=True)
 
 
 def release(*, version: str, **kwargs) -> None:
     """Release the project."""
-    semver.parse(version)  # check valid semver version
+    logging.info('Checking that version is valid semver,')
+    semver.parse(version)
 
     if kwargs['dry_run'] is False:
         if bouillon.git.current_branch() != 'master':
-            print('Only release from the master branch')
+            logging.error('Only release from the master branch')
             exit(1)
 
         if not bouillon.git.working_directory_clean():
-            print('Unstaged changes in the working directory, exiting.')
+            logging.error('Unstaged changes in the working directory.')
             exit(1)
 
         if version in bouillon.git.tags():
-            print("Tag already exists.")
+            logging.error("Tag already exists.")
             exit(1)
+    else:
+        logging.debug('Skipped git status checks.')
 
     clean(**kwargs)
     test(**kwargs)
 
-    # Edit the news file using default editor or nano
+    logging.debug('Edit the news file using default editor or nano.')
     EDITOR = os.environ.get('EDITOR', 'nano')
     bouillon.run([EDITOR, 'NEWS.rst'], **kwargs)
     bouillon.run(['git', 'add', 'NEWS.rst'], **kwargs)
     bouillon.run(['git', 'commit', '-m', '"preparing release"'], **kwargs)
 
-    # Create an annotated tag, scm in setup.py will use this during build.
+    logging.debug('Create an annotated tag, used by scm in setup.py.')
     bouillon.run(['git', 'tag', '-a', f'{version}', '-m',
                   f'creating tag {version} for new release'], **kwargs)
 
     build(**kwargs)
 
-    # upload builds to pypi and push commit and tag to repo
+    logging.debug('upload builds to pypi and push commit and tag to repo.')
     bouillon.run(['twine', 'upload', 'dist/*'], **kwargs)
     bouillon.run(['git', 'push'], **kwargs)
     bouillon.run(['git', 'push', 'origin', f'{version}'], **kwargs)
@@ -191,7 +196,11 @@ def cli() -> typing.Any:
     parser.add_argument(
         '--dry-run', action='store_true', help='Perform a dry run.')
     parser.add_argument(
-        '--verbose', action='store_true', help='More verbose printing')
+        '--log-level',
+        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICIAL'],
+        default='WARNING', help='Set log level.')
+    parser.add_argument(
+        '--log-file', type=str, help='Set log file.')
 
     subparsers = parser.add_subparsers(help='Available sub commands')
 
@@ -258,9 +267,16 @@ def cli() -> typing.Any:
     return parser.parse_args()
 
 
-def call(*, function: typing.Callable, **kwargs) -> None:
-    """Call a function."""
+def run_function(*, function: typing.Callable, **kwargs) -> None:
+    """Run a step."""
+    logging.debug(f'Running "{function.__name__}" step.')
     function(**kwargs)
+
+
+def run_logging(*, log_level: str, log_file: str, **kwargs) -> None:
+    """Do setup logging and run a step."""
+    logging.basicConfig(filename=log_file, level=log_level)
+    run_function(**kwargs)
 
 
 if __name__ == '__main__':
@@ -268,7 +284,7 @@ if __name__ == '__main__':
 
     # Unless we are running setup, make sure that bouillon was imported
     if args.function != setup and util.find_spec('bouillon') is None:
-        print(f'Failed to import bouillon, run "boil setup" first.')
+        logging.error(f'Failed to import bouillon, run "boil setup" first.')
         exit(1)
 
-    call(**vars(args))
+    run_logging(**vars(args))

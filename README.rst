@@ -148,6 +148,37 @@ While it is simple but even more inconvenient to keep the module functionality
 up to date.
 
 
+Logging
+-------
+
+Set the log level to ``debug``.
+
+::
+
+    python boil --log-level=DEBUG test
+
+Set the log level to ``debug`` and redirect output from executed commands to
+``bar.log.``
+
+::
+
+    python boil --log-level=DEBUG test >> bar.log
+
+Set the log level to ``debug`` and redirect output from executed commands to
+``bar.log`` and log information to ``foo.log``.
+
+::
+
+    python boil --log-level=DEBUG --log-file=foo.log test >> bar.log
+
+Set the log level to ``debug`` and redirect output from executed commands and
+log information to ``foo.log``.
+
+::
+
+    python boil --log-level=DEBUG --log-file=foo.log test >> foo.log
+
+
 Goals
 -----
 

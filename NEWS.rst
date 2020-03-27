@@ -10,6 +10,7 @@ Latest
 * Patch:
 
 * Minor: Tested on Windows (excluding 'safety check').
+* Minor: Added logging (use --log-level and --log-file).
 
 0.2.0
 -----
