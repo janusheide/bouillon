@@ -7,7 +7,7 @@
 Bouillon
 ========
 
-.. image:: https://github.com/janusheide/bouillon/workflows/Unit%20tests/badge.svg
+.. image:: https://github.com/janusheide/bouillon/workflows/Unit%20tests/badge.svg?branch=master
     :target: https://github.com/janusheide/bouillon/commits/master
     :alt: Unit tests
  
@@ -49,7 +49,8 @@ Getting Started
 
     python boil --help
 
-    > Will pip install packages, a venv is recommended
+Will pip install packages, a venv is recommended::
+
     python boil setup 
     python boil test
 
@@ -63,14 +64,14 @@ https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cr
 Alternatively a more manual approach could be something like the following, 
 where new_project is a empty git repository.
 
-::
+Clone the repository and remove the history::
 
-    > Clone the repository and remove the history
     git clone git@github.com:janusheide/bouillon.git
     cd bouillon
     rm -rf .git
     
-    > Copy the project structure into your existing (empty) git repository
+Copy the project structure into your existing (empty) git repository::
+
     cp -r * ../new_project
     cd ../new_project/
     git add .
@@ -79,9 +80,7 @@ where new_project is a empty git repository.
 
 
 You should now have a project with the following structure, and should modify 
-as indicated below.
-
-::
+as indicated below::
 
     ├── boil -> cicd/boil.py
     ├── cicd (modify)
@@ -152,21 +151,26 @@ up to date.
 Logging
 -------
 
-::
+Supports standard log levels; DEBUG, INFO, WARING, ERROR, CRITICAL, and writing 
+log to a file.
 
-    > Set the log level to ``debug``.
+Set the log level to ``debug``::
+
     python boil --log-level=DEBUG test
 
-    > Set the log level to ``debug`` and redirect output from executed commands
-    > to ``bar.log.``
+Set the log level to ``debug`` and redirect output from executed commands to
+``bar.log``::
+
     python boil --log-level=DEBUG test >> bar.log
 
-    > Set the log level to ``debug`` and redirect output from executed commands
-    > to``bar.log`` and log information to ``foo.log``.
+Set the log level to ``debug`` and redirect output from executed commands to
+``bar.log`` and log information to ``foo.log``::
+
     python boil --log-level=DEBUG --log-file=foo.log test >> bar.log
 
-    > Set the log level to ``debug`` and redirect output from executed commands 
-    > and log information to ``foo.log``.
+Set the log level to ``debug`` and redirect output from executed commands and
+log information to ``foo.log``::
+
     python boil --log-level=DEBUG --log-file=foo.log test >> foo.log
 
 
