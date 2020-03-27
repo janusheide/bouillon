@@ -49,7 +49,8 @@ Getting Started
 
     python boil --help
 
-    python boil setup (will pip install packages, a venv is recommended)
+    > Will pip install packages, a venv is recommended
+    python boil setup 
     python boil test
 
 Start A New Project
@@ -64,12 +65,12 @@ where new_project is a empty git repository.
 
 ::
 
-    (clone the repository and remove the history)
+    > Clone the repository and remove the history
     git clone git@github.com:janusheide/bouillon.git
     cd bouillon
     rm -rf .git
     
-    (copy the project structure into your existing (empty) git repository)
+    > Copy the project structure into your existing (empty) git repository
     cp -r * ../new_project
     cd ../new_project/
     git add .
@@ -151,31 +152,21 @@ up to date.
 Logging
 -------
 
-Set the log level to ``debug``.
-
 ::
 
+    > Set the log level to ``debug``.
     python boil --log-level=DEBUG test
 
-Set the log level to ``debug`` and redirect output from executed commands to
-``bar.log.``
-
-::
-
+    > Set the log level to ``debug`` and redirect output from executed commands
+    > to ``bar.log.``
     python boil --log-level=DEBUG test >> bar.log
 
-Set the log level to ``debug`` and redirect output from executed commands to
-``bar.log`` and log information to ``foo.log``.
-
-::
-
+    > Set the log level to ``debug`` and redirect output from executed commands
+    > to``bar.log`` and log information to ``foo.log``.
     python boil --log-level=DEBUG --log-file=foo.log test >> bar.log
 
-Set the log level to ``debug`` and redirect output from executed commands and
-log information to ``foo.log``.
-
-::
-
+    > Set the log level to ``debug`` and redirect output from executed commands 
+    > and log information to ``foo.log``.
     python boil --log-level=DEBUG --log-file=foo.log test >> foo.log
 
 
