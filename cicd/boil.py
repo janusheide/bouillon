@@ -32,6 +32,8 @@ if util.find_spec('bouillon') is not None:
 if util.find_spec('semver') is not None:
     import semver
 
+logger = logging.getLogger(__name__)
+
 
 def find_requirement_files() -> typing.List[str]:
     """Find all requirements.txt files."""
@@ -40,7 +42,7 @@ def find_requirement_files() -> typing.List[str]:
 
 def setup(*, dry_run: bool, **kwargs) -> None:
     """Install dependencies. Since bouillon is also inste."""
-    logging.info('Installing dependencies')
+    logger.info('Installing dependencies')
 
     if dry_run:
         exit(0)
@@ -125,7 +127,7 @@ def upgrade(**kwargs) -> None:
 
 def build(**kwargs) -> None:
     """Build distributeables."""
-    logging.info('Building source and binary distributions')
+    logger.info('Building source and binary distributions')
     bouillon.run(['python', 'setup.py', 'sdist'], **kwargs)
     bouillon.run(['python', 'setup.py', 'bdist_wheel'],
                  **kwargs)
@@ -133,52 +135,52 @@ def build(**kwargs) -> None:
 
 def train(**kwargs) -> None:
     """Train a model."""
-    logging.critical("train step not implemented.")
+    logger.critical("train step not implemented.")
 
 
 def clean(**kwargs) -> None:
     """Remove files and dirs created during build."""
-    logging.info('Deleting "build" and "dist" directories.')
+    logger.info('Deleting "build" and "dist" directories.')
     shutil.rmtree('build', ignore_errors=True)
     shutil.rmtree('dist', ignore_errors=True)
 
 
 def release(*, version: str, **kwargs) -> None:
     """Release the project."""
-    logging.info('Checking that version is valid semver,')
+    logger.info('Checking that version is valid semver,')
     semver.parse(version)
 
     if kwargs['dry_run'] is False:
         if bouillon.git.current_branch() != 'master':
-            logging.error('Only release from the master branch')
+            logger.error('Only release from the master branch')
             exit(1)
 
         if not bouillon.git.working_directory_clean():
-            logging.error('Unstaged changes in the working directory.')
+            logger.error('Unstaged changes in the working directory.')
             exit(1)
 
         if version in bouillon.git.tags():
-            logging.error("Tag already exists.")
+            logger.error("Tag already exists.")
             exit(1)
     else:
-        logging.debug('Skipped git status checks.')
+        logger.debug('Skipped git status checks.')
 
     clean(**kwargs)
     test(**kwargs)
 
-    logging.debug('Edit the news file using default editor or nano.')
+    logger.debug('Edit the news file using default editor or nano.')
     EDITOR = os.environ.get('EDITOR', 'nano')
     bouillon.run([EDITOR, 'NEWS.rst'], **kwargs)
     bouillon.run(['git', 'add', 'NEWS.rst'], **kwargs)
     bouillon.run(['git', 'commit', '-m', '"preparing release"'], **kwargs)
 
-    logging.debug('Create an annotated tag, used by scm in setup.py.')
+    logger.debug('Create an annotated tag, used by scm in setup.py.')
     bouillon.run(['git', 'tag', '-a', f'{version}', '-m',
                   f'creating tag {version} for new release'], **kwargs)
 
     build(**kwargs)
 
-    logging.debug('upload builds to pypi and push commit and tag to repo.')
+    logger.debug('upload builds to pypi and push commit and tag to repo.')
     bouillon.run(['twine', 'upload', 'dist/*'], **kwargs)
     bouillon.run(['git', 'push'], **kwargs)
     bouillon.run(['git', 'push', 'origin', f'{version}'], **kwargs)
@@ -269,7 +271,7 @@ def cli() -> typing.Any:
 
 def run_function(*, function: typing.Callable, **kwargs) -> None:
     """Run a step."""
-    logging.debug(f'Running "{function.__name__}" step.')
+    logger.debug(f'Running "{function.__name__}" step.')
     function(**kwargs)
 
 
@@ -284,7 +286,7 @@ if __name__ == '__main__':
 
     # Unless we are running setup, make sure that bouillon was imported
     if args.function != setup and util.find_spec('bouillon') is None:
-        logging.error(f'Failed to import bouillon, run "boil setup" first.')
+        logger.error(f'Failed to import bouillon, run "boil setup" first.')
         exit(1)
 
     run_logging(**vars(args))
