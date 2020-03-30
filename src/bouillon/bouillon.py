@@ -33,10 +33,12 @@ def run(
     Wrapper around subprocess.run, kwargs are forwarded to subprocess.run,
     dry_run = True, do not execute commands that make changes.
     """
+    logger = logging.getLogger(__name__)
+
     if 'shell' in kwargs and kwargs['shell'] is True:
         logging.warning('setting shell to True can cause problems.')
 
-    logging.info(f' executing: {str(" ").join(args)}')
+    logger.info(f' executing: {str(" ").join(args)}')
 
     if shutil.which(args[0]) is None:
         logging.error(f'Command "{args[0]}" was not found.')
@@ -65,10 +67,12 @@ def check_for_test_files(
     assert os.path.exists(src_path), f'path does not exist {src_path}'
     assert os.path.exists(test_path), f'path does not exist {test_path}'
 
+    logger = logging.getLogger(__name__)
+
     # Find all source files
     srcs = glob.glob(os.path.join(src_path, f'**/*{suffix}'), recursive=True)
     if len(srcs) == 0:
-        logging.warning('No source files found.')
+        logger.warning('No source files found.')
     relative_srcs = list(map(lambda s: os.path.relpath(s, src_path), srcs))
 
     # Find all test files
@@ -84,5 +88,5 @@ def check_for_test_files(
     if len(relative_srcs) == 0:
         return True
 
-    logging.warning(f'Missing tests for files: {relative_srcs}')
+    logger.warning(f'Missing tests for files: {relative_srcs}')
     return False
