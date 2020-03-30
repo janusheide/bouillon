@@ -9,6 +9,9 @@ Latest
 * Minor:
 * Patch:
 
+
+1.0.0
+-----
 * Minor: Tested on Windows (excluding 'safety check').
 * Minor: Added logging (use --log-level and --log-file).
 
@@ -25,10 +28,9 @@ Latest
 
 0.0.5
 -----
-
 * Minor: Added security vulnerabilities check using 'safety'.
 * Minor: Added docstrings check using 'flake8-docstrings'.
-* Minon: Git releated functionality moved to bouillon.git.*
+* Minor: Git releated functionality moved to bouillon.git.*
 
 0.0.1
 -----
