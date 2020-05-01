@@ -9,6 +9,8 @@ Latest
 * Minor:
 * Patch:
 
+1.1.0
+-----
 * Minor: Upgraded dependencies.
 * Minor: Full Windows support.
 * Minor: Install new dependencies when upgrading.
