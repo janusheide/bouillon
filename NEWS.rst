@@ -10,7 +10,8 @@ Latest
 * Patch:
 
 * Minor: Upgraded dependencies.
-* Minor: Running all tests on Windows.
+* Minor: Full Windows support.
+* Minor: Install new dependencies when upgrading.
 
 1.0.0
 -----

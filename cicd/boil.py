@@ -124,6 +124,8 @@ def upgrade(**kwargs) -> None:
     for r in find_requirement_files():
         bouillon.run([f'pur', '-r', f'{r}', '--force'], **kwargs)
 
+    setup(**kwargs)
+
 
 def build(**kwargs) -> None:
     """Build distributeables."""
