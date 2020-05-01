@@ -17,11 +17,11 @@ provides helper functionality when writing your cli.
 
 The idea is that you together with your project ship a program that assist the
 developers to setup a development environment, run tests, release the project,
-and other tedious tasks. 
+and other tedious tasks, helping you to;
 
-* Reduce time spent on repetetive tasks
+* Reduce time spent on repetetive tasks.
 * Guareentee a well defined development environement, reducing human error.
-* Simple to setup CI/CD, as the same commands are used remotely as locally.
+* Simplify setup of CI/CD, as the same commands locally and remotely.
 
 
 Features
@@ -57,8 +57,7 @@ Will pip install packages, a venv is recommended::
 Start A New Project
 ...................
 
-You can use this repository as a template
-https://help.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template
+You can use *this* repository as a template, `use repository as a template guide. <https://help.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template>`__
 
 
 Alternatively a more manual approach could be something like the following, 
@@ -107,7 +106,7 @@ as indicated below::
 
 
 
-At some point it might be convenient to fork the repository, make any changes 
+At some point it might be convenient to fork *this* repository, make any changes 
 you need and use that as your template repository.
 
 
@@ -115,7 +114,7 @@ Ways of Inclusion
 -----------------
 
 You can include the bouillon module in a number of ways in your script, below
-are some prioritized options.
+are some options prioritized options.
 
 
 Pip Install During Setup Step
@@ -128,17 +127,16 @@ executed without importing the module.
 Pip Install Prior to Executing Script
 .....................................
 
-The module can be installed prior to running any script commands, but this 
-requires an extra step and means that the script setup step only partly setup 
-the environment.
+Install the module prior to running any script commands, this adds an extra 
+step and consequently the script *setup step* only partly setup the environment.
 
 Copy Module File
 ..................
 
 Copy the module implementation (bouillon.py) into your project and import it 
 from the local file in your script. Consequently you will have to manually 
-update the module or implement a way to push a new module version into multiple 
-repositories.
+update the module or implement a way to push a new module version into your 
+repository.
 
 Copy Module Source Into CLI file
 ................................
@@ -188,12 +186,12 @@ User Friendliness
 * Make the life of the user easier.
 * Use plain Python and modules that many are familiar with.
 * Quick and easy to setup and run repetitive tasks.
-* All tasks should be possible locally.
+* All tasks should be equally easy to rin locally as in a CI/CD environement.
 
 Reproducibility
 ................
 
-* Make results and builds reproducible.
+* Results and builds should be easy to reproduce.
 * All dependencies must be hard (versioned).
 * The master should always be green.
 
