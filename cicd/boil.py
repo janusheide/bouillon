@@ -77,7 +77,7 @@ def test(
     # https://pypi.org/project/Requirementz/
     if requirements:
         for r in find_requirement_files():
-            bouillon.run([f'requirementz', f'--file', f'{r}'], **kwargs)
+            bouillon.run(['requirementz', '--file', f'{r}'], **kwargs)
 
     # https://github.com/dhatim/python-license-check
     if licenses:
@@ -122,7 +122,7 @@ def upgrade(**kwargs) -> None:
     """Upgrade the versions of the used modules."""
     # https://github.com/alanhamlett/pip-update-requirements
     for r in find_requirement_files():
-        bouillon.run([f'pur', '-r', f'{r}', '--force'], **kwargs)
+        bouillon.run(['pur', '-r', f'{r}', '--force'], **kwargs)
 
     setup(**kwargs)
 
@@ -288,7 +288,7 @@ if __name__ == '__main__':
 
     # Unless we are running setup, make sure that bouillon was imported
     if args.function != setup and util.find_spec('bouillon') is None:
-        logger.error(f'Failed to import bouillon, run "boil setup" first.')
+        logger.error('Failed to import bouillon, run "boil setup" first.')
         exit(1)
 
     run_logging(**vars(args))
