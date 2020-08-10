@@ -9,6 +9,8 @@ Latest
 * Minor:
 * Patch:
 
+1.3.0
+-----
 * Minor: Upgraded dependencies.
 
 1.2.0
