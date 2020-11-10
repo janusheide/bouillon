@@ -56,14 +56,14 @@ def setup(*, dry_run: bool, **kwargs) -> None:
 
 def test(
     *,
-    cicd_tests: bool = True,
-    licenses: bool = True,
-    pep8: bool = True,
-    requirements: bool = True,
-    static: bool = True,
-    test_files: bool = True,
-    vulnerabilities: bool = True,
-    unit_tests: bool = True,
+    cicd_tests: bool,
+    licenses: bool,
+    pep8: bool,
+    requirements: bool,
+    static: bool,
+    test_files: bool,
+    vulnerabilities: bool,
+    unit_tests: bool,
     **kwargs
         ) -> None:
     """Run tests."""
