@@ -59,7 +59,6 @@ def test(
     cicd_tests: bool = True,
     licenses: bool = True,
     pep8: bool = True,
-    requirements: bool = True,
     static: bool = True,
     test_files: bool = True,
     unit_tests: bool = True,
@@ -72,11 +71,6 @@ def test(
     if static:
         bouillon.run(['mypy', 'src', '--config-file', 'cicd/mypy.ini'],
                      **kwargs)
-
-    # https://pypi.org/project/Requirementz/
-    if requirements:
-        for r in find_requirement_files():
-            bouillon.run(['requirementz', '--file', f'{r}'], **kwargs)
 
     # https://github.com/dhatim/python-license-check
     if licenses:
@@ -216,10 +210,6 @@ def cli() -> typing.Any:
 
     parser_test = subparsers.add_parser('test', help='Run tests')
     parser_test.set_defaults(function=test)
-
-    parser_test.add_argument(
-        '--no-requirements', dest='requirements', action='store_false',
-        help='Do not check installed modules against requirements files')
 
     parser_test.add_argument(
         '--no-pep8', dest='pep8', action='store_false',

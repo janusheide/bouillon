@@ -11,6 +11,7 @@ Latest
 
 * Minor: Dropped pipenv dependdency.
 * Minor: Dropped vulnerabilities check using 'safety' in template.
+* Minor: Dropped check of installed packages using 'requirementz' in template.
 
 1.3.0
 -----
