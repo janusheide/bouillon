@@ -41,7 +41,7 @@ def run(
     logger.info(f' executing: {str(" ").join(args)}')
 
     if shutil.which(args[0]) is None:
-        loger.error(f'Command "{args[0]}" was not found.')
+        logger.error(f'Command "{args[0]}" was not found.')
 
     if dry_run:
         return subprocess.CompletedProcess(
