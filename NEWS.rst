@@ -9,6 +9,9 @@ Latest
 * Minor:
 * Patch:
 
+* Minor: Dropped pipenv dependdency.
+* Minor: Dropped vulnerabilities check using 'safety' in template.
+
 1.3.0
 -----
 * Minor: Upgraded dependencies.

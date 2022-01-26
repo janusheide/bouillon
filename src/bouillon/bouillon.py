@@ -36,12 +36,12 @@ def run(
     logger = logging.getLogger(__name__)
 
     if 'shell' in kwargs and kwargs['shell'] is True:
-        logging.warning('setting shell to True can cause problems.')
+        logger.warning('setting shell to True can cause problems.')
 
     logger.info(f' executing: {str(" ").join(args)}')
 
     if shutil.which(args[0]) is None:
-        logging.error(f'Command "{args[0]}" was not found.')
+        loger.error(f'Command "{args[0]}" was not found.')
 
     if dry_run:
         return subprocess.CompletedProcess(

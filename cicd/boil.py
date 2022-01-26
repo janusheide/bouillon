@@ -62,7 +62,6 @@ def test(
     requirements: bool = True,
     static: bool = True,
     test_files: bool = True,
-    vulnerabilities: bool = True,
     unit_tests: bool = True,
     **kwargs
         ) -> None:
@@ -84,10 +83,6 @@ def test(
         for r in find_requirement_files():
             bouillon.run(['liccheck', '-s', 'cicd/licenses.ini', '-r', f'{r}'],
                          **kwargs)
-
-    # https://github.com/pyupio/safety
-    if vulnerabilities:
-        bouillon.run(['safety', 'check'], **kwargs)
 
     if test_files:
         if not bouillon.check_for_test_files(
@@ -225,10 +220,6 @@ def cli() -> typing.Any:
     parser_test.add_argument(
         '--no-requirements', dest='requirements', action='store_false',
         help='Do not check installed modules against requirements files')
-
-    parser_test.add_argument(
-        '--no-vulnerabilities', dest='vulnerabilities', action='store_false',
-        help='Do not check installed modules for security vulnerabilities.')
 
     parser_test.add_argument(
         '--no-pep8', dest='pep8', action='store_false',
