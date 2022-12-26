@@ -9,4 +9,4 @@ semver==2.13.0
 setuptools-scm==6.4.2
 types-setuptools==57.4.7
 twine==3.7.1
-wheel==0.37.1
+wheel==0.38.1
