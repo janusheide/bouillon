@@ -53,7 +53,7 @@ def commit_id() -> str:
 
 def tags() -> typing.List[str]:
     """Get list of all git tags."""
-    r = bouillon.run(['git', 'tag', '--list'],
+    r = bouillon.run(['git', 'tag'],
                      stdout=subprocess.PIPE,
                      check=True)
 
