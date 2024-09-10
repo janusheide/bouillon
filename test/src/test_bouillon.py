@@ -39,12 +39,14 @@ def test_check_for_test_files_fail(tmpdir):
 
 def test_check_for_test_files(tmpdir):
     src = tmpdir.mkdir('src')
+    test = tmpdir.mkdir('test')
+    assert bouillon.check_for_test_files(src, test)
+
     a = src.join('a.py')
     b = src.mkdir('foo').join('b.py')
     a.write('a')
     b.write('b')
 
-    test = tmpdir.mkdir('test')
     test_a = test.join('test_a.py')
     test_b = test.mkdir('foo').join('test_b.py')
     test_a.write('test_a')

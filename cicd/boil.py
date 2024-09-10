@@ -188,15 +188,14 @@ def cli() -> typing.Any:
     """Build the cli."""
     parser = ArgumentParser(
         description='Bouillon',
-        formatter_class=ArgumentDefaultsHelpFormatter
+        formatter_class=ArgumentDefaultsHelpFormatter,
     )
 
     def _print_help(**kwargs):
         parser.print_help()
 
-    parser.set_defaults(function=_print_help)
+    parser.set_defaults(check=True, function=_print_help)
 
-    parser.set_defaults(check=True)
     parser.add_argument(
         '--dry-run', action='store_true', help='Perform a dry run.')
     parser.add_argument(
@@ -218,21 +217,15 @@ def cli() -> typing.Any:
 
     parser_lint = subparsers.add_parser('lint', help='Run linters')
     parser_lint.set_defaults(function=lint)
-
     parser_lint.add_argument(
         '--no-isort', dest='isort', action='store_false',
         help='Do not run isort.')
-
     parser_lint.add_argument(
         '--no-liccheck', dest='liccheck', action='store_false',
         help='Do not check that licenses of all used modules.')
-
     parser_lint.add_argument(
         '--no-ruff', dest='ruff', action='store_false',
         help='Do not check with ruff.')
-
-    parser_train = subparsers.add_parser('train', help='Train.')
-    parser_train.set_defaults(function=train)
 
     parser_test = subparsers.add_parser('test', help='Run tests')
     parser_test.set_defaults(function=test)
@@ -240,18 +233,18 @@ def cli() -> typing.Any:
     parser_test.add_argument(
         '--no-static-check', dest='static', action='store_false',
         help='Do not perform static code analysis.')
-
     parser_test.add_argument(
         '--no-test-files-check', dest='test_files', action='store_false',
         help='Do not check that for each source file there is a test file.')
-
     parser_test.add_argument(
         '--no-unit-tests', dest='unit_tests', action='store_false',
         help='Do not run unit tests.')
-
     parser_test.add_argument(
         '--no-cicd-tests', dest='cicd_tests', action='store_false',
         help='Do not run CICD tests.')
+
+    parser_train = subparsers.add_parser('train', help='Train.')
+    parser_train.set_defaults(function=train)
 
     parser_upgrade = subparsers.add_parser(
         'upgrade',
@@ -264,7 +257,6 @@ def cli() -> typing.Any:
     parser_release = subparsers.add_parser('release', help='release me.')
     parser_release.add_argument('version', type=str,
                                 help='release version.')
-
     parser_release.set_defaults(function=release)
 
     return parser.parse_args()
