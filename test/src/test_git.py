@@ -7,6 +7,7 @@
 # Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
 import pytest
+import sys
 import bouillon
 
 
