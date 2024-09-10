@@ -7,6 +7,7 @@
 # Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
 import pytest
+import sys
 import bouillon
 
 
@@ -27,6 +28,6 @@ def test_current_branch():
 def test_commit_id():
     assert len(bouillon.git.commit_id()) == 40
 
-@pytest.mark.skip(reason="fails on MacOS")
+@pytest.mark.skipif(sys.platform =="macos", reason="Fails on github macos runners")
 def test_tags():
     assert '0.0.1' in bouillon.git.tags()
