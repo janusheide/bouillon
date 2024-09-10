@@ -3,12 +3,8 @@ News
 
 Lists of changes between versions.
 
-Latest
-------
-* Major:
-* Minor:
-* Patch:
-
+1.4.0
+-----
 * Major: Added Python 3.11 and 3.12 support.
 * Major: Dropped Python 3.6 and 3.7 support.
 * Minor: Dropped pipenv dependdency.
