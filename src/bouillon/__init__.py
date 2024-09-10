@@ -9,16 +9,13 @@
 """Import bouillon functions."""
 
 from __future__ import absolute_import
-from importlib.metadata import version, PackageNotFoundError
 
-from bouillon.bouillon import run
-from bouillon.bouillon import check_for_test_files
-from bouillon.git import repository_name
-from bouillon.git import working_directory_clean
-from bouillon.git import current_branch
-from bouillon.git import commit_id
-from bouillon.git import tags
+from importlib.metadata import PackageNotFoundError, version
 
+from bouillon.bouillon import check_for_test_files, run
+from bouillon.git import (
+    commit_id, current_branch, repository_name, tags, working_directory_clean,
+)
 
 try:
     __version__ = version("bouillon")

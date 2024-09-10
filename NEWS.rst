@@ -5,13 +5,15 @@ Lists of changes between versions.
 
 Latest
 ------
-* Major: Moved project and tools configuration to pyproject.toml
+* Major: Moved project and tools configuration to pyproject.toml.
+* Minor: Added boil 'lint' command running isort, liccheck and ruff.
+* Minor: Dropped flake8.
 
 1.4.0
 -----
-* Major: Added Python 3.11 and 3.12 support.
 * Major: Dropped Python 3.6 and 3.7 support.
-* Minor: Dropped pipenv dependdency.
+* Minor: Added Python 3.11 and 3.12 support.
+* Minor: Dropped pipenv dependency.
 * Minor: Dropped vulnerabilities check using 'safety' in template.
 * Minor: Dropped check of installed packages using 'requirementz' in template.
 

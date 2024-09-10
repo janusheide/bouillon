@@ -36,16 +36,14 @@ Repository = "https://github.com/janusheide/bouillon"
 [project.entry-points."console_scripts"]
 boil = "boil.__main__:run"
 
-[tool.pytest.ini_options]
-asyncio_mode = "auto"
-asyncio_default_fixture_loop_scope = "function"
-#TODO configure pytest_cov here when support for submodule config is added
-# addopts = "--cov=bouillon --cov-report term-missing --cov-fail-under=85 --durations=5 -vv"
-
 [[tool.mypy.overrides]]
 module = "bouillon"
 warn_return_any = true
 disallow_untyped_defs = true
+
+[tool.isort]
+multi_line_output = 5
+include_trailing_comma = "True"
 
 [tool.liccheck]
 authorized_licenses = [
@@ -69,7 +67,6 @@ authorized_licenses = [
     "python software foundation",
     "psf",
 ]
-
 unauthorized_licenses = [
     "gpl",
     "gpl v3",
@@ -78,3 +75,9 @@ unauthorized_licenses = [
 [tool.liccheck.authorized_packages]
 PrintDebug = "*"
 filelock = "*"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+#TODO configure pytest_cov here when support for submodule config is added
+# addopts = "--cov=bouillon --cov-report term-missing --cov-fail-under=85 --durations=5 -vv"

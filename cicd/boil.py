@@ -14,14 +14,14 @@ modify the steps that are relevant for your project, and the cli such that it
 reflects those steps. The cli specified here is used for the bouillon module.
 """
 
-import argparse
 import glob
-from importlib import util
 import logging
 import os
 import shutil
 import subprocess
 import typing
+from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
+from importlib import util
 
 # Modules that are not part of 'standard' Python is only installed if they can
 # be found, this allows us to run the setup step where they are installed
@@ -54,27 +54,36 @@ def setup(*, dry_run: bool, **kwargs) -> None:
         subprocess.run(['pip', 'install', '-r', f'{r}'], **kwargs)
 
 
+def lint(
+    isort: bool = True,
+    liccheck: bool = True,
+    ruff: bool = True,
+    **kwargs
+) -> None:
+    """Run linters."""
+    if isort:
+        bouillon.run(['isort', '.'], **kwargs)
+
+    # https://github.com/dhatim/python-license-check
+    if liccheck:
+        for r in find_requirement_files():
+            bouillon.run(['liccheck', '-r', f'{r}'], **kwargs)
+
+    if ruff:
+        bouillon.run(['ruff', 'check'], **kwargs)
+
+
 def test(
     *,
     cicd_tests: bool = True,
-    licenses: bool = True,
-    pep8: bool = True,
     static: bool = True,
     test_files: bool = True,
     unit_tests: bool = True,
     **kwargs
-        ) -> None:
+) -> None:
     """Run tests."""
-    if pep8:
-        bouillon.run(['flake8', 'src', 'cicd'], **kwargs)
-
     if static:
         bouillon.run(['mypy', 'src'], **kwargs)
-
-    # https://github.com/dhatim/python-license-check
-    if licenses:
-        for r in find_requirement_files():
-            bouillon.run(['liccheck', '-r', f'{r}'], **kwargs)
 
     if test_files:
         if not bouillon.check_for_test_files(
@@ -154,6 +163,7 @@ def release(*, version: str, **kwargs) -> None:
         logger.debug('Skipped git status checks.')
 
     clean(**kwargs)
+    lint(**kwargs)
     test(**kwargs)
 
     logger.debug('Edit the news file using default editor or nano.')
@@ -176,13 +186,16 @@ def release(*, version: str, **kwargs) -> None:
 
 def cli() -> typing.Any:
     """Build the cli."""
-    parser = argparse.ArgumentParser(description='Bouillon')
+    parser = ArgumentParser(
+        description='Bouillon',
+        formatter_class=ArgumentDefaultsHelpFormatter,
+    )
 
     def _print_help(**kwargs):
         parser.print_help()
 
-    parser.set_defaults(function=_print_help)
-    parser.set_defaults(check=True)
+    parser.set_defaults(check=True, function=_print_help)
+
     parser.add_argument(
         '--dry-run', action='store_true', help='Perform a dry run.')
     parser.add_argument(
@@ -202,35 +215,36 @@ def cli() -> typing.Any:
     parser_build = subparsers.add_parser('build', help='Build.')
     parser_build.set_defaults(function=build)
 
-    parser_train = subparsers.add_parser('train', help='Train.')
-    parser_train.set_defaults(function=train)
+    parser_lint = subparsers.add_parser('lint', help='Run linters')
+    parser_lint.set_defaults(function=lint)
+    parser_lint.add_argument(
+        '--no-isort', dest='isort', action='store_false',
+        help='Do not run isort.')
+    parser_lint.add_argument(
+        '--no-liccheck', dest='liccheck', action='store_false',
+        help='Do not check that licenses of all used modules.')
+    parser_lint.add_argument(
+        '--no-ruff', dest='ruff', action='store_false',
+        help='Do not check with ruff.')
 
     parser_test = subparsers.add_parser('test', help='Run tests')
     parser_test.set_defaults(function=test)
 
     parser_test.add_argument(
-        '--no-pep8', dest='pep8', action='store_false',
-        help='Do not check pep8 conformance.')
-
-    parser_test.add_argument(
         '--no-static-check', dest='static', action='store_false',
         help='Do not perform static code analysis.')
-
-    parser_test.add_argument(
-        '--no-license-check', dest='licenses', action='store_false',
-        help='Do not check that licenses of all used modules.')
-
     parser_test.add_argument(
         '--no-test-files-check', dest='test_files', action='store_false',
         help='Do not check that for each source file there is a test file.')
-
     parser_test.add_argument(
         '--no-unit-tests', dest='unit_tests', action='store_false',
         help='Do not run unit tests.')
-
     parser_test.add_argument(
         '--no-cicd-tests', dest='cicd_tests', action='store_false',
         help='Do not run CICD tests.')
+
+    parser_train = subparsers.add_parser('train', help='Train.')
+    parser_train.set_defaults(function=train)
 
     parser_upgrade = subparsers.add_parser(
         'upgrade',
@@ -243,7 +257,6 @@ def cli() -> typing.Any:
     parser_release = subparsers.add_parser('release', help='release me.')
     parser_release.add_argument('version', type=str,
                                 help='release version.')
-
     parser_release.set_defaults(function=release)
 
     return parser.parse_args()

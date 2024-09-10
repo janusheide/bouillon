@@ -32,5 +32,8 @@ jobs:
     - name: Setup environment
       run: python cicd/boil.py setup
 
+    - name: Run linters
+      run: python cicd/boil.py lint
+
     - name: Run unit tests
       run: python cicd/boil.py test
