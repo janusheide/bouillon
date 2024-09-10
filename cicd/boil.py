@@ -69,14 +69,12 @@ def test(
         bouillon.run(['flake8', 'src', 'cicd'], **kwargs)
 
     if static:
-        bouillon.run(['mypy', 'src', '--config-file', 'cicd/mypy.ini'],
-                     **kwargs)
+        bouillon.run(['mypy', 'src'], **kwargs)
 
     # https://github.com/dhatim/python-license-check
     if licenses:
         for r in find_requirement_files():
-            bouillon.run(['liccheck', '-s', 'cicd/licenses.ini', '-r', f'{r}'],
-                         **kwargs)
+            bouillon.run(['liccheck', '-r', f'{r}'], **kwargs)
 
     if test_files:
         if not bouillon.check_for_test_files(
@@ -95,7 +93,8 @@ def test(
             'term-missing',
             '--cov-fail-under=85',
             '--durations=5',
-            '-vv'],
+            '-vv'
+            ],
             **kwargs)
 
     if cicd_tests:
@@ -118,10 +117,8 @@ def upgrade(**kwargs) -> None:
 
 def build(**kwargs) -> None:
     """Build distributeables."""
-    logger.info('Building source and binary distributions')
-    bouillon.run(['python', 'setup.py', 'sdist'], **kwargs)
-    bouillon.run(['python', 'setup.py', 'bdist_wheel'],
-                 **kwargs)
+    logger.info("Building source and binary distributions")
+    bouillon.run(["python", "-m", "build"], **kwargs)
 
 
 def train(**kwargs) -> None:
@@ -165,7 +162,7 @@ def release(*, version: str, **kwargs) -> None:
     bouillon.run(['git', 'add', 'NEWS.rst'], **kwargs)
     bouillon.run(['git', 'commit', '-m', '"preparing release"'], **kwargs)
 
-    logger.debug('Create an annotated tag, used by scm in setup.py.')
+    logger.debug("Create an annotated tag, used by setuptools_scm.")
     bouillon.run(['git', 'tag', '-a', f'{version}', '-m',
                   f'creating tag {version} for new release'], **kwargs)
 
