@@ -28,6 +28,6 @@ def test_current_branch():
 def test_commit_id():
     assert len(bouillon.git.commit_id()) == 40
 
-@pytest.mark.skipif(sys.platform =="macos", reason="Fails on github macos runners")
+@pytest.mark.skipif(sys.platform =="darwin", reason="Fails on github macos runners")
 def test_tags():
     assert '0.0.1' in bouillon.git.tags()
