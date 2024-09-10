@@ -9,7 +9,8 @@ Latest
 * Minor:
 * Patch:
 
-* Major: Dropped Python 3.6 support.
+* Major: Added Python 3.11 and 3.12 support.
+* Major: Dropped Python 3.6 and 3.7 support.
 * Minor: Dropped pipenv dependdency.
 * Minor: Dropped vulnerabilities check using 'safety' in template.
 * Minor: Dropped check of installed packages using 'requirementz' in template.
