@@ -1,0 +1,80 @@
+[build-system]
+requires = ["setuptools>=74"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bouillon"
+authors = [
+    {name= 'Janus Heide', email = "janusheide@gmail.com"}
+]
+description = "Tool for managing machine learning model and service projects and other fast paced python projects."
+dynamic = ["version"]
+readme = "README.rst"
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    'Topic :: Utilities',
+    'Topic :: Scientific/Engineering :: Information Analysis',
+]
+
+dependencies = []
+keywords=["building", "maintenance", "utility"]
+requires-python = ">= 3.8"
+
+[project.urls]
+Homepage = "https://github.com/janusheide/bouillon"
+Repository = "https://github.com/janusheide/bouillon"
+
+[project.entry-points."console_scripts"]
+boil = "boil.__main__:run"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+#TODO configure pytest_cov here when support for submodule config is added
+# addopts = "--cov=bouillon --cov-report term-missing --cov-fail-under=85 --durations=5 -vv"
+
+[[tool.mypy.overrides]]
+module = "bouillon"
+warn_return_any = true
+disallow_untyped_defs = true
+
+[tool.liccheck]
+authorized_licenses = [
+    "apache",
+    "apache software",
+    "apache software license",
+    "apache 2.0",
+    "apache license 2.0",
+    "bsd",
+    "bsd license",
+    "BSD-3-Clause",
+    "new bsd",
+    "new bsd license",
+    "simplified bsd",
+    "gnu lgpl",
+    "lgpl",
+    "ISC",
+    "mit",
+    "mit license",
+    "Mozilla Public License 2.0 (MPL 2.0)",
+    "python software foundation",
+    "psf",
+]
+
+unauthorized_licenses = [
+    "gpl",
+    "gpl v3",
+]
+
+[tool.liccheck.authorized_packages]
+PrintDebug = "*"
+filelock = "*"
