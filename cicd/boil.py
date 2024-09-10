@@ -58,15 +58,15 @@ def test(
     *,
     cicd_tests: bool = True,
     licenses: bool = True,
-    pep8: bool = True,
+    ruff: bool = True,
     static: bool = True,
     test_files: bool = True,
     unit_tests: bool = True,
     **kwargs
         ) -> None:
     """Run tests."""
-    if pep8:
-        bouillon.run(['flake8', 'src', 'cicd'], **kwargs)
+    if ruff:
+        bouillon.run(['ruff', 'check'], **kwargs)
 
     if static:
         bouillon.run(['mypy', 'src'], **kwargs)
@@ -209,8 +209,8 @@ def cli() -> typing.Any:
     parser_test.set_defaults(function=test)
 
     parser_test.add_argument(
-        '--no-pep8', dest='pep8', action='store_false',
-        help='Do not check pep8 conformance.')
+        '--no-ruff', dest='ruff', action='store_false',
+        help='Do not check with ruff.')
 
     parser_test.add_argument(
         '--no-static-check', dest='static', action='store_false',

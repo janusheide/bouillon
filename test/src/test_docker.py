@@ -6,8 +6,6 @@
 #
 # Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
-import bouillon
-
 
 def test_build_release():
     pass
