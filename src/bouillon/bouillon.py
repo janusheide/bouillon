@@ -13,6 +13,8 @@ Contains various helper functions that are intended to be usefull when writing
 scripts for managing (build, test, release etc.) a project.
 """
 
+from __future__ import annotations
+
 import glob
 import logging
 import os
