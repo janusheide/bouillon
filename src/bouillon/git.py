@@ -8,9 +8,11 @@
 
 """Git related stuff."""
 
+
+from __future__ import annotations
+
 import os
 import subprocess
-import typing
 
 import bouillon
 
@@ -51,11 +53,11 @@ def commit_id() -> str:
     return str(r.stdout.decode().rstrip())
 
 
-def tags() -> typing.List[str]:
+def tags() -> list[str]:
     """Get list of all git tags."""
     r = bouillon.run(['git', 'tag'],
                      stdout=subprocess.PIPE,
                      check=True)
 
-    tags: typing.List[str] = r.stdout.decode().rstrip().split('\n')
+    tags: list[str] = r.stdout.decode().rstrip().split('\n')
     return tags

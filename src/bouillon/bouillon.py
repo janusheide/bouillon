@@ -18,15 +18,14 @@ import logging
 import os
 import shutil
 import subprocess
-import typing
 
 
 def run(
-    args: typing.List[str],
+    args: list[str],
     *,
     dry_run: bool = False,
-    **kwargs: typing.Any
-        ) -> subprocess.CompletedProcess:
+    **kwargs
+) -> subprocess.CompletedProcess:
     """
     Run a command.
 
@@ -56,7 +55,7 @@ def check_for_test_files(
     *,
     prefix: str = 'test_',
     suffix: str = '.py'
-        ) -> bool:
+) -> bool:
     """
     Check for test files.
 

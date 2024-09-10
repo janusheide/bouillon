@@ -14,14 +14,16 @@ modify the steps that are relevant for your project, and the cli such that it
 reflects those steps. The cli specified here is used for the bouillon module.
 """
 
+from __future__ import annotations
+
 import glob
 import logging
 import os
 import shutil
 import subprocess
-import typing
-from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
+from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 from importlib import util
+from typing import Callable
 
 # Modules that are not part of 'standard' Python is only installed if they can
 # be found, this allows us to run the setup step where they are installed
@@ -35,7 +37,7 @@ if util.find_spec('semver') is not None:
 logger = logging.getLogger(__name__)
 
 
-def find_requirement_files() -> typing.List[str]:
+def find_requirement_files() -> list[str]:
     """Find all requirements.txt files."""
     return glob.glob('**/*requirements.txt', recursive=True)
 
@@ -184,7 +186,7 @@ def release(*, version: str, **kwargs) -> None:
     bouillon.run(['git', 'push', 'origin', f'{version}'], **kwargs)
 
 
-def cli() -> typing.Any:
+def cli() -> Namespace:
     """Build the cli."""
     parser = ArgumentParser(
         description='Bouillon',
@@ -262,7 +264,7 @@ def cli() -> typing.Any:
     return parser.parse_args()
 
 
-def run_function(*, function: typing.Callable, **kwargs) -> None:
+def run_function(*, function: Callable, **kwargs) -> None:
     """Run a step."""
     logger.debug(f'Running "{function.__name__}" step.')
     function(**kwargs)
