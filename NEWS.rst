@@ -3,6 +3,10 @@ News
 
 Lists of changes between versions.
 
+Latest
+------
+* Major: Moved project and tools configuration to pyproject.toml
+
 1.4.0
 -----
 * Major: Added Python 3.11 and 3.12 support.
