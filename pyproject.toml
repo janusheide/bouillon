@@ -41,6 +41,10 @@ module = "bouillon"
 warn_return_any = true
 disallow_untyped_defs = true
 
+[tool.isort]
+multi_line_output = 5
+include_trailing_comma = "True"
+
 [tool.liccheck]
 authorized_licenses = [
     "apache",
