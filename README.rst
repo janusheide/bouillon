@@ -1,6 +1,6 @@
 ..  Copyright (c) 2020, Janus Heide.
 ..  All rights reserved.
-.. 
+..
 .. Distributed under the "BSD 3-Clause License", see LICENSE.rst.
 
 
@@ -10,9 +10,9 @@ Bouillon
 .. image:: https://github.com/janusheide/bouillon/workflows/Unit%20tests/badge.svg?branch=master
     :target: https://github.com/janusheide/bouillon/commits/master
     :alt: Unit tests
- 
-Bouillon contains; a) a project structure, b) a Command Line Interface (CLI) 
-for building, testing, etc., that are easy to adapt and, c) a module that 
+
+Bouillon contains; a) a project structure, b) a Command Line Interface (CLI)
+for building, testing, etc., that are easy to adapt and, c) a module that
 provides helper functionality when writing your cli.
 
 The idea is that you together with your project ship a program that assist the
@@ -45,13 +45,13 @@ Getting Started
 ::
 
     git clone git@github.com:janusheide/bouillon.git
-    cd bouillon 
+    cd bouillon
 
     python boil --help
 
 Will pip install packages, a venv is recommended::
 
-    python boil setup 
+    python boil setup
     python boil test
 
 Start A New Project
@@ -60,7 +60,7 @@ Start A New Project
 You can use *this* repository as a template, `use repository as a template guide. <https://help.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template>`__
 
 
-Alternatively a more manual approach could be something like the following, 
+Alternatively a more manual approach could be something like the following,
 where new_project is a empty git repository.
 
 Clone the repository and remove the history::
@@ -68,7 +68,7 @@ Clone the repository and remove the history::
     git clone git@github.com:janusheide/bouillon.git
     cd bouillon
     rm -rf .git
-    
+
 Copy the project structure into your existing (empty) git repository::
 
     cp -r * ../new_project
@@ -78,19 +78,17 @@ Copy the project structure into your existing (empty) git repository::
     git push
 
 
-You should now have a project with the following structure, and should modify 
+You should now have a project with the following structure, and should modify
 as indicated below::
 
     ├── boil -> cicd/boil.py
     ├── cicd (modify)
     │   ├── boil.py
-    │   ├── licenses.ini
-    │   ├── mypy.ini
     │   └── requirements.txt
     ├── LICENSE.txt (replace)
     ├── NEWS.rst (replace)
+    ├── pyproject.toml (modify)
     ├── README.rst (replace)
-    ├── setup.py (modify)
     ├── src (replace)
     │   ├── bouillon
     │   │   ├── bouillon.py
@@ -106,7 +104,7 @@ as indicated below::
 
 
 
-At some point it might be convenient to fork *this* repository, make any changes 
+At some point it might be convenient to fork *this* repository, make any changes
 you need and use that as your template repository.
 
 
@@ -120,36 +118,36 @@ are some options prioritized options.
 Pip Install During Setup Step
 .............................
 
-Install the module using Pip. This requires that the initial setup step can be 
-executed without importing the module. 
+Install the module using Pip. This requires that the initial setup step can be
+executed without importing the module.
 
 
 Pip Install Prior to Executing Script
 .....................................
 
-Install the module prior to running any script commands, this adds an extra 
+Install the module prior to running any script commands, this adds an extra
 step and consequently the script *setup step* only partly setup the environment.
 
 Copy Module File
 ..................
 
-Copy the module implementation (bouillon.py) into your project and import it 
-from the local file in your script. Consequently you will have to manually 
-update the module or implement a way to push a new module version into your 
+Copy the module implementation (bouillon.py) into your project and import it
+from the local file in your script. Consequently you will have to manually
+update the module or implement a way to push a new module version into your
 repository.
 
 Copy Module Source Into CLI file
 ................................
 
-Copy the module implementation or the functionality you need into your cli file. 
-While it is simple but even more inconvenient to keep the module functionality 
+Copy the module implementation or the functionality you need into your cli file.
+While it is simple but even more inconvenient to keep the module functionality
 up to date.
 
 
 Logging
 -------
 
-Supports standard log levels; DEBUG, INFO, WARING, ERROR, CRITICAL, and writing 
+Supports standard log levels; DEBUG, INFO, WARING, ERROR, CRITICAL, and writing
 log to a file.
 
 Set the log level to ``debug``::
@@ -175,8 +173,8 @@ log information to ``foo.log``::
 Goals
 -----
 
-The primary use is intended for, but not limited to, projects with frequently 
-releases, e.g. ML models and services. 
+The primary use is intended for, but not limited to, projects with frequently
+releases, e.g. ML models and services.
 The goal is to make it quick and easy to set up a new project with the basic
 testing and releasing functionality.
 
@@ -199,7 +197,7 @@ Simplicity
 ..........
 
 * Simplicity over features.
-* Components should be easy to replace. 
+* Components should be easy to replace.
 
 Automation
 ..........
@@ -207,4 +205,3 @@ Automation
 * Reduce maintenance, repetitive tasks, and human errors.
 * Easy to upgrade dependencies.
 * Use merge policies and triggered and scheduled events.
-    
