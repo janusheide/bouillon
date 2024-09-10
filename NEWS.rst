@@ -5,9 +5,9 @@ Lists of changes between versions.
 
 Latest
 ------
-* Major: Moved project and tools configuration to pyproject.toml
-* Minor: Added boil 'lint' command running isort, liccheck and ruff
-* Minor: Dropped flake8
+* Major: Moved project and tools configuration to pyproject.toml.
+* Minor: Added boil 'lint' command running isort, liccheck and ruff.
+* Minor: Dropped flake8.
 
 1.4.0
 -----
