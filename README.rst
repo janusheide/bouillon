@@ -7,8 +7,8 @@
 Bouillon
 ========
 
-.. image:: https://github.com/janusheide/bouillon/workflows/Unit%20tests/badge.svg?branch=master
-    :target: https://github.com/janusheide/bouillon/commits/master
+.. image:: https://github.com/janusheide/bouillon/actions/workflows/unittests.yml/badge.svg
+    :target: https://github.com/janusheide/bouillon/actions/workflows/unittests.yml
     :alt: Unit tests
 
 Bouillon contains; a) a project structure, b) a Command Line Interface (CLI)
