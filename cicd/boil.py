@@ -31,8 +31,6 @@ from typing import Callable
 if util.find_spec('bouillon') is not None:
     import bouillon
 
-if util.find_spec('semver') is not None:
-    import semver
 
 logger = logging.getLogger(__name__)
 
@@ -146,10 +144,11 @@ def clean(**kwargs) -> None:
 
 def release(*, version: str, **kwargs) -> None:
     """Release the project."""
-    logger.info('Checking that version is valid semver,')
-    semver.parse(version)
+    if bouillon.run(['pysemver', 'check', version]).returncode:
+        logger.error("Provided version is not valid semver")
+        exit(1)
 
-    if kwargs['dry_run'] is False:
+    if not kwargs['dry_run']:
         if bouillon.git.current_branch() != 'master':
             logger.error('Only release from the master branch')
             exit(1)
