@@ -7,6 +7,7 @@
 # Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
 import subprocess
+import pytest
 
 """
 We do a dry run test of some of our commands to verify that the cli basically
@@ -45,8 +46,13 @@ def test_boil_upgrade():
 
 
 def test_boil_release():
-    subprocess.run(["python", "cicd/boil.py", "--dry-run", "release", "9.9.9"],
+    assert subprocess.run(["python", "cicd/boil.py", "--dry-run", "release", "9.9.9"],
                    check=True)
+
+def test_boil_release_invalid_version():
+    with pytest.raises(Exception):
+        assert subprocess.run(["python", "cicd/boil.py", "--dry-run", "release", "9.9.f"],
+            check=True)
 
 
 def test_boil_clean():
