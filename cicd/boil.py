@@ -76,13 +76,13 @@ def lint(
 def test(
     *,
     cicd_tests: bool = True,
-    static: bool = True,
+    mypy: bool = True,
     test_files: bool = True,
     unit_tests: bool = True,
     **kwargs
 ) -> None:
     """Run tests."""
-    if static:
+    if mypy:
         bouillon.run(['mypy', 'src'], **kwargs)
 
     if test_files:
@@ -232,8 +232,8 @@ def cli() -> Namespace:
     parser_test.set_defaults(function=test)
 
     parser_test.add_argument(
-        '--no-static-check', dest='static', action='store_false',
-        help='Do not perform static code analysis.')
+        '--no-mypy-check', dest='mypy', action='store_false',
+        help='Do not perform mypy code analysis.')
     parser_test.add_argument(
         '--no-test-files-check', dest='test_files', action='store_false',
         help='Do not check that for each source file there is a test file.')

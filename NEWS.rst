@@ -8,6 +8,7 @@ Latest
 * Major: Moved project and tools configuration to pyproject.toml.
 * Minor: Added boil 'lint' command running isort, liccheck and ruff.
 * Minor: Dropped flake8.
+* Minor: Rename static kwarg to mypy in boil.py
 
 1.4.0
 -----
