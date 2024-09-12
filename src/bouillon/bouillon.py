@@ -16,7 +16,6 @@ scripts for managing (build, test, release etc.) a project.
 from __future__ import annotations
 
 import logging
-import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -65,8 +64,8 @@ def check_for_test_files(
     have a correponding test file in the test_path with the defined prefix and
     suffix.
     """
-    assert os.path.exists(src_path), f'path does not exist {src_path}'
-    assert os.path.exists(test_path), f'path does not exist {test_path}'
+    assert Path(src_path).exists(), f'path does not exist {src_path}'
+    assert Path(test_path).exists(), f'path does not exist {test_path}'
 
     logger = logging.getLogger(__name__)
 

@@ -88,7 +88,7 @@ def test(
 
     if test_files:
         if not bouillon.check_for_test_files(
-            Path("src") / bouillon.git.repository_name(), Path("test") / "src"):
+            Path("./src") / bouillon.git.repository_name(), Path("./test") / "src"):
             exit(1)
 
     # https://docs.pytest.org/en/latest/
