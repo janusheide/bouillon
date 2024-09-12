@@ -10,7 +10,7 @@ import bouillon
 
 
 def test_repository_name():
-    assert bouillon.git.repository_name() == 'bouillon'
+    assert bouillon.git.repository_name() == "bouillon"
 
 
 def test_working_directory_clean(tmpdir):

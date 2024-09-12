@@ -23,6 +23,7 @@ import shutil
 import subprocess
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 from importlib import util
+from pathlib import Path
 from typing import Callable
 
 # Modules that are not part of 'standard' Python is only installed if they can
@@ -87,31 +88,30 @@ def test(
 
     if test_files:
         if not bouillon.check_for_test_files(
-            os.path.join('src', bouillon.git.repository_name()),
-                os.path.join('test', 'src')):
+            Path("src") / bouillon.git.repository_name(), Path("test") / "src"):
             exit(1)
 
     # https://docs.pytest.org/en/latest/
     # https://pytest-cov.readthedocs.io/en/latest/
     if unit_tests:
         bouillon.run([
-            'pytest',
-            f'{os.path.join("test", "src")}',
-            '--cov=bouillon',
-            '--cov-report',
-            'term-missing',
-            '--cov-fail-under=85',
-            '--durations=5',
-            '-vv'
+            "pytest",
+            f"{Path("test") / "src"}",
+            "--cov=bouillon",
+            "--cov-report",
+            "term-missing",
+            "--cov-fail-under=85",
+            "--durations=5",
+            "-vv"
             ],
             **kwargs)
 
     if cicd_tests:
         bouillon.run([
-            'pytest',
-            f'{os.path.join("test", "cicd")}',
-            '--durations=5',
-            '-vv'],
+            "pytest",
+            f"{Path("test") / "cicd"}",
+            "--durations=5",
+            "-vv"],
             **kwargs)
 
 

@@ -11,8 +11,8 @@
 
 from __future__ import annotations
 
-import os
 import subprocess
+from pathlib import Path
 
 import bouillon
 
@@ -23,7 +23,7 @@ def repository_name() -> str:
                      stdout=subprocess.PIPE,
                      check=True)
 
-    return str(os.path.split(r.stdout.decode().rstrip())[-1].split('.')[0])
+    return str(Path(r.stdout.decode()).stem)
 
 
 def current_branch() -> str:
