@@ -7,6 +7,7 @@
 # Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
 import subprocess
+
 import pytest
 
 """
@@ -46,15 +47,15 @@ def test_boil_upgrade():
 
 
 def test_boil_release():
-    assert subprocess.run(["python", "cicd/boil.py", "--dry-run", "release", "9.9.9"],
-                   check=True)
+    subprocess.run(
+        ["python", "cicd/boil.py", "--dry-run", "release", "9.9.9"],
+        check=True)
 
 def test_boil_release_invalid_version():
     with pytest.raises(Exception):
-        assert subprocess.run(["python", "cicd/boil.py", "--dry-run", "release", "9.9.f"],
+        subprocess.run(
+            ["python", "cicd/boil.py", "--dry-run", "release", "9.9.f"],
             check=True)
 
-
 def test_boil_clean():
-    subprocess.run(["python", "cicd/boil.py", "--dry-run", "clean"],
-                   check=True)
+    subprocess.run(["python", "cicd/boil.py", "--dry-run", "clean"], check=True)

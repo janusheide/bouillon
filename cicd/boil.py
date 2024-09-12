@@ -263,24 +263,17 @@ def cli() -> Namespace:
     return parser.parse_args()
 
 
-def run_function(*, function: Callable, **kwargs) -> None:
-    """Run a step."""
+def run(*, function: Callable, log_level: str, log_file: str, **kwargs) -> None:
+    """Setup logging and run a step."""
+    logging.basicConfig(filename=log_file, level=log_level)
+    if function != setup and util.find_spec('bouillon') is None:
+        logger.error('Failed to import bouillon, run "boil setup" first.')
+        exit(1)
+
     logger.debug(f'Running "{function.__name__}" step.')
     function(**kwargs)
 
 
-def run_logging(*, log_level: str, log_file: str, **kwargs) -> None:
-    """Do setup logging and run a step."""
-    logging.basicConfig(filename=log_file, level=log_level)
-    run_function(**kwargs)
-
-
 if __name__ == '__main__':
     args = cli()
-
-    # Unless we are running setup, make sure that bouillon was imported
-    if args.function != setup and util.find_spec('bouillon') is None:
-        logger.error('Failed to import bouillon, run "boil setup" first.')
-        exit(1)
-
-    run_logging(**vars(args))
+    run(**vars(args))
