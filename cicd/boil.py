@@ -96,7 +96,7 @@ def test(
     if unit_tests:
         bouillon.run([
             "pytest",
-            f"{Path("test") / "src"}",
+            f"{Path('test') / 'src'}",
             "--cov=bouillon",
             "--cov-report",
             "term-missing",
@@ -109,7 +109,7 @@ def test(
     if cicd_tests:
         bouillon.run([
             "pytest",
-            f"{Path("test") / "cicd"}",
+            f"{Path('test') / 'cicd'}",
             "--durations=5",
             "-vv"],
             **kwargs)
