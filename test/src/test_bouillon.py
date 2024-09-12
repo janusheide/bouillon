@@ -7,7 +7,6 @@
 # Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
 import bouillon
-from pathlib import Path
 
 
 def test_version():
