@@ -13,7 +13,7 @@ def test_repository_name():
     assert bouillon.git.repository_name() == "bouillon"
 
 
-def test_working_directory_clean(tmpdir):
+def test_working_directory_clean(tmp_path):
     bouillon.run(['git', 'stash'])
     assert bouillon.git.working_directory_clean()
     bouillon.run(['git', 'stash', 'apply'])
