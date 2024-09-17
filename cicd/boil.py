@@ -57,6 +57,7 @@ def setup(*, dry_run: bool, **kwargs) -> None:
 def lint(
     isort: bool = True,
     liccheck: bool = True,
+    mypy: bool = True,
     ruff: bool = True,
     **kwargs
 ) -> None:
@@ -79,7 +80,6 @@ def lint(
 def test(
     *,
     cicd_tests: bool = True,
-    mypy: bool = True,
     test_files: bool = True,
     unit_tests: bool = True,
     **kwargs
@@ -227,7 +227,7 @@ def cli() -> Namespace:
     parser_lint.add_argument(
         '--no-ruff', dest='ruff', action='store_false',
         help='Do not check with ruff.')
-    parser_test.add_argument(
+    parser_lint.add_argument(
         '--no-mypy-check', dest='mypy', action='store_false',
         help='Do not perform mypy code analysis.')
 
