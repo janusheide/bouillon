@@ -106,7 +106,7 @@ def test(
 
 def upgrade(**kwargs) -> None:
     """Upgrade the versions of the used modules."""
-    logger.critical("upgrade step not implemented.")
+    bouillon.run(["uppd",], **kwargs)
     setup(**kwargs)
 
 
@@ -209,7 +209,8 @@ def cli() -> Namespace:
         help='Do not run isort.')
     parser_lint.add_argument(
         '--no-liccheck', dest='liccheck', action='store_false',
-        help='Do not check that licenses of all used modules.')
+        help='Do not check that licenses of all used modules. (Default disabled)',
+        default=False,)
     parser_lint.add_argument(
         '--no-ruff', dest='ruff', action='store_false',
         help='Do not check with ruff.')
@@ -234,8 +235,7 @@ def cli() -> Namespace:
     parser_train.set_defaults(function=train)
 
     parser_upgrade = subparsers.add_parser(
-        'upgrade',
-        help='upgrade all dependencies (including bouillon).')
+        'upgrade', help='upgrade all dependencies.')
     parser_upgrade.set_defaults(function=upgrade)
 
     parser_clean = subparsers.add_parser('clean', help='Clean temp files.')

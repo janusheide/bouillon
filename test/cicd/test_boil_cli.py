@@ -43,8 +43,7 @@ def test_boil_train():
 
 
 def test_boil_upgrade():
-    pass
-    # subprocess.run(["python", "cicd/boil.py", "--dry-run", "upgrade"], check=True)
+    subprocess.run(["python", "cicd/boil.py", "--dry-run", "upgrade"], check=True)
 
 
 def test_boil_release():
