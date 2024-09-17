@@ -9,6 +9,7 @@ Latest
 * Minor: Added boil 'lint' command running isort, liccheck and ruff.
 * Minor: Dropped flake8.
 * Minor: Rename static kwarg to mypy in boil.py
+* Minor: Support ignoring files that matches provided strings in check_for_test_files.
 
 1.4.0
 -----
