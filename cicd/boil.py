@@ -16,7 +16,6 @@ reflects those steps. The cli specified here is used for the bouillon module.
 
 from __future__ import annotations
 
-import glob
 import logging
 import os
 import shutil
@@ -35,11 +34,6 @@ if util.find_spec('bouillon') is not None:
 logger = logging.getLogger(__name__)
 
 
-def find_requirement_files() -> list[str]:
-    """Find all requirements.txt files."""
-    return glob.glob('**/*requirements.txt', recursive=True)
-
-
 def setup(*, dry_run: bool, **kwargs) -> None:
     """Install dependencies. Since bouillon is also inste."""
     logger.info('Installing dependencies')
@@ -48,10 +42,7 @@ def setup(*, dry_run: bool, **kwargs) -> None:
         exit(0)
 
     # NOTE For your project instead add bouillon to requirements.txt.
-    subprocess.run(['pip', 'install', '-e', '.'], **kwargs)
-
-    for r in find_requirement_files():
-        subprocess.run(['pip', 'install', '-r', f'{r}'], **kwargs)
+    subprocess.run(["pip", "install", "-e", ".[dev]"], **kwargs)
 
 
 def lint(
@@ -64,10 +55,8 @@ def lint(
     if isort:
         bouillon.run(['isort', '.'], **kwargs)
 
-    # https://github.com/dhatim/python-license-check
     if liccheck:
-        for r in find_requirement_files():
-            bouillon.run(['liccheck', '-r', f'{r}'], **kwargs)
+        bouillon.run(["liccheck"], **kwargs)
 
     if ruff:
         bouillon.run(['ruff', 'check'], **kwargs)
@@ -117,10 +106,7 @@ def test(
 
 def upgrade(**kwargs) -> None:
     """Upgrade the versions of the used modules."""
-    # https://github.com/alanhamlett/pip-update-requirements
-    for r in find_requirement_files():
-        bouillon.run(['pur', '-r', f'{r}', '--force'], **kwargs)
-
+    bouillon.run(["uppd",], **kwargs)
     setup(**kwargs)
 
 
@@ -223,7 +209,8 @@ def cli() -> Namespace:
         help='Do not run isort.')
     parser_lint.add_argument(
         '--no-liccheck', dest='liccheck', action='store_false',
-        help='Do not check that licenses of all used modules.')
+        help='Do not check that licenses of all used modules. (Default disabled)',
+        default=False,)
     parser_lint.add_argument(
         '--no-ruff', dest='ruff', action='store_false',
         help='Do not check with ruff.')
@@ -248,8 +235,7 @@ def cli() -> Namespace:
     parser_train.set_defaults(function=train)
 
     parser_upgrade = subparsers.add_parser(
-        'upgrade',
-        help='upgrade all dependencies (including bouillon).')
+        'upgrade', help='upgrade all dependencies.')
     parser_upgrade.set_defaults(function=upgrade)
 
     parser_clean = subparsers.add_parser('clean', help='Clean temp files.')
