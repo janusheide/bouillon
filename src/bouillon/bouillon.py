@@ -69,13 +69,13 @@ def check_for_test_files(
     srcs = [s for s in srcs if all(i not in s for i in ignore)]
     if len(srcs) == 0:
         logger.warning("No source files found.")
-    relative_srcs = list(map(lambda s: os.path.relpath(s, src_path), srcs))
+    relative_srcs = [os.path.relpath(s, src_path) for s in srcs]
 
     # Find all test files
     tests = glob.glob(os.path.join(test_path, f"**/{prefix}*{suffix}"),
                       recursive=True)
-    relative_tests = map(lambda t: os.path.relpath(t, test_path), tests)
-    tests_no_prefix = map(lambda t: t.replace(prefix, ""), relative_tests)
+    relative_tests = [os.path.relpath(t, test_path) for t in tests]
+    tests_no_prefix = [t.replace(prefix, "") for t in relative_tests]
 
     # Remove all tests files from the list of source files
     for t in tests_no_prefix:
