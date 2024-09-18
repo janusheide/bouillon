@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-#
 # Copyright (c) 2020, Janus Heide.
 # All rights reserved.
 #
@@ -19,6 +17,8 @@ import os
 import shutil
 import subprocess
 
+logger = logging.getLogger(__name__)
+
 
 def run(
     args: list[str],
@@ -31,7 +31,6 @@ def run(
     Wrapper around subprocess.run, kwargs are forwarded to subprocess.run,
     dry_run = True, do not execute commands that make changes.
     """
-    logger = logging.getLogger(__name__)
 
     if "shell" in kwargs and kwargs["shell"] is True:
         logger.warning("setting shell to True can cause problems.")
@@ -64,8 +63,6 @@ def check_for_test_files(
     """
     assert os.path.exists(src_path), f"path does not exist {src_path}"
     assert os.path.exists(test_path), f"path does not exist {test_path}"
-
-    logger = logging.getLogger(__name__)
 
     # Find all source files
     srcs = glob.glob(os.path.join(src_path, f"**/*{suffix}"), recursive=True)
