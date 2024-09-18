@@ -16,22 +16,22 @@ in our cli or some other trivial mistakes.
 
 
 def test_boil_help():
-    subprocess.run(["python", "cicd/boil.py"], check=True)
+    subprocess.run(["python", "boil.py"], check=True)
 
 
 def test_boil_setup():
-    subprocess.run(["python", "cicd/boil.py", "--dry-run", "setup"], check=True)
+    subprocess.run(["python", "boil.py", "--dry-run", "setup"], check=True)
 
 
 def test_boil_lint():
-    subprocess.run(["python", "cicd/boil.py", "--dry-run", "lint"], check=True)
+    subprocess.run(["python", "boil.py", "--dry-run", "lint"], check=True)
 
 def test_boil_test():
-    subprocess.run(["python", "cicd/boil.py", "--dry-run", "test"], check=True)
+    subprocess.run(["python", "boil.py", "--dry-run", "test"], check=True)
 
 
 def test_boil_build():
-    subprocess.run(["python", "cicd/boil.py", "--dry-run", "build"], check=True)
+    subprocess.run(["python", "boil.py", "--dry-run", "build"], check=True)
 
 
 def test_boil_train():
@@ -40,19 +40,19 @@ def test_boil_train():
 
 
 def test_boil_upgrade():
-    subprocess.run(["python", "cicd/boil.py", "--dry-run", "upgrade"], check=True)
+    subprocess.run(["python", "boil.py", "--dry-run", "upgrade"], check=True)
 
 
 def test_boil_release():
     subprocess.run(
-        ["python", "cicd/boil.py", "--dry-run", "release", "9.9.9"],
+        ["python", "boil.py", "--dry-run", "release", "9.9.9"],
         check=True)
 
 def test_boil_release_invalid_version():
     with pytest.raises(Exception):
         subprocess.run(
-            ["python", "cicd/boil.py", "--dry-run", "release", "9.9.f"],
+            ["python", "boil.py", "--dry-run", "release", "9.9.f"],
             check=True)
 
 def test_boil_clean():
-    subprocess.run(["python", "cicd/boil.py", "--dry-run", "clean"], check=True)
+    subprocess.run(["python", "boil.py", "--dry-run", "clean"], check=True)
