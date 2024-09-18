@@ -55,8 +55,9 @@ def check_for_test_files(
     src_path: str,
     test_path: str,
     *,
-    prefix: str = 'test_',
-    suffix: str = '.py'
+    prefix: str = "test_",
+    suffix: str = ".py",
+    ignore: list[str] = ["__init__.py"],
 ) -> bool:
     """
     Check for test files.
@@ -72,6 +73,7 @@ def check_for_test_files(
 
     # Find all source files
     srcs = glob.glob(os.path.join(src_path, f'**/*{suffix}'), recursive=True)
+    srcs = [s for s in srcs if all(i not in s for i in ignore)]
     if len(srcs) == 0:
         logger.warning('No source files found.')
     relative_srcs = list(map(lambda s: os.path.relpath(s, src_path), srcs))
