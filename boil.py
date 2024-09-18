@@ -77,7 +77,7 @@ def test(
     if test_files:
         if not bouillon.check_for_test_files(
             os.path.join('src', bouillon.git.repository_name()),
-                os.path.join('test', 'src')):
+                os.path.join('test', bouillon.git.repository_name())):
             exit(1)
 
     # https://docs.pytest.org/en/latest/
@@ -85,7 +85,7 @@ def test(
     if unit_tests:
         bouillon.run([
             'pytest',
-            f'{os.path.join("test", "src")}',
+            f'{os.path.join("test", bouillon.git.repository_name())}',
             '--cov=bouillon',
             '--cov-report',
             'term-missing',
@@ -98,7 +98,7 @@ def test(
     if cicd_tests:
         bouillon.run([
             'pytest',
-            f'{os.path.join("test", "cicd")}',
+            f'{os.path.join("test", "test_boil.py")}',
             '--durations=5',
             '-vv'],
             **kwargs)

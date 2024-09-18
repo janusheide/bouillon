@@ -81,26 +81,29 @@ Copy the project structure into your existing (empty) git repository::
 You should now have a project with the following structure, and should modify
 as indicated below::
 
-    ├── boil -> cicd/boil.py
-    ├── cicd (modify)
-    │   ├── boil.py
-    │   └── requirements.txt
+    ├── boil.py (modify)
     ├── LICENSE.txt (replace)
     ├── NEWS.rst (replace)
     ├── pyproject.toml (modify)
     ├── README.rst (replace)
     ├── src (replace)
     │   ├── bouillon
-    │   │   ├── bouillon.py
     │   │   ├── __init__.py
-    │   │   └── requirements.txt
+    │   │   └── bouillon.py
+    │   │   └── bouillon.py
     └── test (replace)
         ├── cicd
         │   └── test_boil_cli.py
-        ├── requirements.txt
-        └── src
+        └── bouillon
             ├── test_bouillon.py
             └── test___init__.py
+
+    └── test (replace)
+        ├── bouillon
+        │   ├── test_bouillon.py
+        │   └── test_git.py
+        └── test_boil.py
+
 
 
 
