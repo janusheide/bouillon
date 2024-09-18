@@ -77,8 +77,8 @@ def test(
     """Run tests."""
     if test_files:
         if not bouillon.check_for_test_files(
-             Path("src") / bouillon.git.repository_name(),
-             Path("test") / bouillon.git.repository_name()
+             Path("src").resolve() / bouillon.git.repository_name(),
+             Path("test").resolve() / bouillon.git.repository_name()
         ):
             exit(1)
 
@@ -100,7 +100,7 @@ def test(
     if cicd_tests:
         bouillon.run([
             'pytest',
-            f'{Path("test") / "test_boil.py"}',
+            f'{Path("test").resolve() / "test_boil.py"}',
             '--durations=5',
             '-vv'],
             **kwargs)
