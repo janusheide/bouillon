@@ -1,6 +1,3 @@
-#! /usr/bin/env python3
-# encoding: utf-8
-#
 # Copyright (c) 2020, Janus Heide.
 # All rights reserved.
 #
@@ -10,13 +7,13 @@ import bouillon
 
 
 def test_repository_name():
-    assert bouillon.git.repository_name() == 'bouillon'
+    assert bouillon.git.repository_name() == "bouillon"
 
 
 def test_working_directory_clean(tmpdir):
-    bouillon.run(['git', 'stash'])
+    bouillon.run(["git", "stash"])
     assert bouillon.git.working_directory_clean()
-    bouillon.run(['git', 'stash', 'apply'])
+    bouillon.run(["git", "stash", "apply"])
 
 
 def test_current_branch():
@@ -28,4 +25,4 @@ def test_commit_id():
 
 
 def test_tags():
-    assert '0.0.1' in bouillon.git.tags()
+    assert "0.0.1" in bouillon.git.tags()

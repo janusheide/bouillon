@@ -1,6 +1,3 @@
-#! /usr/bin/env python3
-# encoding: utf-8
-#
 # Copyright (c) 2020, Janus Heide.
 # All rights reserved.
 #
@@ -8,7 +5,6 @@
 
 """Import bouillon functions."""
 
-from __future__ import absolute_import
 
 from importlib.metadata import PackageNotFoundError, version
 
@@ -22,10 +18,10 @@ try:
 except PackageNotFoundError:
     pass
 
-__all__ = ('run',
-           'check_for_test_files',
-           'repository_name',
-           'working_directory_clean',
-           'current_branch',
-           'commit_id',
-           'tags')
+__all__ = ("run",
+           "check_for_test_files",
+           "repository_name",
+           "working_directory_clean",
+           "current_branch",
+           "commit_id",
+           "tags")
