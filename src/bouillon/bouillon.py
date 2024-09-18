@@ -24,6 +24,7 @@ def run(
     args: list[str],
     *,
     dry_run: bool = False,
+    shell: bool = False,
     **kwargs,
 ) -> subprocess.CompletedProcess:
     """Run a command.
@@ -31,8 +32,7 @@ def run(
     Wrapper around subprocess.run, kwargs are forwarded to subprocess.run,
     dry_run = True, do not execute commands that make changes.
     """
-
-    if "shell" in kwargs and kwargs["shell"] is True:
+    if shell:
         logger.warning("setting shell to True can cause problems.")
 
     logger.info(f' executing: {" ".join(args)}')
@@ -44,7 +44,7 @@ def run(
         return subprocess.CompletedProcess(
             args, 2, "dry-run output", "dry-run error")
 
-    return subprocess.run(args, **kwargs)
+    return subprocess.run(args, shell=shell, **kwargs)
 
 
 def check_for_test_files(
