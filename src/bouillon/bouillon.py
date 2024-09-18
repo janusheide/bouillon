@@ -62,8 +62,8 @@ def check_for_test_files(
     have a correponding test file in the test_path with the defined prefix and
     suffix.
     """
-    # assert os.path.exists(src_path), f"path does not exist {src_path}"
-    # assert os.path.exists(test_path), f"path does not exist {test_path}"
+    assert os.path.exists(src_path), f"path does not exist {src_path}"
+    assert os.path.exists(test_path), f"path does not exist {test_path}"
 
     logger = logging.getLogger(__name__)
 
