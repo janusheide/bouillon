@@ -87,7 +87,7 @@ def test(
     if unit_tests:
         bouillon.run([
             'pytest',
-            f'{Path("test") / bouillon.git.repository_name()}',
+            str(Path("test") / bouillon.git.repository_name()),
             '--cov=bouillon',
             '--cov-report',
             'term-missing',
@@ -100,7 +100,7 @@ def test(
     if cicd_tests:
         bouillon.run([
             'pytest',
-            f'{Path("test").resolve() / "test_boil.py"}',
+            str(Path("test").resolve() / "test_boil.py"),
             '--durations=5',
             '-vv'],
             **kwargs)
