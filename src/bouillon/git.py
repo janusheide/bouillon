@@ -20,7 +20,7 @@ def repository_name() -> str:
                      stdout=subprocess.PIPE,
                      check=True)
 
-    return Path(r.stdout.decode()).stem
+    return str(Path(r.stdout.decode()).stem)
 
 
 def current_branch() -> str:
