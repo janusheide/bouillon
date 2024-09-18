@@ -22,6 +22,7 @@ import shutil
 import subprocess
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 from importlib import util
+from pathlib import Path
 from typing import Callable
 
 # Modules that are not part of 'standard' Python is only installed if they can
@@ -76,8 +77,8 @@ def test(
     """Run tests."""
     if test_files:
         if not bouillon.check_for_test_files(
-            os.path.join('src', bouillon.git.repository_name()),
-            os.path.join('test', bouillon.git.repository_name())
+            Path("src") / bouillon.git.repository_name(),
+            Path("test") / bouillon.git.repository_name()
         ):
             exit(1)
 
