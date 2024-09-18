@@ -1,6 +1,3 @@
-#! /usr/bin/env python3
-# encoding: utf-8
-#
 # Copyright (c) 2020, Janus Heide.
 # All rights reserved.
 #
@@ -19,16 +16,16 @@ import bouillon
 
 def repository_name() -> str:
     """Get git repository name."""
-    r = bouillon.run(['git', 'config', '--get', 'remote.origin.url'],
+    r = bouillon.run(["git", "config", "--get", "remote.origin.url"],
                      stdout=subprocess.PIPE,
                      check=True)
 
-    return str(os.path.split(r.stdout.decode().rstrip())[-1].split('.')[0])
+    return str(os.path.split(r.stdout.decode().rstrip())[-1].split(".")[0])
 
 
 def current_branch() -> str:
     """Get git current branch."""
-    r = bouillon.run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+    r = bouillon.run(["git", "rev-parse", "--abbrev-ref", "HEAD"],
                      stdout=subprocess.PIPE,
                      check=True)
 
@@ -37,7 +34,7 @@ def current_branch() -> str:
 
 def working_directory_clean() -> bool:
     """Check if the working directory is clean."""
-    r = bouillon.run(['git', 'diff', '--quiet', '--exit-code'],
+    r = bouillon.run(["git", "diff", "--quiet", "--exit-code"],
                      stdout=subprocess.PIPE,
                      check=True)
 
@@ -46,7 +43,7 @@ def working_directory_clean() -> bool:
 
 def commit_id() -> str:
     """Get current git commit id."""
-    r = bouillon.run(['git', 'rev-parse', 'HEAD'],
+    r = bouillon.run(["git", "rev-parse", "HEAD"],
                      stdout=subprocess.PIPE,
                      check=True)
 
@@ -55,9 +52,9 @@ def commit_id() -> str:
 
 def tags() -> list[str]:
     """Get list of all git tags."""
-    r = bouillon.run(['git', 'tag'],
+    r = bouillon.run(["git", "tag"],
                      stdout=subprocess.PIPE,
                      check=True)
 
-    tags: list[str] = r.stdout.decode().rstrip().split('\n')
+    tags: list[str] = r.stdout.decode().rstrip().split("\n")
     return tags
