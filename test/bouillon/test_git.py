@@ -26,3 +26,5 @@ def test_commit_id():
 
 def test_tags():
     assert "0.0.1" in bouillon.git.tags()
+    assert "1.0.0" in bouillon.git.tags()
+    assert "1.4.0" in bouillon.git.tags()

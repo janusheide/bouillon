@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-#
 # Copyright (c) 2020, Janus Heide.
 # All rights reserved.
 #
@@ -19,11 +17,14 @@ import os
 import shutil
 import subprocess
 
+logger = logging.getLogger(__name__)
+
 
 def run(
     args: list[str],
     *,
     dry_run: bool = False,
+    shell: bool = False,
     **kwargs,
 ) -> subprocess.CompletedProcess:
     """Run a command.
@@ -31,9 +32,7 @@ def run(
     Wrapper around subprocess.run, kwargs are forwarded to subprocess.run,
     dry_run = True, do not execute commands that make changes.
     """
-    logger = logging.getLogger(__name__)
-
-    if "shell" in kwargs and kwargs["shell"] is True:
+    if shell:
         logger.warning("setting shell to True can cause problems.")
 
     logger.info(f' executing: {" ".join(args)}')
@@ -45,7 +44,7 @@ def run(
         return subprocess.CompletedProcess(
             args, 2, "dry-run output", "dry-run error")
 
-    return subprocess.run(args, **kwargs)
+    return subprocess.run(args, shell=shell, **kwargs)
 
 
 def check_for_test_files(
@@ -65,20 +64,18 @@ def check_for_test_files(
     assert os.path.exists(src_path), f"path does not exist {src_path}"
     assert os.path.exists(test_path), f"path does not exist {test_path}"
 
-    logger = logging.getLogger(__name__)
-
     # Find all source files
     srcs = glob.glob(os.path.join(src_path, f"**/*{suffix}"), recursive=True)
     srcs = [s for s in srcs if all(i not in s for i in ignore)]
     if len(srcs) == 0:
         logger.warning("No source files found.")
-    relative_srcs = list(map(lambda s: os.path.relpath(s, src_path), srcs))
+    relative_srcs = [os.path.relpath(s, src_path) for s in srcs]
 
     # Find all test files
     tests = glob.glob(os.path.join(test_path, f"**/{prefix}*{suffix}"),
                       recursive=True)
-    relative_tests = map(lambda t: os.path.relpath(t, test_path), tests)
-    tests_no_prefix = map(lambda t: t.replace(prefix, ""), relative_tests)
+    relative_tests = [os.path.relpath(t, test_path) for t in tests]
+    tests_no_prefix = [t.replace(prefix, "") for t in relative_tests]
 
     # Remove all tests files from the list of source files
     for t in tests_no_prefix:
