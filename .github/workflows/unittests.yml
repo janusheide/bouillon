@@ -29,8 +29,14 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: pip list
+      run: python -m pip list
+
     - name: Setup environment
       run: python boil.py setup
+
+    - name: pip list
+      run: python -m pip list
 
     - name: Run linters
       run: python boil.py lint
