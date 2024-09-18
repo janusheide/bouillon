@@ -6,6 +6,7 @@ Lists of changes between versions.
 Latest
 ------
 * Major: Moved dependencies and project and tools configuration to pyproject.toml.
+* Major: Removed docker related functionality.
 * Minor: Added boil 'lint' command running isort, liccheck and ruff.
 * Minor: Dropped flake8.
 * Minor: Rename static kwarg to mypy in boil.py

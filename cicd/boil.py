@@ -89,7 +89,7 @@ def test(
             '--cov=bouillon',
             '--cov-report',
             'term-missing',
-            '--cov-fail-under=85',
+            '--cov-fail-under=95',
             '--durations=5',
             '-vv'
             ],
