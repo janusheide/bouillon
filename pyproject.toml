@@ -14,15 +14,15 @@ readme = "README.rst"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
-    "Topic :: Software Development :: Build Tools",
     "License :: OSI Approved :: BSD License",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    'Topic :: Utilities',
     'Topic :: Scientific/Engineering :: Information Analysis',
+    "Topic :: Software Development :: Build Tools",
+    'Topic :: Utilities',
 ]
 
 dependencies = []
@@ -52,10 +52,8 @@ keywords=["building", "maintenance", "utility"]
 Homepage = "https://github.com/janusheide/bouillon"
 Repository = "https://github.com/janusheide/bouillon"
 
-[[tool.mypy.overrides]]
-module = "bouillon"
-warn_return_any = true
-disallow_untyped_defs = true
+[tool.coverage.report]
+show_missing = true
 
 [tool.isort]
 multi_line_output = 5
@@ -90,9 +88,10 @@ unauthorized_licenses = [
 dependencies = true # load [project.dependencies]
 optional_dependencies = ["test", "dev"] # load extras from [project.optional-dependencies]
 
-[tool.liccheck.authorized_packages]
-PrintDebug = "*"
-filelock = "*"
+[[tool.mypy.overrides]]
+module = "bouillon"
+warn_return_any = true
+disallow_untyped_defs = true
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

@@ -88,24 +88,14 @@ as indicated below::
     ├── README.rst (replace)
     ├── src (replace)
     │   ├── bouillon
-    │   │   ├── __init__.py
-    │   │   └── bouillon.py
-    │   │   └── bouillon.py
-    └── test (replace)
-        ├── cicd
-        │   └── test_boil_cli.py
-        └── bouillon
-            ├── test_bouillon.py
-            └── test___init__.py
-
+    │   │   ├── bouillon.py
+    │   │   ├── git.py
+    │   │   └── __init__.py
     └── test (replace)
         ├── bouillon
         │   ├── test_bouillon.py
         │   └── test_git.py
         └── test_boil.py
-
-
-
 
 At some point it might be convenient to fork *this* repository, make any changes
 you need and use that as your template repository.
