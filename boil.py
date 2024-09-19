@@ -124,7 +124,6 @@ def train(**kwargs) -> None:
 def clean(**kwargs) -> None:
     """Remove files and dirs created during build."""
     logger.info('Deleting "build" and "dist" directories.')
-    shutil.rmtree('build', ignore_errors=True)
     shutil.rmtree('dist', ignore_errors=True)
 
 
