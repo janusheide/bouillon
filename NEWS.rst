@@ -3,7 +3,7 @@ News
 
 Lists of changes between versions.
 
-Latest
+2.0.0
 ------
 * Major: Moved dependencies and project and tools configuration to pyproject.toml.
 * Major: Removed docker related functionality.
