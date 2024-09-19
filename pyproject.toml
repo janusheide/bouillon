@@ -99,9 +99,5 @@ asyncio_default_fixture_loop_scope = "module"
 #TODO configure pytest_cov here when support for submodule config is added
 # addopts = "--cov=bouillon --cov-report term-missing --cov-fail-under=85 --durations=5 -vv"
 
-[tool.ruff.lint]
-select = ["ALL"]
-# as of 01/2024 ruff does not support isort configuration, so we disable I001
-ignore = ["ANN003", "ANN101", "ASYNC230", "I001", "D107", "D203", "D213", "D401", "FIX", "INP", "G004", "PLR", "SIM105", "TD002", "TD003", "TCH001", "TCH002"]
 
 [tool.setuptools_scm]
