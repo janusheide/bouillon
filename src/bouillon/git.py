@@ -56,5 +56,4 @@ def tags() -> list[str]:
                      stdout=subprocess.PIPE,
                      check=True)
 
-    tags: list[str] = r.stdout.decode().rstrip().split("\n")
-    return tags
+    return r.stdout.decode().rstrip().split("\n")
