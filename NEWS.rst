@@ -3,6 +3,10 @@ News
 
 Lists of changes between versions.
 
+Latest
+------
+* Minor: Use licensecheck instead of liccheck.
+
 2.0.0
 ------
 * Major: Moved dependencies and project and tools configuration to pyproject.toml.

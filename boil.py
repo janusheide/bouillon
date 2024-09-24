@@ -44,8 +44,9 @@ def setup(*, dry_run: bool, **kwargs) -> None:
 
 
 def lint(
+    *,
     isort: bool = True,
-    liccheck: bool = True,
+    licensecheck: bool = True,
     mypy: bool = True,
     ruff: bool = True,
     **kwargs,
@@ -54,8 +55,8 @@ def lint(
     if isort:
         bouillon.run(["isort", "."], **kwargs)
 
-    if liccheck:
-        bouillon.run(["liccheck"], **kwargs)
+    if licensecheck:
+        bouillon.run(["licensecheck", "--zero"], **kwargs)
 
     if ruff:
         bouillon.run(["ruff", "check"], **kwargs)
@@ -212,9 +213,8 @@ def cli() -> Namespace:
         "--no-isort", dest="isort", action="store_false",
         help="Do not run isort.")
     parser_lint.add_argument(
-        "--no-liccheck", dest="liccheck", action="store_false",
-        help="Do not check that licenses of all used modules. (Default disabled)",
-        default=False)
+        "--no-licensecheck", dest="licensecheck", action="store_false",
+        help="Do not check that licenses of all used modules.")
     parser_lint.add_argument(
         "--no-ruff", dest="ruff", action="store_false",
         help="Do not check with ruff.")
