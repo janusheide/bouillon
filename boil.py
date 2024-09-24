@@ -163,7 +163,14 @@ def release(*, version: str, **kwargs) -> None:
     build(**kwargs)
 
     logger.debug("upload builds to pypi and push commit and tag to repo.")
-    bouillon.run(["twine", "upload", "dist/*"], **kwargs)
+    try:
+        bouillon.run(["twine", "upload", "dist/*"], **kwargs)
+    except Exception as e:
+        bouillon.run(["git", "tag", "-d", f"{version}"], **kwargs)
+        bouillon.run(["git", "reset", "--hard", "origin/master"], **kwargs)
+        logger.error(f"Upload failed with error {e}, cleaning")
+        exit(1)
+
     bouillon.run(["git", "push"], **kwargs)
     bouillon.run(["git", "push", "origin", f"{version}"], **kwargs)
 
