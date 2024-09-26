@@ -6,6 +6,7 @@ Lists of changes between versions.
 Latest
 ------
 * Minor: Use licensecheck instead of liccheck.
+* Minor: Added type marker.
 
 2.0.0
 ------
