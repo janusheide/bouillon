@@ -3,13 +3,10 @@ News
 
 Lists of changes between versions.
 
-Latest
-------
+2.1.0
+-----
 * Minor: Use licensecheck instead of liccheck.
-<<<<<<< Updated upstream
 * Minor: Added type marker.
-=======
->>>>>>> Stashed changes
 
 2.0.0
 ------
