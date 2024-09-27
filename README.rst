@@ -3,13 +3,18 @@
 ..
 .. Distributed under the "BSD 3-Clause License", see LICENSE.rst.
 
-
 Bouillon
 ========
 
 .. image:: https://github.com/janusheide/bouillon/actions/workflows/unittests.yml/badge.svg
     :target: https://github.com/janusheide/bouillon/actions/workflows/unittests.yml
     :alt: Unit tests
+
+.. image:: https://img.shields.io/pypi/pyversions/bouillon
+   :alt: PyPI - Python Version
+
+.. image:: https://img.shields.io/librariesio/github/janusheide/bouillon
+   :alt: Libraries.io dependency status for GitHub repo
 
 Bouillon contains; a) a project structure, b) a Command Line Interface (CLI)
 for building, testing, etc., that are easy to adapt and, c) a module that
@@ -27,7 +32,7 @@ and other tedious tasks, helping you to;
 Features
 --------
 
-The cli provides various useful functionality using various projects, e.g.:
+The cli provides various useful functionality using various projects, e.g.
 
 * Pep8 syntax enforcement.
 * Static Code Analysis.
