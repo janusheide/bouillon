@@ -6,6 +6,7 @@ Lists of changes between versions.
 Latest
 ------
 * Minor: Use brundle to run all linters.
+* Minor: Dropped setup, lint and upgrade commands from example boil.py.
 
 2.1.0
 -----

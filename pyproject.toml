@@ -7,7 +7,7 @@ name = "bouillon"
 authors = [
     {name= 'Janus Heide', email = "janusheide@gmail.com"}
 ]
-description = "Tool for managing machine learning model and service projects and other fast paced python projects."
+description = "Tool for releasing machine learning model and service projects and other fast paced python projects."
 dynamic = ["version"]
 readme = "README.rst"
 

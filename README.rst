@@ -16,13 +16,15 @@ Bouillon
 .. image:: https://img.shields.io/librariesio/github/janusheide/bouillon
    :alt: Libraries.io dependency status for GitHub repo
 
+A Tool for releasing machine learning model and service projects and other fast
+paced python projects.
+
 Bouillon contains; a) a project structure, b) a Command Line Interface (CLI)
 for building, testing, etc., that are easy to adapt and, c) a module that
 provides helper functionality when writing your cli.
 
 The idea is that you together with your project ship a program that assist the
-developers to setup a development environment, run tests, release the project,
-and other tedious tasks, helping you to;
+developers to release the project, and other tedious tasks, helping you to;
 
 * Reduce time spent on repetetive tasks.
 * Guareentee a well defined development environement, reducing human error.
@@ -52,12 +54,12 @@ Getting Started
     git clone git@github.com:janusheide/bouillon.git
     cd bouillon
 
-    python boil --help
+    python boil.py --help
 
-Will pip install packages, a venv is recommended::
+Will pip install packages (a venv is recommended)::
 
-    python boil setup
-    python boil test
+    pip install .[dev]
+    python boil.py test
 
 Start A New Project
 ...................
@@ -145,7 +147,7 @@ up to date.
 Logging
 -------
 
-Supports standard log levels; DEBUG, INFO, WARING, ERROR, CRITICAL, and writing
+Supports standard log levels; DEBUG, INFO, WARNING, ERROR, CRITICAL, and writing
 log to a file.
 
 Set the log level to ``debug``::
