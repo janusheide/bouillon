@@ -63,6 +63,9 @@ include_trailing_comma = "True"
 [tool.licensecheck]
 using = "PEP631:test;dev"
 
+[tool.mypy]
+exclude="build"
+
 [[tool.mypy.overrides]]
 module = "bouillon"
 warn_return_any = true
