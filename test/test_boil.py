@@ -23,9 +23,6 @@ def test_boil_setup():
     subprocess.run(["python", "boil.py", "--dry-run", "setup"], check=True)
 
 
-def test_boil_lint():
-    subprocess.run(["python", "boil.py", "--dry-run", "lint"], check=True)
-
 def test_boil_test():
     subprocess.run(["python", "boil.py", "--dry-run", "test"], check=True)
 

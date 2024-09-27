@@ -33,7 +33,7 @@ jobs:
       run: python boil.py setup
 
     - name: Run linters
-      run: python boil.py lint
+      run: brundle
 
     - name: Run unit tests
       run: python boil.py test
