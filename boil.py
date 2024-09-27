@@ -17,30 +17,13 @@ from __future__ import annotations
 import logging
 import os
 import shutil
-import subprocess
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 from importlib import util
 from typing import Callable
 
-# Modules that are not part of 'standard' Python is only installed if they can
-# be found, this allows us to run the setup step where they are installed
-# without importing the modules we are about to install.
-if util.find_spec("bouillon") is not None:
-    import bouillon
-
+import bouillon
 
 logger = logging.getLogger(__name__)
-
-
-def setup(*, dry_run: bool, **kwargs) -> None:
-    """Install dependencies. Since bouillon is also inste."""
-    logger.info("Installing dependencies")
-
-    if dry_run:
-        exit(0)
-
-    # NOTE For your project instead add bouillon to requirements.txt.
-    subprocess.run(["pip", "install", "-e", ".[dev]"], **kwargs)
 
 
 def test(
@@ -79,12 +62,6 @@ def test(
             "--durations=5",
             "-vv"],
             **kwargs)
-
-
-def upgrade(**kwargs) -> None:
-    """Upgrade the versions of the used modules."""
-    bouillon.run(["uppd"], **kwargs)
-    setup(**kwargs)
 
 
 def build(**kwargs) -> None:
@@ -177,11 +154,6 @@ def cli() -> Namespace:
 
     subparsers = parser.add_subparsers(help="Available sub commands")
 
-    parser_setup = subparsers.add_parser(
-        "setup",
-        help="Setup installing dependencies, this will execute pip commands.")
-    parser_setup.set_defaults(function=setup)
-
     parser_build = subparsers.add_parser("build", help="Build.")
     parser_build.set_defaults(function=build)
 
@@ -201,10 +173,6 @@ def cli() -> Namespace:
     parser_train = subparsers.add_parser("train", help="Train.")
     parser_train.set_defaults(function=train)
 
-    parser_upgrade = subparsers.add_parser(
-        "upgrade", help="upgrade all dependencies.")
-    parser_upgrade.set_defaults(function=upgrade)
-
     parser_clean = subparsers.add_parser("clean", help="Clean temp files.")
     parser_clean.set_defaults(function=clean)
 
@@ -219,8 +187,8 @@ def cli() -> Namespace:
 def run(*, function: Callable, log_level: str, log_file: str, **kwargs) -> None:
     """Setup logging and run a step."""
     logging.basicConfig(filename=log_file, level=log_level)
-    if function != setup and util.find_spec("bouillon") is None:
-        logger.error('Failed to import bouillon, run "boil setup" first.')
+    if util.find_spec("bouillon") is None:
+        logger.error('Failed to import bouillon, run "pip install .[dev]" first.')
         exit(1)
 
     logger.debug(f'Running "{function.__name__}" step.')

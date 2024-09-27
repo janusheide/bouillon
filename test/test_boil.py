@@ -19,10 +19,6 @@ def test_boil_help():
     subprocess.run(["python", "boil.py"], check=True)
 
 
-def test_boil_setup():
-    subprocess.run(["python", "boil.py", "--dry-run", "setup"], check=True)
-
-
 def test_boil_test():
     subprocess.run(["python", "boil.py", "--dry-run", "test"], check=True)
 
@@ -35,9 +31,6 @@ def test_boil_train():
     pass
     # subprocess.run("python", "cicd/boil.py", "--dry-run", "train", check=True)
 
-
-def test_boil_upgrade():
-    subprocess.run(["python", "boil.py", "--dry-run", "upgrade"], check=True)
 
 
 def test_boil_release():
