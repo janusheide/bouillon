@@ -17,7 +17,6 @@ from __future__ import annotations
 import logging
 import os
 import shutil
-import subprocess
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 from importlib import util
 from typing import Callable
