@@ -35,11 +35,12 @@ test = [
 
 dev = [
     "bouillon[test]",
+    "brundle==0.2.0",
     "build==1.2.2",
     "isort==5.13.2",
     "licensecheck==2024.3",
     "mypy==1.11.2",
-    "ruff==0.6.5",
+    "ruff==0.6.8",
     "semver==3.0.2",
     "setuptools-scm==8.1.0",
     "twine==5.1.1",

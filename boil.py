@@ -43,28 +43,6 @@ def setup(*, dry_run: bool, **kwargs) -> None:
     subprocess.run(["pip", "install", "-e", ".[dev]"], **kwargs)
 
 
-def lint(
-    *,
-    isort: bool = True,
-    licensecheck: bool = True,
-    mypy: bool = True,
-    ruff: bool = True,
-    **kwargs,
-) -> None:
-    """Run linters."""
-    if isort:
-        bouillon.run(["isort", "."], **kwargs)
-
-    if licensecheck:
-        bouillon.run(["licensecheck", "--zero"], **kwargs)
-
-    if ruff:
-        bouillon.run(["ruff", "check"], **kwargs)
-
-    if mypy:
-        bouillon.run(["mypy", "src"], **kwargs)
-
-
 def test(
     *,
     cicd_tests: bool = True,
@@ -148,7 +126,7 @@ def release(*, version: str, **kwargs) -> None:
         logger.debug("Skipped git status checks.")
 
     clean(**kwargs)
-    lint(**kwargs)
+    bouillon.run(["brundle"], **kwargs)
     test(**kwargs)
 
     logger.debug("Edit the news file using default editor or nano.")
@@ -206,21 +184,6 @@ def cli() -> Namespace:
 
     parser_build = subparsers.add_parser("build", help="Build.")
     parser_build.set_defaults(function=build)
-
-    parser_lint = subparsers.add_parser("lint", help="Run linters")
-    parser_lint.set_defaults(function=lint)
-    parser_lint.add_argument(
-        "--no-isort", dest="isort", action="store_false",
-        help="Do not run isort.")
-    parser_lint.add_argument(
-        "--no-licensecheck", dest="licensecheck", action="store_false",
-        help="Do not check that licenses of all used modules.")
-    parser_lint.add_argument(
-        "--no-ruff", dest="ruff", action="store_false",
-        help="Do not check with ruff.")
-    parser_lint.add_argument(
-        "--no-mypy-check", dest="mypy", action="store_false",
-        help="Do not perform mypy code analysis.")
 
     parser_test = subparsers.add_parser("test", help="Run tests")
     parser_test.set_defaults(function=test)

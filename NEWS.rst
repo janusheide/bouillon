@@ -3,6 +3,10 @@ News
 
 Lists of changes between versions.
 
+Latest
+------
+* Minor: Use brundle to run all linters.
+
 2.1.0
 -----
 * Minor: Use licensecheck instead of liccheck.
