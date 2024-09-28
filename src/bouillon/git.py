@@ -34,7 +34,7 @@ def current_branch() -> str:
 
 def default_branch() -> str:
     """Get git default branch."""
-    r = run(["git" "name-rev" "--name-only" "origin/HEAD"],
+    r = run(["git", "name-rev", "--name-only", "origin/HEAD"],
             stdout=subprocess.PIPE,
             check=True)
 
