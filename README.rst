@@ -20,7 +20,7 @@ A Tool for releasing machine learning model and service projects and other fast
 paced python projects.
 
 Bouillon contains; a) a project structure, b) a Command Line Interface (CLI)
-for building, testing, etc., that are easy to adapt and, c) a module that
+for releasing etc., that is easy to adapt and, c) a module that
 provides helper functionality when writing your cli.
 
 The idea is that you together with your project ship a program that assist the
@@ -29,21 +29,6 @@ developers to release the project, and other tedious tasks, helping you to;
 * Reduce time spent on repetetive tasks.
 * Guareentee a well defined development environement, reducing human error.
 * Simplify setup of CI/CD, as the same commands locally and remotely.
-
-
-Features
---------
-
-The cli provides various useful functionality using various projects, e.g.
-
-* Pep8 syntax enforcement.
-* Static Code Analysis.
-* Verification of installed dependencies against requirements.
-* Verification of licenses in included modules.
-* Execution of unit tests.
-* Coverage of unit tests.
-* API documentation.
-* Updating of dependencies.
 
 
 Getting Started
@@ -59,7 +44,8 @@ Getting Started
 Will pip install packages (a venv is recommended)::
 
     pip install .[dev]
-    python boil.py test
+    python boil.py --help
+    python boil.py release 0.0.1
 
 Start A New Project
 ...................
@@ -106,42 +92,6 @@ as indicated below::
 
 At some point it might be convenient to fork *this* repository, make any changes
 you need and use that as your template repository.
-
-
-Ways of Inclusion
------------------
-
-You can include the bouillon module in a number of ways in your script, below
-are some options prioritized options.
-
-
-Pip Install During Setup Step
-.............................
-
-Install the module using Pip. This requires that the initial setup step can be
-executed without importing the module.
-
-
-Pip Install Prior to Executing Script
-.....................................
-
-Install the module prior to running any script commands, this adds an extra
-step and consequently the script *setup step* only partly setup the environment.
-
-Copy Module File
-..................
-
-Copy the module implementation (bouillon.py) into your project and import it
-from the local file in your script. Consequently you will have to manually
-update the module or implement a way to push a new module version into your
-repository.
-
-Copy Module Source Into CLI file
-................................
-
-Copy the module implementation or the functionality you need into your cli file.
-While it is simple but even more inconvenient to keep the module functionality
-up to date.
 
 
 Logging

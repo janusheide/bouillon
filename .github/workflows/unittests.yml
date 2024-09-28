@@ -36,7 +36,7 @@ jobs:
       run: brundle
 
     - name: Run unit tests
-      run: python boil.py test
+      run: pytest
 
     - name: Run build step
       run: python boil.py build

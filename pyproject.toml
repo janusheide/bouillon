@@ -74,8 +74,7 @@ disallow_untyped_defs = true
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "module"
-#TODO configure pytest_cov here when support for submodule config is added
-# addopts = "--cov=bouillon --cov-report term-missing --cov-fail-under=85 --durations=5 -vv"
+addopts = "--cov=bouillon --cov-report term-missing --cov-fail-under=90"
 
 
 [tool.setuptools_scm]

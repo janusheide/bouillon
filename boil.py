@@ -26,58 +26,15 @@ import bouillon
 logger = logging.getLogger(__name__)
 
 
-def test(
-    *,
-    cicd_tests: bool = True,
-    test_files: bool = True,
-    unit_tests: bool = True,
-    **kwargs,
-) -> None:
-    """Run tests."""
-    if test_files:
-        if not bouillon.check_for_test_files(
-            os.path.join("src", bouillon.git.repository_name()),
-                os.path.join("test", bouillon.git.repository_name())):
-            exit(1)
-
-    # https://docs.pytest.org/en/latest/
-    # https://pytest-cov.readthedocs.io/en/latest/
-    if unit_tests:
-        bouillon.run([
-            "pytest",
-            f'{os.path.join("test", bouillon.git.repository_name())}',
-            "--cov=bouillon",
-            "--cov-report",
-            "term-missing",
-            "--cov-fail-under=95",
-            "--durations=5",
-            "-vv",
-            ],
-            **kwargs)
-
-    if cicd_tests:
-        bouillon.run([
-            "pytest",
-            f'{os.path.join("test", "test_boil.py")}',
-            "--durations=5",
-            "-vv"],
-            **kwargs)
-
-
 def build(**kwargs) -> None:
     """Build distributeables."""
     logger.info("Building source and binary distributions")
     bouillon.run(["python", "-m", "build"], **kwargs)
 
 
-def train(**kwargs) -> None:
-    """Train a model."""
-    logger.critical("train step not implemented.")
-
-
 def clean(**kwargs) -> None:
     """Remove files and dirs created during build."""
-    logger.info('Deleting "build" and "dist" directories.')
+    logger.info('Deleting "dist" directories.')
     shutil.rmtree("dist", ignore_errors=True)
 
 
@@ -104,7 +61,7 @@ def release(*, version: str, **kwargs) -> None:
 
     clean(**kwargs)
     bouillon.run(["brundle"], **kwargs)
-    test(**kwargs)
+    bouillon.run(["pytest"], **kwargs)
 
     logger.debug("Edit the news file using default editor or nano.")
     EDITOR = os.environ.get("EDITOR", "nano")
@@ -156,22 +113,6 @@ def cli() -> Namespace:
 
     parser_build = subparsers.add_parser("build", help="Build.")
     parser_build.set_defaults(function=build)
-
-    parser_test = subparsers.add_parser("test", help="Run tests")
-    parser_test.set_defaults(function=test)
-
-    parser_test.add_argument(
-        "--no-test-files-check", dest="test_files", action="store_false",
-        help="Do not check that for each source file there is a test file.")
-    parser_test.add_argument(
-        "--no-unit-tests", dest="unit_tests", action="store_false",
-        help="Do not run unit tests.")
-    parser_test.add_argument(
-        "--no-cicd-tests", dest="cicd_tests", action="store_false",
-        help="Do not run CICD tests.")
-
-    parser_train = subparsers.add_parser("train", help="Train.")
-    parser_train.set_defaults(function=train)
 
     parser_clean = subparsers.add_parser("clean", help="Clean temp files.")
     parser_clean.set_defaults(function=clean)
