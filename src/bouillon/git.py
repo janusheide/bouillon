@@ -8,52 +8,64 @@
 
 from __future__ import annotations
 
-import os
-import subprocess
+from subprocess import PIPE, CalledProcessError
+from pathlib import Path
 
-import bouillon
+from bouillon import run
 
 
 def repository_name() -> str:
     """Get git repository name."""
-    r = bouillon.run(["git", "config", "--get", "remote.origin.url"],
-                     stdout=subprocess.PIPE,
-                     check=True)
+    r = run(["git", "config", "--get", "remote.origin.url"],
+            stdout=PIPE,
+            check=True)
 
-    return str(os.path.split(r.stdout.decode().rstrip())[-1].split(".")[0])
+    return Path(r.stdout.decode().rstrip()).stem
 
 
 def current_branch() -> str:
     """Get git current branch."""
-    r = bouillon.run(["git", "rev-parse", "--abbrev-ref", "HEAD"],
-                     stdout=subprocess.PIPE,
-                     check=True)
+    r = run(["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            stdout=PIPE,
+            check=True)
 
-    return str(r.stdout.decode().rstrip())
+    return r.stdout.decode().rstrip()
+
+
+def default_branch() -> str | None:
+    """Get git default branch, returns None if it cannot be determined."""
+    try:
+        r = run(["git", "rev-parse", "--abbrev-ref", "origin/HEAD"],
+            stdout=PIPE,
+            check=True)
+        return r.stdout.decode().rstrip().lstrip("origin/")
+
+    except CalledProcessError:
+        return None
 
 
 def working_directory_clean() -> bool:
     """Check if the working directory is clean."""
-    r = bouillon.run(["git", "diff", "--quiet", "--exit-code"],
-                     stdout=subprocess.PIPE,
-                     check=True)
+    r = run(["git", "diff", "--quiet", "--exit-code"],
+            stdout=PIPE,
+            check=True)
 
     return not r.returncode
 
 
 def commit_id() -> str:
     """Get current git commit id."""
-    r = bouillon.run(["git", "rev-parse", "HEAD"],
-                     stdout=subprocess.PIPE,
-                     check=True)
+    r = run(["git", "rev-parse", "HEAD"],
+            stdout=PIPE,
+            check=True)
 
-    return str(r.stdout.decode().rstrip())
+    return r.stdout.decode().rstrip()
 
 
 def tags() -> list[str]:
     """Get list of all git tags."""
-    r = bouillon.run(["git", "tag"],
-                     stdout=subprocess.PIPE,
-                     check=True)
+    r = run(["git", "tag"],
+            stdout=PIPE,
+            check=True)
 
-    return r.stdout.decode().rstrip().split("\n")
+    return r.stdout.decode().rstrip()

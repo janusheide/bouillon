@@ -10,7 +10,8 @@ from importlib.metadata import PackageNotFoundError, version
 
 from bouillon.bouillon import check_for_test_files, run
 from bouillon.git import (
-    commit_id, current_branch, repository_name, tags, working_directory_clean,
+    commit_id, current_branch, default_branch, repository_name, tags,
+    working_directory_clean,
 )
 
 try:
@@ -23,5 +24,6 @@ __all__ = ("run",
            "repository_name",
            "working_directory_clean",
            "current_branch",
+           "default_branch",
            "commit_id",
            "tags")

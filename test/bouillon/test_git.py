@@ -20,6 +20,11 @@ def test_current_branch():
     assert isinstance(bouillon.git.current_branch(), str)
 
 
+def test_default_branch():
+    """28/09/24 Note that this return None on a gitub runner."""
+    assert bouillon.git.default_branch() in ["master", "main", None]
+
+
 def test_commit_id():
     assert len(bouillon.git.commit_id()) == 40
 
