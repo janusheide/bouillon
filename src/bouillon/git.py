@@ -8,8 +8,8 @@
 
 from __future__ import annotations
 
-import os
 from subprocess import PIPE, CalledProcessError
+from pathlib import Path
 
 from bouillon import run
 
@@ -20,7 +20,7 @@ def repository_name() -> str:
             stdout=PIPE,
             check=True)
 
-    return os.path.split(r.stdout.decode().rstrip())[-1].split(".")[0]
+    return Path(r.stdout.decode()).stem
 
 
 def current_branch() -> str:
