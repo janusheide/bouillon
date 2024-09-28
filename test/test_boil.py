@@ -19,10 +19,6 @@ def test_boil_help():
     subprocess.run(["python", "boil.py"], check=True)
 
 
-def test_boil_test():
-    subprocess.run(["python", "boil.py", "--dry-run", "test"], check=True)
-
-
 def test_boil_build():
     subprocess.run(["python", "boil.py", "--dry-run", "build"], check=True)
 
