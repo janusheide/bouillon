@@ -5,6 +5,7 @@ Lists of changes between versions.
 
 Latest
 ------
+* Minor: Added default_branch() to bouillon.git
 * Minor: Use brundle to run all linters.
 * Minor: Dropped setup, lint, test and upgrade commands from example boil.py.
 

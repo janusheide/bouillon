@@ -21,7 +21,7 @@ from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 from importlib import util
 from typing import Callable
 
-import bouillon
+from bouillon import git, run
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 def build(**kwargs) -> None:
     """Build distributeables."""
     logger.info("Building source and binary distributions")
-    bouillon.run(["python", "-m", "build"], **kwargs)
+    run(["python", "-m", "build"], **kwargs)
 
 
 def clean(**kwargs) -> None:
@@ -40,52 +40,52 @@ def clean(**kwargs) -> None:
 
 def release(*, version: str, **kwargs) -> None:
     """Release the project."""
-    if bouillon.run(["pysemver", "check", version]).returncode:
+    if run(["pysemver", "check", version]).returncode:
         logger.error("Provided version is not valid semver")
         exit(1)
 
     if not kwargs["dry_run"]:
-        if bouillon.git.current_branch() != "master":
-            logger.error("Only release from the master branch")
+        if git.current_branch() != git.default_branch():
+            logger.error(f"Only release from the default branch {git.default_branch()}")
             exit(1)
 
-        if not bouillon.git.working_directory_clean():
+        if not git.working_directory_clean():
             logger.error("Unstaged changes in the working directory.")
             exit(1)
 
-        if version in bouillon.git.tags():
+        if version in git.tags():
             logger.error("Tag already exists.")
             exit(1)
     else:
         logger.debug("Skipped git status checks.")
 
     clean(**kwargs)
-    bouillon.run(["brundle"], **kwargs)
-    bouillon.run(["pytest"], **kwargs)
+    run(["brundle"], **kwargs)
+    run(["pytest"], **kwargs)
 
     logger.debug("Edit the news file using default editor or nano.")
     EDITOR = os.environ.get("EDITOR", "nano")
-    bouillon.run([EDITOR, "NEWS.rst"], **kwargs)
-    bouillon.run(["git", "add", "NEWS.rst"], **kwargs)
-    bouillon.run(["git", "commit", "-m", f"preparing release {version}"], **kwargs)
+    run([EDITOR, "NEWS.rst"], **kwargs)
+    run(["git", "add", "NEWS.rst"], **kwargs)
+    run(["git", "commit", "-m", f"preparing release {version}"], **kwargs)
 
     logger.debug("Create an annotated tag, used by setuptools_scm.")
-    bouillon.run(["git", "tag", "-a", f"{version}", "-m",
+    run(["git", "tag", "-a", f"{version}", "-m",
                   f"creating tag {version} for new release"], **kwargs)
 
     build(**kwargs)
 
     logger.debug("upload builds to pypi and push commit and tag to repo.")
     try:
-        bouillon.run(["twine", "upload", "dist/*"], **kwargs)
+        run(["twine", "upload", "dist/*"], **kwargs)
     except Exception as e:
-        bouillon.run(["git", "tag", "-d", f"{version}"], **kwargs)
-        bouillon.run(["git", "reset", "--hard", "origin/master"], **kwargs)
+        run(["git", "tag", "-d", f"{version}"], **kwargs)
+        run(["git", "reset", "--hard", f"origin/{git.default_branch()}"], **kwargs)
         logger.error(f"Upload failed with error {e}, cleaning")
         exit(1)
 
-    bouillon.run(["git", "push"], **kwargs)
-    bouillon.run(["git", "push", "origin", f"{version}"], **kwargs)
+    run(["git", "push"], **kwargs)
+    run(["git", "push", "origin", f"{version}"], **kwargs)
 
 
 def cli() -> Namespace:
@@ -125,7 +125,7 @@ def cli() -> Namespace:
     return parser.parse_args()
 
 
-def run(*, function: Callable, log_level: str, log_file: str, **kwargs) -> None:
+def main(*, function: Callable, log_level: str, log_file: str, **kwargs) -> None:
     """Setup logging and run a step."""
     logging.basicConfig(filename=log_file, level=log_level)
     if util.find_spec("bouillon") is None:
@@ -138,4 +138,4 @@ def run(*, function: Callable, log_level: str, log_file: str, **kwargs) -> None:
 
 if __name__ == "__main__":
     args = cli()
-    run(**vars(args))
+    main(**vars(args))
