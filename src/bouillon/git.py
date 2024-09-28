@@ -20,7 +20,7 @@ def repository_name() -> str:
             stdout=PIPE,
             check=True)
 
-    return Path(r.stdout.decode()).stem
+    return Path(r.stdout.decode().rstrip()).stem
 
 
 def current_branch() -> str:
@@ -59,7 +59,7 @@ def commit_id() -> str:
             stdout=PIPE,
             check=True)
 
-    return str(r.stdout.decode().rstrip())
+    return r.stdout.decode().rstrip()
 
 
 def tags() -> list[str]:
@@ -68,4 +68,4 @@ def tags() -> list[str]:
             stdout=PIPE,
             check=True)
 
-    return r.stdout.decode().rstrip().split("\n")
+    return r.stdout.decode().rstrip()
