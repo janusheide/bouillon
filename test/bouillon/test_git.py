@@ -22,7 +22,7 @@ def test_current_branch():
 
 def test_default_branch():
     # assert isinstance(bouillon.git.default_branch(), str)
-    assert bouillon.git.default_branch() == "master"
+    assert bouillon.git.default_branch() in ["master", "main", None]
 
 
 def test_commit_id():

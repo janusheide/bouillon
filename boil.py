@@ -80,7 +80,7 @@ def release(*, version: str, **kwargs) -> None:
         run(["twine", "upload", "dist/*"], **kwargs)
     except Exception as e:
         run(["git", "tag", "-d", f"{version}"], **kwargs)
-        run(["git", "reset", "--hard", f"origin/{git.default_branch()}"], **kwargs)
+        run(["git", "reset", "--hard", "HEAD~1"], **kwargs)
         logger.error(f"Upload failed with error {e}, cleaning")
         exit(1)
 
