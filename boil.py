@@ -71,7 +71,7 @@ def release(*, version: str, **kwargs) -> None:
 
     logger.debug("Create an annotated tag, used by setuptools_scm.")
     run(["git", "tag", "-a", f"{version}", "-m",
-                  f"creating tag {version} for new release"], **kwargs)
+        f"creating tag {version} for new release"], **kwargs)
 
     build(**kwargs)
 
