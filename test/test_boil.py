@@ -23,22 +23,18 @@ def test_boil_build():
     subprocess.run(["python", "boil.py", "--dry-run", "build"], check=True)
 
 
-def test_boil_train():
-    pass
-    # subprocess.run("python", "cicd/boil.py", "--dry-run", "train", check=True)
-
-
-
 def test_boil_release():
     subprocess.run(
         ["python", "boil.py", "--dry-run", "release", "9.9.9"],
         check=True)
+
 
 def test_boil_release_invalid_version():
     with pytest.raises(Exception):
         subprocess.run(
             ["python", "boil.py", "--dry-run", "release", "9.9.f"],
             check=True)
+
 
 def test_boil_clean():
     subprocess.run(["python", "boil.py", "--dry-run", "clean"], check=True)

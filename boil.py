@@ -32,14 +32,9 @@ def build(**kwargs) -> None:
     bouillon.run(["python", "-m", "build"], **kwargs)
 
 
-def train(**kwargs) -> None:
-    """Train a model."""
-    logger.critical("train step not implemented.")
-
-
 def clean(**kwargs) -> None:
     """Remove files and dirs created during build."""
-    logger.info('Deleting "build" and "dist" directories.')
+    logger.info('Deleting "dist" directories.')
     shutil.rmtree("dist", ignore_errors=True)
 
 
@@ -118,9 +113,6 @@ def cli() -> Namespace:
 
     parser_build = subparsers.add_parser("build", help="Build.")
     parser_build.set_defaults(function=build)
-
-    parser_train = subparsers.add_parser("train", help="Train.")
-    parser_train.set_defaults(function=train)
 
     parser_clean = subparsers.add_parser("clean", help="Clean temp files.")
     parser_clean.set_defaults(function=clean)
