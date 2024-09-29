@@ -25,8 +25,10 @@ classifiers = [
     'Topic :: Utilities',
 ]
 
+keywords = ["building", "maintenance", "utility"]
+
 dependencies = [
-    "packaging",
+    "packaging<=24.1,>=22",
 ]
 
 [project.optional-dependencies]
@@ -35,7 +37,6 @@ test = [
     "pytest==8.3.3",
     "pytest-cov==5.0.0",
 ]
-
 dev = [
     "bouillon[test]",
     "build==1.2.2",
@@ -43,11 +44,11 @@ dev = [
     "uppd==0.3.0",
 ]
 
-keywords=["building", "maintenance", "utility"]
 
 [project.urls]
 Homepage = "https://github.com/janusheide/bouillon"
 Repository = "https://github.com/janusheide/bouillon"
+Changelog = "https://github.com/janusheide/bouillon/blob/main/NEWS.rst"
 
 [tool.coverage.report]
 show_missing = true
