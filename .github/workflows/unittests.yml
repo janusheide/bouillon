@@ -30,16 +30,13 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: Setup environment
-      run: pip install .[test]
+      run: pip install .[dev]
 
     - name: Run linters
       run: brundle
 
     - name: Run unit tests
       run: pytest
-
-    - name: Setup environment
-      run: pip install .[dev]
 
     - name: Run build step
       run: python boil.py build
