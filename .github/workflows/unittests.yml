@@ -38,5 +38,8 @@ jobs:
     - name: Run unit tests
       run: pytest
 
+    - name: Setup environment
+      run: pip install .[dev]
+
     - name: Run build step
       run: python boil.py build
