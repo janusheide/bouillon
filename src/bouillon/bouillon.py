@@ -35,7 +35,7 @@ def run(
     if shell:
         logger.warning("setting shell to True can cause problems.")
 
-    logger.info(f' executing: {" ".join(args)}')
+    logger.info(f' executing (dry-run={dry_run}): {" ".join(args)}')
 
     if shutil.which(args[0]) is None:
         logger.error(f'Command "{args[0]}" was not found.')

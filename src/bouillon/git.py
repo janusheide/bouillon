@@ -8,8 +8,8 @@
 
 from __future__ import annotations
 
-from subprocess import PIPE, CalledProcessError
 from pathlib import Path
+from subprocess import PIPE, CalledProcessError
 
 from bouillon import run
 

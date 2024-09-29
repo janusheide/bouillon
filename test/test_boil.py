@@ -25,15 +25,13 @@ def test_boil_build():
 
 def test_boil_release():
     subprocess.run(
-        ["python", "boil.py", "--dry-run", "release", "9.9.9"],
-        check=True)
+        ["python", "boil.py", "--dry-run", "release", "9.9.9"], check=True)
 
 
 def test_boil_release_invalid_version():
     with pytest.raises(Exception):
         subprocess.run(
-            ["python", "boil.py", "--dry-run", "release", "9.9.f"],
-            check=True)
+            ["python", "boil.py", "--dry-run", "release", "foo"], check=True)
 
 
 def test_boil_clean():

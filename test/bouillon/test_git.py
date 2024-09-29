@@ -22,7 +22,7 @@ def test_current_branch():
 
 def test_default_branch():
     """28/09/24 Note that this return None on a gitub runner."""
-    assert bouillon.git.default_branch() in ["master", "main", None]
+    assert bouillon.git.default_branch() in ["master", None]
 
 
 def test_commit_id():
