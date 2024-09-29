@@ -44,7 +44,7 @@ def release(*, version: str, **kwargs) -> None:
     """Release the project."""
     try:
         v = Version(version)
-        if v in git.tags():
+        if str(v) in git.tags():
             logger.error("Tag already exists.")
             exit(1)
     except InvalidVersion:
