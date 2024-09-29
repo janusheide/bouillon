@@ -21,6 +21,8 @@ from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser, Namespace
 from importlib import util
 from typing import Callable
 
+from packaging.version import InvalidVersion, Version
+
 from bouillon import git, run
 
 logger = logging.getLogger(__name__)
@@ -40,9 +42,13 @@ def clean(**kwargs) -> None:
 
 def release(*, version: str, **kwargs) -> None:
     """Release the project."""
-    if run(["pysemver", "check", version]).returncode:
-        logger.error("Provided version is not valid semver")
-        exit(1)
+    try:
+        v = Version(version)
+        if v in git.tags():
+            logger.error("Tag already exists.")
+            exit(1)
+    except InvalidVersion:
+        logger.error("Provided version is not a valid version identifier")
 
     if not kwargs["dry_run"]:
         if git.current_branch() != git.default_branch():
@@ -53,9 +59,6 @@ def release(*, version: str, **kwargs) -> None:
             logger.error("Unstaged changes in the working directory.")
             exit(1)
 
-        if version in git.tags():
-            logger.error("Tag already exists.")
-            exit(1)
     else:
         logger.debug("Skipped git status checks.")
 
@@ -79,9 +82,9 @@ def release(*, version: str, **kwargs) -> None:
     try:
         run(["twine", "upload", "dist/*"], **kwargs)
     except Exception as e:
+        logger.error(f"Upload failed with error {e}, cleaning")
         run(["git", "tag", "-d", f"{version}"], **kwargs)
         run(["git", "reset", "--hard", "HEAD~1"], **kwargs)
-        logger.error(f"Upload failed with error {e}, cleaning")
         exit(1)
 
     run(["git", "push"], **kwargs)

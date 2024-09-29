@@ -25,7 +25,9 @@ classifiers = [
     'Topic :: Utilities',
 ]
 
-dependencies = []
+dependencies = [
+    "packaging",
+]
 
 [project.optional-dependencies]
 test = [
@@ -37,8 +39,6 @@ test = [
 dev = [
     "bouillon[test]",
     "build==1.2.2",
-    "semver==3.0.2",
-    "setuptools-scm==8.1.0",
     "twine==5.1.1",
     "uppd==0.3.0",
 ]
