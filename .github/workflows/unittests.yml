@@ -30,7 +30,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: Setup environment
-      run: pip install .[dev]
+      run: pip install .[test]
 
     - name: Run linters
       run: brundle
