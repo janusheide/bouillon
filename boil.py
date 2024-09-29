@@ -43,12 +43,12 @@ def clean(**kwargs) -> None:
 def release(*, version: str, **kwargs) -> None:
     """Release the project."""
     try:
-        v = Version(version)
-        if str(v) in git.tags():
+        if str(Version(version)) in git.tags():
             logger.error("Tag already exists.")
             exit(1)
     except InvalidVersion:
         logger.error("Provided version is not a valid version identifier")
+        exit(1)
 
     if not kwargs["dry_run"]:
         if git.current_branch() != git.default_branch():
