@@ -7,7 +7,7 @@ import subprocess
 
 import pytest
 
-from bouillon.cli import release, default_settings
+from bouillon.cli import default_settings, release
 
 """
 We do a dry run test of some of our commands to verify that the cli basically
