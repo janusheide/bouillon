@@ -46,11 +46,15 @@ def default_branch() -> str | None:
 
 def working_directory_clean() -> bool:
     """Check if the working directory is clean."""
-    r = run(["git", "diff", "--quiet", "--exit-code"],
+    try:
+        run(["git", "diff", "--quiet", "--exit-code"],
             stdout=PIPE,
             check=True)
+        return True
 
-    return not r.returncode
+    except CalledProcessError:
+        return False
+
 
 
 def commit_id() -> str:

@@ -20,7 +20,6 @@ import shutil
 from argparse import (
     ArgumentDefaultsHelpFormatter, ArgumentParser, FileType, Namespace,
 )
-from importlib import util
 from typing import Callable
 
 from packaging.version import InvalidVersion, Version
@@ -54,6 +53,7 @@ def release(
     *,
     version: str,
     distribution_dir: str,
+    releaseable_branch: str,
     news_files: list[str],
     lint_steps: list[list[str]],
     test_steps: list[list[str]],
@@ -68,16 +68,19 @@ def release(
         logger.error("Provided version is not a valid version identifier")
         exit(1)
 
+    print(releaseable_branch)
+
     if dry_run:
         logger.debug("Skipped git status checks.")
     else:
-        if git.current_branch() != git.default_branch():
+        if releaseable_branch not in ["*", git.current_branch()]:
             logger.error(f"Only release from the default branch {git.default_branch()}")
             exit(1)
 
         if not git.working_directory_clean():
             logger.error("Unstaged changes in the working directory.")
             exit(1)
+
 
     clean(distribution_dir=distribution_dir, **kwargs)
     [run(step, dry_run=dry_run) for step in lint_steps]
@@ -156,8 +159,9 @@ def cli() -> Namespace:
 
 
 default_settings = {
-    "news_files": ["NEWS.rst",],
+    "releaseable_branch": git.default_branch(),
     "distribution_dir": "dist",
+    "news_files": ["NEWS.rst",],
     "build_steps": [["python", "-m", "build"],],
     "lint_steps": [["brundle"],],
     "test_steps": [["pytest"],],
@@ -176,14 +180,14 @@ def settings(*, infile: FileType, **kwargs) -> dict:
 def main(*, function: Callable, log_level: str, log_file: str, **kwargs) -> None:
     """Setup logging and run a step."""
     logging.basicConfig(filename=log_file, level=log_level)
-    if util.find_spec("bouillon") is None:
-        logger.error('Failed to import bouillon, run "pip install .[dev]" first.')
-        exit(1)
-
     logger.debug(f'Running "{function.__name__}" step.')
     function(**kwargs)
 
 
-if __name__ == "__main__":
+def main_cli() -> None:
     args = cli()
     main(**settings(**vars(args)))
+
+
+if __name__ == "__main__":
+    main_cli()
