@@ -68,8 +68,6 @@ def release(
         logger.error("Provided version is not a valid version identifier")
         exit(1)
 
-    print(releaseable_branch)
-
     if dry_run:
         logger.debug("Skipped git status checks.")
     else:
