@@ -39,4 +39,4 @@ jobs:
       run: pytest
 
     - name: Run build step
-      run: python boil.py build
+      run: bouillon build

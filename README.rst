@@ -17,11 +17,12 @@ Bouillon
    :alt: Libraries.io dependency status for GitHub repo
 
 A Tool for releasing machine learning model and service projects and other fast
-paced python projects.
+paced python projects. The base module can also be used as a basis for a custom
+cli.
 
 Bouillon contains; a) a project structure, b) a Command Line Interface (CLI)
-for releasing etc., that is easy to adapt and, c) a module that
-provides helper functionality when writing your cli.
+for releasing etc., that is easy to adapt and, c) a couple of modules that
+provides helper functionality if your writing your own cli.
 
 The idea is that you together with your project ship a program that assist the
 developers to release the project, and other tedious tasks, helping you to;
@@ -34,21 +35,97 @@ developers to release the project, and other tedious tasks, helping you to;
 Getting Started
 ---------------
 
-::
-
-    git clone git@github.com:janusheide/bouillon.git
-    cd bouillon
-
-    python boil.py --help
-
 Will pip install packages (a venv is recommended)::
 
-    pip install .[dev]
-    python boil.py --help
-    python boil.py release 0.0.1
+    pip install bouillon[standard]
+    bouillon --help
+    bouillon release 0.0.1
+
+The ``bouillon`` command performs various checks and actions::
+
+    1. Check that the choosen tag does not already exists.
+    2. Check that we are releasing from the default_branch.
+    3. Check that there are no unstaged changes on the current branch.
+    4. Cleans the distribution folder.
+    5. Run all linters.
+    6. Run tests.
+    7. Opens all news files for editing.
+    8. Add and commit all news files.
+    9. Creates the tag.
+    10. Build the project.
+    11. Uploads to pypi.
+    12. Push the commit and tag to the origin.
+
+.. note::
+
+    If the upload to pypi fails for any reason the tag will be deleted and the
+    release commit will be rolled back.
+
+
+Settings
+--------
+
+The following settings (with defaults) can be overwritten in ``pyproject.toml``::
+
+    [tool.bouillon]
+    releaseable_branch: the git default branch
+    distribution_dir = "dist"
+    news_files = ["NEWS.rst",]
+    build_steps = [["python", "-m", "build"],]
+    lint_steps = [["brundle"],]
+    test_steps = [["pytest"],]
+
+
+.. note::
+
+    releaseable_branch defaults to the git default branch, but can be set to a
+    static branch name like "dev" or "*" if all branches are permitted.
+
+
+Logging
+-------
+
+Supports standard log levels; ``DEBUG``, ``INFO``, ``WARNING``, ``ERROR``, ``CRITICAL``, and writing
+log to a file.
+
+Set the log level to ``DEBUG``::
+
+    bouillon --log-level=DEBUG test
+
+Set the log level to ``DEBUG`` and redirect output from executed commands to
+``bar.log``::
+
+    bouillon --log-level=DEBUG test >> bar.log
+
+Set the log level to ``DEBUG`` and redirect output from executed commands to
+``bar.log`` and log information to ``foo.log``::
+
+    bouillon --log-level=DEBUG --log-file=foo.log test >> bar.log
+
+Set the log level to ``DEBUG`` and redirect output from executed commands and
+log information to ``foo.log``::
+
+    bouillon --log-level=DEBUG --log-file=foo.log test >> foo.log
+
+
+Customize CLI
+-------------
+
+The standard bouillon command relies on varios other tools, e.g. pytest, twine
+and various linters, if you want to use some other tools you can install the
+base dependencies only, install the tools you like and configure bouillon
+according or make you own cli altogheter.::
+
+    pip install bouillon
+
+You can get the base cli by downloading this git repository, e.g.::
+
+    git clone git@github.com:janusheide/bouillon.git
+    cd src/bouillon
+
 
 Start A New Project
-...................
+-------------------
 
 You can use *this* repository as a template, `use repository as a template guide. <https://help.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template>`__
 
@@ -74,7 +151,6 @@ Copy the project structure into your existing (empty) git repository::
 You should now have a project with the following structure, and should modify
 as indicated below::
 
-    ├── boil.py (modify)
     ├── LICENSE.txt (replace)
     ├── NEWS.rst (replace)
     ├── pyproject.toml (modify)
@@ -82,42 +158,17 @@ as indicated below::
     ├── src (replace)
     │   ├── bouillon
     │   │   ├── bouillon.py
+    │   │   ├── cli.py (optinally copy and modify)
     │   │   ├── git.py
     │   │   └── __init__.py
     └── test (replace)
-        ├── bouillon
-        │   ├── test_bouillon.py
-        │   └── test_git.py
-        └── test_boil.py
+        └── bouillon
+            ├── test_bouillon.py
+            ├── test_cli.py
+            └── test_git.py
 
 At some point it might be convenient to fork *this* repository, make any changes
 you need and use that as your template repository.
-
-
-Logging
--------
-
-Supports standard log levels; DEBUG, INFO, WARNING, ERROR, CRITICAL, and writing
-log to a file.
-
-Set the log level to ``debug``::
-
-    python boil --log-level=DEBUG test
-
-Set the log level to ``debug`` and redirect output from executed commands to
-``bar.log``::
-
-    python boil --log-level=DEBUG test >> bar.log
-
-Set the log level to ``debug`` and redirect output from executed commands to
-``bar.log`` and log information to ``foo.log``::
-
-    python boil --log-level=DEBUG --log-file=foo.log test >> bar.log
-
-Set the log level to ``debug`` and redirect output from executed commands and
-log information to ``foo.log``::
-
-    python boil --log-level=DEBUG --log-file=foo.log test >> foo.log
 
 
 Goals
