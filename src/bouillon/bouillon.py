@@ -11,11 +11,10 @@ scripts for managing (build, test, release etc.) a project.
 
 from __future__ import annotations
 
-import glob
 import logging
-import os
 import shutil
 import subprocess
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -61,25 +60,22 @@ def check_for_test_files(
     have a correponding test file in the test_path with the defined prefix and
     suffix.
     """
-    assert os.path.exists(src_path), f"path does not exist {src_path}"
-    assert os.path.exists(test_path), f"path does not exist {test_path}"
+    assert Path(src_path).exists(), f"path does not exist {src_path}"
+    assert Path(test_path).exists(), f"path does not exist {test_path}"
 
     # Find all source files
-    srcs = glob.glob(os.path.join(src_path, f"**/*{suffix}"), recursive=True)
-    srcs = [s for s in srcs if all(i not in s for i in ignore)]
-    if len(srcs) == 0:
+    srcs = Path(src_path).rglob(f"*{suffix}")
+    relative_srcs = list(map(lambda s: s.relative_to(src_path), srcs))
+    if len(relative_srcs) == 0:
         logger.warning("No source files found.")
-    relative_srcs = [os.path.relpath(s, src_path) for s in srcs]
 
     # Find all test files
-    tests = glob.glob(os.path.join(test_path, f"**/{prefix}*{suffix}"),
-                      recursive=True)
-    relative_tests = [os.path.relpath(t, test_path) for t in tests]
-    tests_no_prefix = [t.replace(prefix, "") for t in relative_tests]
+    tests = Path(test_path).rglob(f"{prefix}*{suffix}")
+    relative_tests = map(lambda t: t.relative_to(test_path), tests)
 
     # Remove all tests files from the list of source files
-    for t in tests_no_prefix:
-        relative_srcs.remove(t)
+    for t in relative_tests:
+        relative_srcs.remove(Path(str(t).replace(prefix, "")))
 
     if len(relative_srcs) == 0:
         return True

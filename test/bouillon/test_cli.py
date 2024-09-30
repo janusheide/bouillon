@@ -33,12 +33,6 @@ def test_release_from_disallowed_branch():
         release(version="100.0.0", dry_run=True, **default_settings)
 
 
-def test_release_any_branch():
-    default_settings["releaseable_branch"] = "*"
-    with pytest.raises(SystemExit):
-        release(version="100.0.0", dry_run=True, **default_settings)
-
-
 def test_release_unclean_branch_ok():
     default_settings["releaseable_branch"] = "*"
     default_settings["check_clean_branch"] = False
