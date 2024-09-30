@@ -51,9 +51,10 @@ def clean(*, distribution_dir: str, **kwargs) -> None:
 
 def release(
     *,
+    check_clean_branch: bool,
+    releaseable_branch: str,
     version: str,
     distribution_dir: str,
-    releaseable_branch: str,
     news_files: list[str],
     lint_steps: list[list[str]],
     test_steps: list[list[str]],
@@ -68,16 +69,13 @@ def release(
         logger.error("Provided version is not a valid version identifier")
         exit(1)
 
-    if dry_run:
-        logger.debug("Skipped git status checks.")
-    else:
-        if releaseable_branch not in ["*", git.current_branch()]:
-            logger.error(f"Only release from the default branch {git.default_branch()}")
-            exit(1)
+    if releaseable_branch not in ["*", git.current_branch()]:
+        logger.error(f"Only release from the default branch {git.default_branch()}")
+        exit(1)
 
-        if not git.working_directory_clean():
-            logger.error("Unstaged changes in the working directory.")
-            exit(1)
+    if check_clean_branch and not git.working_directory_clean():
+        logger.error("Unstaged changes in the working directory.")
+        exit(1)
 
 
     clean(distribution_dir=distribution_dir, **kwargs)
@@ -157,6 +155,7 @@ def cli() -> Namespace:
 
 
 default_settings = {
+    "check_clean_branch": True,
     "releaseable_branch": git.default_branch(),
     "distribution_dir": "dist",
     "news_files": ["NEWS.rst",],

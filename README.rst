@@ -68,7 +68,8 @@ Settings
 The following settings (with defaults) can be overwritten in ``pyproject.toml``::
 
     [tool.bouillon]
-    releaseable_branch: the git default branch
+    check_clean_branch = true
+    releaseable_branch = the git default branch
     distribution_dir = "dist"
     news_files = ["NEWS.rst",]
     build_steps = [["python", "-m", "build"],]
