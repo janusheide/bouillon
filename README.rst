@@ -47,6 +47,21 @@ Will pip install packages (a venv is recommended)::
     python boil.py --help
     python boil.py release 0.0.1
 
+
+Settings
+--------
+
+The following settings can be overwritten in ``pyproject.toml``::
+
+    [tool.bouillon]
+    news_files = ["NEWS.rst",]
+    distribution_dirs = ["dist",]
+    build_steps = [["python", "-m", "build"],]
+    lint_steps = [["brundle"],]
+    test_steps = [["pytest"],]
+
+
+
 Start A New Project
 ...................
 
@@ -97,24 +112,24 @@ you need and use that as your template repository.
 Logging
 -------
 
-Supports standard log levels; DEBUG, INFO, WARNING, ERROR, CRITICAL, and writing
+Supports standard log levels; ``DEBUG``, ``INFO``, ``WARNING``, ``ERROR``, ``CRITICAL``, and writing
 log to a file.
 
-Set the log level to ``debug``::
+Set the log level to ``DEBUG``::
 
     python boil --log-level=DEBUG test
 
-Set the log level to ``debug`` and redirect output from executed commands to
+Set the log level to ``DEBUG`` and redirect output from executed commands to
 ``bar.log``::
 
     python boil --log-level=DEBUG test >> bar.log
 
-Set the log level to ``debug`` and redirect output from executed commands to
+Set the log level to ``DEBUG`` and redirect output from executed commands to
 ``bar.log`` and log information to ``foo.log``::
 
     python boil --log-level=DEBUG --log-file=foo.log test >> bar.log
 
-Set the log level to ``debug`` and redirect output from executed commands and
+Set the log level to ``DEBUG`` and redirect output from executed commands and
 log information to ``foo.log``::
 
     python boil --log-level=DEBUG --log-file=foo.log test >> foo.log
