@@ -56,7 +56,7 @@ The ``bouillon`` command performs various checks and actions::
     11. Uploads to pypi.
     12. Push the commit and tag to the origin.
 
-Note::
+.. note::
 
     If the upload to pypi fails for any reason the tag will be deleted and the
     release commit will be rolled back.
@@ -76,7 +76,7 @@ The following settings (with defaults) can be overwritten in ``pyproject.toml``:
     test_steps = [["pytest"],]
 
 
-Note::
+.. note::
 
     releaseable_branch defaults to the git default branch, but can be set to a
     static branch name like "dev" or "*" if all branches are permitted.

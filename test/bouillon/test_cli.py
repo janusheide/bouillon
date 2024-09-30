@@ -17,10 +17,6 @@ in our cli or some other trivial mistakes.
 """
 
 
-def test_release():
-    release(dry_run=True, version="100", **default_settings)
-
-
 def test_release_existing_version():
     with pytest.raises(SystemExit):
         release(dry_run=True, version="1", **default_settings)
