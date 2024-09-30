@@ -39,7 +39,7 @@ def test_boil_release_from_non_default_branch():
 
 def test_boil_release_invalid_version():
     with pytest.raises(Exception):
-        subprocess.run(["bouillon", "--dry-run", "release", "foo"], check=True)
+        subprocess.run(["bouillon", "--dry-run", "release", "foo3"], check=True)
 
 
 def test_boil_clean():
