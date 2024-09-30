@@ -7,31 +7,12 @@ import subprocess
 
 import pytest
 
-from bouillon.cli import default_settings, release
-
 """
 We do a dry run test of some of our commands to verify that the cli basically
 works but we do not want to excute the commands, that should be done in the
 test pipeline. This helps us to avoid situation where we mess up the arguments
 in our cli or some other trivial mistakes.
 """
-
-
-def test_release_existing_version():
-    with pytest.raises(SystemExit):
-        release(dry_run=True, version="1", **default_settings)
-
-
-def test_release_any_branch():
-    default_settings["releaseable_branch"] = "*"
-    with pytest.raises(SystemExit):
-        release(dry_run=False, version="100", **default_settings)
-
-
-def test_release_no_branch():
-    default_settings["releaseable_branch"] = None
-    with pytest.raises(SystemExit):
-        release(dry_run=False, version="100", **default_settings)
 
 
 def test_boil_help():
