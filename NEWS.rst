@@ -3,6 +3,10 @@ News
 
 Lists of changes between versions.
 
+Latest
+------
+* Minor: Changed default branch from master to main.
+
 2.2.0
 -----
 * Minor: Added bouillon cli on install.

@@ -193,7 +193,7 @@ Reproducibility
 
 * Results and builds should be easy to reproduce.
 * All dependencies must be hard (versioned).
-* The master should always be green.
+* The main branch should always be green.
 
 Simplicity
 ..........
