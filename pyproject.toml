@@ -35,18 +35,21 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-    "brundle[linters]==0.3.0",
+    "brundle[linters]==1.0.0",
     "pytest==8.3.3",
     "pytest-cov==5.0.0",
 ]
-standard = [
-    "bouillon[test]",
+release = [
     "build==1.2.2",
     "twine==5.1.1",
 ]
+standard = [
+    "bouillon[test]",
+    "bouillon[release]",
+]
 dev = [
     "bouillon[standard]",
-    "uppd==0.3.0",
+    "uppd==1.0.0",
 ]
 
 [project.urls]
