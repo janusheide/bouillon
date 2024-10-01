@@ -3,8 +3,8 @@ News
 
 Lists of changes between versions.
 
-Latest
-------
+2.2.0
+-----
 * Minor: Added bouillon cli on install.
 * Minor: Added default_branch() to bouillon.git.
 * Minor: Support Python 3.13.
