@@ -73,14 +73,14 @@ def release(
         logger.error(f"Only release from the default branch {git.default_branch()}")
         exit(1)
 
-    if check_clean_branch and not git.working_directory_clean():
-        logger.error("Unstaged changes in the working directory.")
-        exit(1)
-
-
     clean(distribution_dir=distribution_dir, **kwargs)
     [run(step, dry_run=dry_run) for step in lint_steps]
     [run(step, dry_run=dry_run) for step in test_steps]
+
+    # Check for modifications after linters
+    if check_clean_branch and not git.working_directory_clean():
+        logger.error("Unstaged changes in the working directory.")
+        exit(1)
 
     logger.debug("Edit the news file using default editor or nano.")
     EDITOR = os.environ.get("EDITOR", "nano")
