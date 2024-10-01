@@ -6,7 +6,7 @@ Lists of changes between versions.
 2.2.0
 -----
 * Minor: Added bouillon cli on install.
-* Minor: Added default_branch() to bouillon.git.
+* Minor: Added bouillon.default_branch() which find the name of the default branch.
 * Minor: Support Python 3.13.
 * Minor: Use brundle to run all linters.
 * Minor: Dropped setup, lint, test and upgrade commands from example boil.py.
