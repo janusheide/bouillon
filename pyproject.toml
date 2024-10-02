@@ -23,9 +23,9 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
-    'Topic :: Scientific/Engineering :: Information Analysis',
+    "Topic :: Scientific/Engineering :: Information Analysis",
     "Topic :: Software Development",
-    'Topic :: Utilities',
+    "Topic :: Utilities",
     "Typing :: Typed",
 ]
 
