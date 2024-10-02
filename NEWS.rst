@@ -6,6 +6,7 @@ Lists of changes between versions.
 Latest
 ------
 * Minor: Changed default branch from master to main.
+* Minor: Pypy support.
 
 2.2.0
 -----
