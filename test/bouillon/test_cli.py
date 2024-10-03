@@ -45,7 +45,7 @@ def test_cli():
     a = vars(cli(["release", "1.2.3"]))
 
     assert a["check_clean_branch"]
-    assert a["releaseable_branch"] == "main"
+    assert a["releaseable_branch"] in ["main", None]  # None on github runners
     assert a["distribution_dir"] == "dist"
     assert a["news_files"] == ["NEWS.rst",]
     assert a["build_steps"] == [["python", "-m", "build"],]
