@@ -4,10 +4,11 @@
 # Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
 import subprocess
+from pathlib import Path
 
 import pytest
 
-from bouillon.cli import default_settings, release
+from bouillon.cli import default_settings, release, settings
 
 """
 We do a dry run test of some of our commands to verify that the cli basically
@@ -16,6 +17,12 @@ test pipeline. This helps us to avoid situation where we mess up the arguments
 in our cli or some other trivial mistakes.
 """
 
+
+def test_settings():
+    with Path("pyproject.toml").open("rb") as pf:
+        s = settings(infile=pf)
+        assert s["test_foo"] == "bar"
+        assert s["check_clean_branch"]
 
 def test_release_invalid_version():
     with pytest.raises(SystemExit):

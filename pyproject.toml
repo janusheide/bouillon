@@ -86,3 +86,6 @@ disallow_untyped_defs = true
 addopts = "--cov=bouillon"
 
 [tool.setuptools_scm]
+
+[tool.bouillon]
+test_foo = "bar"
