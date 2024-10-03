@@ -3,6 +3,11 @@ News
 
 Lists of changes between versions.
 
+
+Latest
+------
+* Patch: Fixed case where error would not halt the release.
+
 2.3.0
 -----
 * Minor: Read settings from input file (default: pyproject.toml).
