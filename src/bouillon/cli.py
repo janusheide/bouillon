@@ -75,8 +75,8 @@ def release(
         exit(1)
 
     clean(distribution_dir=distribution_dir, **kwargs)
-    [run(step, dry_run=dry_run) for step in lint_steps]
-    [run(step, dry_run=dry_run) for step in test_steps]
+    [run(step, dry_run=dry_run, check=True) for step in lint_steps]
+    [run(step, dry_run=dry_run, check=True) for step in test_steps]
 
     # Check for modifications after linters
     if check_clean_branch and not git.working_directory_clean():
@@ -98,7 +98,7 @@ def release(
 
     logger.debug("upload builds to pypi and push commit and tag to repo.")
     try:
-        run(["twine", "upload", f"{distribution_dir}/*"], dry_run=dry_run)
+        run(["twine", "upload", f"{distribution_dir}/*"], dry_run=dry_run, check=True)
     except Exception as e:
         logger.error(f"Upload failed with error {e}, cleaning")
         run(["git", "tag", "-d", f"{version}"], dry_run=dry_run)

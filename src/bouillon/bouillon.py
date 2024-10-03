@@ -24,7 +24,6 @@ def run(
     *,
     dry_run: bool = False,
     shell: bool = False,
-    check: bool = True,
     **kwargs,
 ) -> subprocess.CompletedProcess:
     """Run a command.
@@ -44,7 +43,7 @@ def run(
         return subprocess.CompletedProcess(
             args, 2, "dry-run output", "dry-run error")
 
-    return subprocess.run(args, shell=shell, check=check, **kwargs)
+    return subprocess.run(args, shell=shell, **kwargs)
 
 
 def check_for_test_files(
