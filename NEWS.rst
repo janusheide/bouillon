@@ -3,8 +3,8 @@ News
 
 Lists of changes between versions.
 
-Latest
-------
+2.3.0
+-----
 * Minor: Read settings from input file (default: pyproject.toml).
 * Minor: Changed default branch from master to main.
 * Minor: Pypy support.
