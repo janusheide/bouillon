@@ -89,3 +89,6 @@ addopts = "--cov=bouillon"
 
 [tool.bouillon]
 test_foo = "bar"
+check_clean_branch = true
+news_files = ["NEWS.rst",]
+test_steps  = [["pytest"],]
