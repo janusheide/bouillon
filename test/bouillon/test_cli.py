@@ -29,7 +29,8 @@ def test_release_existing_version():
 
 def test_release_from_disallowed_branch():
     with pytest.raises(SystemExit):
-        release(**vars(cli(["--dry-run", "release", "100.0.0"])))
+        release(**vars(cli(["--dry-run", "release", "100.0.0",
+                            "--releaseable_branch", "foo",])))
 
 
 def test_release_unclean_branch_ok():
