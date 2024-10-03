@@ -41,20 +41,56 @@ Will pip install packages (a venv is recommended)::
     bouillon --help
     bouillon release 0.0.1
 
-The ``bouillon`` command performs various checks and actions::
+Print help for the ``release`` command::
 
-    1. Check that the choosen tag does not already exists.
-    2. Check that we are releasing from the default_branch.
-    3. Check that there are no unstaged changes on the current branch.
-    4. Cleans the distribution folder.
-    5. Run all linters.
-    6. Run tests.
-    7. Opens all news files for editing.
-    8. Add and commit all news files.
-    9. Creates the tag.
-    10. Build the project.
-    11. Uploads to pypi.
-    12. Push the commit and tag to the origin.
+    bouillon release --help
+    usage: bouillon release [-h]
+                            [--check_clean_branch]
+                            [--releaseable_branch RELEASEABLE_BRANCH]
+                            [--distribution_dir DISTRIBUTION_DIR]
+                            [--news_files NEWS_FILES]
+                            [--build_steps BUILD_STEPS]
+                            [--lint_steps LINT_STEPS]
+                            [--test_steps TEST_STEPS]
+                            version
+
+    The following checks and actions will be performed:
+
+        1. Check that the choosen tag does not already exists.
+        2. Check that we are releasing from the default_branch.
+        3. Check that there are no unstaged changes on the current branch.
+        4. Cleans the distribution folder.
+        5. Run all linters.
+        6. Run tests.
+        7. Opens all news files for editing.
+        8. Add and commit all news files.
+        9. Creates the tag.
+        10. Build the project.
+        11. Uploads to pypi.
+        12. Push the commit and tag to the origin.
+
+    Note that precedence of settings in decreasing order is as follows:
+        commandline arguments -> project file (pyproject.toml) -> defaults.
+
+    positional arguments:
+    version               release version (e.g. '1.2.3').
+
+    options:
+    -h, --help            show this help message and exit
+    --check_clean_branch  Check that the current branch is clean. (default: True)
+    --releaseable_branch RELEASEABLE_BRANCH
+                            Branches from which release is allowed ('*' for any branch) (default: main)
+    --distribution_dir DISTRIBUTION_DIR
+                            Distribution directory. (default: dist)
+    --news_files NEWS_FILES
+                            News files to open for edits. (default: ['NEWS.rst'])
+    --build_steps BUILD_STEPS
+                            List of build steps. (default: [['python', '-m', 'build']])
+    --lint_steps LINT_STEPS
+                            List of lint steps. (default: [['brundle']])
+    --test_steps TEST_STEPS
+                            List of test steps. (default: [['pytest']])
+
 
 .. note::
 

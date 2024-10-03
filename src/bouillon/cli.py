@@ -17,10 +17,11 @@ from __future__ import annotations
 import logging
 import os
 import shutil
+import sys
 from argparse import (
     ArgumentDefaultsHelpFormatter, ArgumentParser, FileType, Namespace,
 )
-from typing import Callable
+from typing import Callable, List
 
 from packaging.version import InvalidVersion, Version
 
@@ -34,7 +35,7 @@ from bouillon import git, run
 logger = logging.getLogger(__name__)
 
 
-def build(*, build_steps: list[list[str]], dry_run: bool, **kwargs) -> None:
+def build(*, build_steps: List[List[str]], dry_run: bool, **kwargs) -> None:
 
     print(kwargs)
     """Build distributeables."""
@@ -55,9 +56,9 @@ def release(
     releaseable_branch: str,
     version: str,
     distribution_dir: str,
-    news_files: list[str],
-    lint_steps: list[list[str]],
-    test_steps: list[list[str]],
+    news_files: List[str],
+    lint_steps: List[List[str]],
+    test_steps: List[List[str]],
     dry_run: bool, **kwargs) -> None:
     """Release the project."""
 
@@ -108,7 +109,7 @@ def release(
     run(["git", "push", "origin", f"{version}"], dry_run=dry_run)
 
 
-def cli() -> Namespace:
+def cli(args) -> Namespace:
     """Build the cli."""
     parser = ArgumentParser(
         description="Bouillon",
@@ -123,12 +124,15 @@ def cli() -> Namespace:
     parser.add_argument(
         "-i",
         "--infile",
-        nargs="*",
         default="pyproject.toml",
         type=FileType("rb"),
         help="Path to input file",
     )
 
+    bouillon_settings = load(
+        parser.parse_args(["-i", "pyproject.toml"]).infile).get(
+            "tool", dict()).get("bouillon", dict())
+#
     parser.add_argument(
         "--dry-run", action="store_true", help="Perform a dry run.")
     parser.add_argument(
@@ -140,38 +144,69 @@ def cli() -> Namespace:
 
     subparsers = parser.add_subparsers(help="Available sub commands")
 
-    parser_build = subparsers.add_parser("build", help="Build.")
+    parser_build = subparsers.add_parser("build", help="Build.",
+        formatter_class=ArgumentDefaultsHelpFormatter,)
     parser_build.set_defaults(function=build)
+    parser_build.add_argument(
+        "--build_steps", type=List[str], help="List of build steps.",
+        default=bouillon_settings.get("build_steps", [["python", "-m", "build"],]))
 
-    parser_clean = subparsers.add_parser("clean", help="Clean temp files.")
+    parser_clean = subparsers.add_parser("clean", help="Clean temp files.",
+        formatter_class=ArgumentDefaultsHelpFormatter,)
     parser_clean.set_defaults(function=clean)
+    parser_clean.add_argument(
+        "--distribution_dir", type=str, help="Distribution directory.",
+        default=bouillon_settings.get("distribution_dir", "dist"))
 
-    parser_release = subparsers.add_parser("release", help="release me.")
+    parser_release = subparsers.add_parser("release", help="release me.",
+        formatter_class=ArgumentDefaultsHelpFormatter,
+        description="""
+        1. Check that the choosen tag does not already exists.
+        2. Check that we are releasing from the default_branch.
+        3. Check that there are no unstaged changes on the current branch.
+        4. Cleans the distribution folder.
+        5. Run all linters.
+        6. Run tests.
+        7. Opens all news files for editing.
+        8. Add and commit all news files.
+        9. Creates the tag.
+        10. Build the project.
+        11. Uploads to pypi.
+        12. Push the commit and tag to the origin.
+
+        Note that precedence of settings in decreasing order is as follows:
+        commandline arguments -> project file (pyproject.toml) -> defaults.
+        """
+        )
     parser_release.add_argument("version", type=str,
-                                help="release version.")
+                                help="release version (e.g. '1.2.3').")
+    parser_release.add_argument(
+        "--check_clean_branch", action="store_false",
+        help="Check that the current branch is clean.",
+        default=bouillon_settings.get("check_clean_branch", True))
+    parser_release.add_argument(
+        "--releaseable_branch", type=str,
+        help="Branches from which release is allowed ('*' for any branch)",
+        default=bouillon_settings.get("releaseable_branch", git.default_branch()))
+    parser_release.add_argument(
+        "--distribution_dir", type=str, help="Distribution directory.",
+        default=bouillon_settings.get("distribution_dir", "dist"))
+    parser_release.add_argument(
+        "--news_files", type=List[str], help="News files to open for edits.",
+        default=bouillon_settings.get("news_files", ["NEWS.rst",]))
+    parser_release.add_argument(
+        "--build_steps", type=List[str], help="List of build steps.",
+        default=bouillon_settings.get("build_steps", [["python", "-m", "build"],]))
+    parser_release.add_argument(
+        "--lint_steps", type=List[str], help="List of lint steps.",
+        default=bouillon_settings.get("lint_steps", [["brundle"],]))
+    parser_release.add_argument(
+        "--test_steps", type=List[str], help="List of test steps.",
+        default=bouillon_settings.get("test_steps", [["pytest"],]))
+
     parser_release.set_defaults(function=release)
 
-    return parser.parse_args()
-
-
-default_settings = {
-    "check_clean_branch": True,
-    "releaseable_branch": git.default_branch(),
-    "distribution_dir": "dist",
-    "news_files": ["NEWS.rst",],
-    "build_steps": [["python", "-m", "build"],],
-    "lint_steps": [["brundle"],],
-    "test_steps": [["pytest"],],
-}
-
-def settings(*, infile: FileType, **kwargs) -> dict:
-    """Read settings."""
-    settings = default_settings
-
-    data = load(infile) #type: ignore
-    settings.update(data.get("tool", dict()).get("bouillon", dict()))
-    settings.update(kwargs)
-    return settings
+    return parser.parse_args(args)
 
 
 def main(*, function: Callable, log_level: str, log_file: str, **kwargs) -> None:
@@ -182,8 +217,7 @@ def main(*, function: Callable, log_level: str, log_file: str, **kwargs) -> None
 
 
 def main_cli() -> None:
-    args = cli()
-    main(**settings(**vars(args)))
+    main(**vars(cli(sys.argv[1:])))
 
 
 if __name__ == "__main__":

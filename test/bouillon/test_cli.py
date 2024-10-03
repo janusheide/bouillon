@@ -4,10 +4,11 @@
 # Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
 import subprocess
+import sys
 
 import pytest
 
-from bouillon.cli import default_settings, release
+from bouillon.cli import cli, release
 
 """
 We do a dry run test of some of our commands to verify that the cli basically
@@ -16,31 +17,48 @@ test pipeline. This helps us to avoid situation where we mess up the arguments
 in our cli or some other trivial mistakes.
 """
 
-
 def test_release_invalid_version():
     with pytest.raises(SystemExit):
-        release(version="fo0", dry_run=True, **default_settings)
+        release(**vars(cli(["--dry-run", "release", "fo0"])))
 
 
 def test_release_existing_version():
     with pytest.raises(SystemExit):
-        release(version="1.0.0", dry_run=True, **default_settings)
+        release(**vars(cli(["--dry-run", "release", "1.0.0"])))
 
 
 def test_release_from_disallowed_branch():
-    default_settings["releaseable_branch"] = "foobar"
     with pytest.raises(SystemExit):
-        release(version="100.0.0", dry_run=True, **default_settings)
+        release(**vars(cli(["--dry-run", "release", "100.0.0"])))
 
 
 def test_release_unclean_branch_ok():
-    default_settings["releaseable_branch"] = "*"
-    default_settings["check_clean_branch"] = False
-    release(version="100.0.0", dry_run=True, **default_settings)
+    release(**vars(cli(["--dry-run", "release", "100.0.0",
+        "--releaseable_branch", "*", "--check_clean_branch"])))
+
+
+def test_cli():
+    assert cli(sys.argv[1:])
+    with pytest.raises(SystemExit):
+        assert cli(["release", "--help"])
+
+    a = vars(cli(["release", "1.2.3"]))
+
+    assert a["check_clean_branch"]
+    assert a["releaseable_branch"] in ["main", None]  # None on github runners
+    assert a["distribution_dir"] == "dist"
+    assert a["news_files"] == ["NEWS.rst",]
+    assert a["build_steps"] == [["python", "-m", "build"],]
+    assert a["lint_steps"] == [["brundle"],]
+    assert a["test_steps"] == [["pytest"],]
 
 
 def test_boil_help():
     subprocess.run(["bouillon"], check=True)
+
+
+def test_boil_infile():
+    subprocess.run(["bouillon", "-i", "pyproject.toml"], check=True)
 
 
 def test_boil_build():

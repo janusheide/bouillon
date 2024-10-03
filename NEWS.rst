@@ -5,6 +5,7 @@ Lists of changes between versions.
 
 Latest
 ------
+* Minor: Read settings from input file (default: pyproject.toml).
 * Minor: Changed default branch from master to main.
 * Minor: Pypy support.
 

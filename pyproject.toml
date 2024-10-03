@@ -86,3 +86,9 @@ disallow_untyped_defs = true
 addopts = "--cov=bouillon"
 
 [tool.setuptools_scm]
+
+[tool.bouillon]
+test_foo = "bar"
+check_clean_branch = true
+news_files = ["NEWS.rst",]
+test_steps  = [["pytest"],]
