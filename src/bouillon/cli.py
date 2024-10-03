@@ -123,7 +123,6 @@ def cli() -> Namespace:
     parser.add_argument(
         "-i",
         "--infile",
-        nargs="*",
         default="pyproject.toml",
         type=FileType("rb"),
         help="Path to input file",

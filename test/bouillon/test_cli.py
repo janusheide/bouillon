@@ -43,6 +43,10 @@ def test_boil_help():
     subprocess.run(["bouillon"], check=True)
 
 
+def test_boil_infile():
+    subprocess.run(["bouillon", "-i", "pyproject.toml"], check=True)
+
+
 def test_boil_build():
     subprocess.run(["bouillon", "--dry-run", "build"], check=True)
 
