@@ -21,7 +21,7 @@ import sys
 from argparse import (
     ArgumentDefaultsHelpFormatter, ArgumentParser, FileType, Namespace,
 )
-from typing import Callable
+from typing import Callable, List
 
 from packaging.version import InvalidVersion, Version
 
@@ -35,7 +35,7 @@ from bouillon import git, run
 logger = logging.getLogger(__name__)
 
 
-def build(*, build_steps: list[list[str]], dry_run: bool, **kwargs) -> None:
+def build(*, build_steps: List[List[str]], dry_run: bool, **kwargs) -> None:
 
     print(kwargs)
     """Build distributeables."""
@@ -56,9 +56,9 @@ def release(
     releaseable_branch: str,
     version: str,
     distribution_dir: str,
-    news_files: list[str],
-    lint_steps: list[list[str]],
-    test_steps: list[list[str]],
+    news_files: List[str],
+    lint_steps: List[List[str]],
+    test_steps: List[List[str]],
     dry_run: bool, **kwargs) -> None:
     """Release the project."""
 
@@ -148,7 +148,7 @@ def cli(args) -> Namespace:
         formatter_class=ArgumentDefaultsHelpFormatter,)
     parser_build.set_defaults(function=build)
     parser_build.add_argument(
-        "--build_steps", type=list[str], help="List of build steps.",
+        "--build_steps", type=List[str], help="List of build steps.",
         default=bouillon_settings.get("build_steps", [["python", "-m", "build"],]))
 
     parser_clean = subparsers.add_parser("clean", help="Clean temp files.",
@@ -192,16 +192,16 @@ def cli(args) -> Namespace:
         "--distribution_dir", type=str, help="Distribution directory.",
         default=bouillon_settings.get("distribution_dir", "dist"))
     parser_release.add_argument(
-        "--news_files", type=list[str], help="News files to open for edits.",
+        "--news_files", type=List[str], help="News files to open for edits.",
         default=bouillon_settings.get("news_files", ["NEWS.rst",]))
     parser_release.add_argument(
-        "--build_steps", type=list[str], help="List of build steps.",
+        "--build_steps", type=List[str], help="List of build steps.",
         default=bouillon_settings.get("build_steps", [["python", "-m", "build"],]))
     parser_release.add_argument(
-        "--lint_steps", type=list[str], help="List of lint steps.",
+        "--lint_steps", type=List[str], help="List of lint steps.",
         default=bouillon_settings.get("lint_steps", [["brundle"],]))
     parser_release.add_argument(
-        "--test_steps", type=list[str], help="List of test steps.",
+        "--test_steps", type=List[str], help="List of test steps.",
         default=bouillon_settings.get("test_steps", [["pytest"],]))
 
     parser_release.set_defaults(function=release)
