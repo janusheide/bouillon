@@ -5,7 +5,7 @@ Lists of changes between versions.
 
 2.4.0
 -----
-Minor: Improved cli input handling and help description.
+* Minor: Improved cli input handling and help description.
 
 2.3.1
 -----
