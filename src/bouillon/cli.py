@@ -111,6 +111,12 @@ def release(
     run(["git", "push", "origin", f"{version}"], dry_run=dry_run)
 
 
+class input_overwrites(list):
+    """Avoid copying default argument(s), when appending inputs."""
+    def __copy__(self):
+        return []
+
+
 def cli(args) -> Namespace:
     """Build the cli."""
     parser = ArgumentParser(
@@ -195,25 +201,21 @@ def cli(args) -> Namespace:
         "--distribution_dir", type=str, help="Distribution directory.",
         default=bouillon_settings.get("distribution_dir", "dist"))
     parser_release.add_argument(
-        "--news_files", type=str, help="""News files to open for edits,
-        note that steps are appended, to overwrite set in the pyproject.toml file.""",
+        "--news_files", type=str, help="News files to open for edits.",
         nargs="+", action="extend",
-        default=bouillon_settings.get("news_files", ["NEWS.rst",]))
+        default=input_overwrites(bouillon_settings.get("news_files", ["NEWS.rst",])))
     parser_release.add_argument(
-        "--build_steps", type=str, help="""List of build steps,
-        note that steps are appended, to overwrite set in the pyproject.toml file.""",
+        "--build_steps", type=str, help="List of build steps.",
         nargs="+", action="append",
-        default=bouillon_settings.get("build_steps", [["python", "-m", "build"],]))
+        default=input_overwrites(bouillon_settings.get("build_steps", [["python", "-m", "build"],])))
     parser_release.add_argument(
-        "--lint_steps", type=str, help="""List of lint steps.
-        note that steps are appended, to overwrite set in the pyproject.toml file.""",
+        "--lint_steps", type=str, help="List of lint steps.",
         nargs="+", action="append",
-        default=bouillon_settings.get("lint_steps", [["brundle"],]))
+        default=input_overwrites(bouillon_settings.get("lint_steps", [["brundle"],])))
     parser_release.add_argument(
-        "--test_steps", type=str, help="""List of test steps.
-        note that steps are appended, to overwrite set in the pyproject.toml file.""",
+        "--test_steps", type=str, help="List of test steps.",
         nargs="+", action="append",
-        default=bouillon_settings.get("test_steps", [["pytest"],]))
+        default=input_overwrites(bouillon_settings.get("test_steps", [["pytest"],])))
 
     parser_release.set_defaults(function=release)
     return parser.parse_args(args)

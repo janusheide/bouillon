@@ -83,13 +83,13 @@ Print help for the ``release`` command::
     --distribution_dir DISTRIBUTION_DIR
                             Distribution directory. (default: dist)
     --news_files NEWS_FILES [NEWS_FILES ...]
-                            News files to open for edits, Note that steps are appended, to overwrite set in the pyproject.toml file. (default: ['NEWS.rst'])
+                            News files to open for edits. (default: ['NEWS.rst'])
     --build_steps BUILD_STEPS [BUILD_STEPS ...]
-                            List of build steps, note that steps are appended, to overwrite set in the pyproject.toml file. (default: [['python', '-m', 'build']])
+                            List of build steps. (default: [['python', '-m', 'build']])
     --lint_steps LINT_STEPS [LINT_STEPS ...]
-                            List of lint steps. note that steps are appended, to overwrite set in the pyproject.toml file. (default: [['brundle']])
+                            List of lint steps. (default: [['brundle']])
     --test_steps TEST_STEPS [TEST_STEPS ...]
-                            List of test steps. note that steps are appended, to overwrite set in the pyproject.toml file. (default: [['pytest']])
+                            List of test steps. (default: [['pytest']])
 
 
 
