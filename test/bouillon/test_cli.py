@@ -17,6 +17,43 @@ test pipeline. This helps us to avoid situation where we mess up the arguments
 in our cli or some other trivial mistakes.
 """
 
+
+def test_cli():
+    assert cli(sys.argv[1:])
+
+    with pytest.raises(SystemExit):
+        assert cli(["release", "--help"])
+
+    a = vars(cli(["release", "1.2.3"]))
+    assert a["check_clean_branch"]
+    assert a["releaseable_branch"] in ["main", None]  # None on github runners
+    assert a["distribution_dir"] == "dist"
+    assert a["news_files"] == ["NEWS.rst",]
+    assert a["build_steps"] == [["python", "-m", "build"],]
+    assert a["lint_steps"] == [["brundle"],]
+    assert a["test_steps"] == [["pytest"],]
+
+
+def test_cli_news_files():
+    a = vars(cli(["release", "100", "--news_files", "foo", "bar", "--news_files", "foobars"]))
+    assert a["news_files"] == ["foo", "bar", "foobars"]
+
+
+def test_cli_lint_steps():
+    a = vars(cli(["release", "100", "--lint_steps", "foo", "bar", "--lint_steps", "foo"]))
+    assert a["lint_steps"] == [["foo", "bar"],["foo"]]
+
+
+def test_cli_test_steps():
+    a = vars(cli(["release", "100", "--test_steps", "foobar"]))
+    assert a["test_steps"] == [["foobar"],]
+
+
+def test_cli_build_steps():
+    a = vars(cli(["release", "100", "--build_steps", "barfoo"]))
+    assert a["build_steps"] == [["barfoo"],]
+
+
 def test_release_invalid_version():
     with pytest.raises(SystemExit):
         release(**vars(cli(["--dry-run", "release", "fo0"])))
@@ -38,20 +75,24 @@ def test_release_unclean_branch_ok():
         "--releaseable_branch", "*", "--check_clean_branch"])))
 
 
-def test_cli():
-    assert cli(sys.argv[1:])
-    with pytest.raises(SystemExit):
-        assert cli(["release", "--help"])
+def test_release_append_news_file():
+    release(**vars(cli(["--dry-run", "release", "100.0.0",
+        "--releaseable_branch", "*", "--check_clean_branch", "--news_files", "pyproject.toml"])))
 
-    a = vars(cli(["release", "1.2.3"]))
 
-    assert a["check_clean_branch"]
-    assert a["releaseable_branch"] in ["main", None]  # None on github runners
-    assert a["distribution_dir"] == "dist"
-    assert a["news_files"] == ["NEWS.rst",]
-    assert a["build_steps"] == [["python", "-m", "build"],]
-    assert a["lint_steps"] == [["brundle"],]
-    assert a["test_steps"] == [["pytest"],]
+def test_release_append_build_step():
+    release(**vars(cli(["--dry-run", "release", "100.0.0",
+        "--releaseable_branch", "*", "--check_clean_branch", "--build_steps", "build"])))
+
+
+def test_release_append_lint_step():
+    release(**vars(cli(["--dry-run", "release", "100.0.0",
+        "--releaseable_branch", "*", "--check_clean_branch", "--lint_steps", "brundle"])))
+
+
+def test_release_append_test_step():
+    release(**vars(cli(["--dry-run", "release", "100.0.0",
+        "--releaseable_branch", "*", "--check_clean_branch", "--test_steps", "pytest"])))
 
 
 def test_boil_help():
@@ -77,4 +118,4 @@ def test_boil_release_invalid_version():
 
 
 def test_boil_clean():
-    subprocess.run(["bouillon", "--dry-run", "clean"], check=True)
+    subprocess.run(["bouillon", "clean"], check=True)

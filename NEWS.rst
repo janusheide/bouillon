@@ -3,6 +3,9 @@ News
 
 Lists of changes between versions.
 
+Latest
+------
+Minor: Improved cli input handling and help description.
 
 2.3.1
 -----
