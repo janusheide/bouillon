@@ -36,18 +36,17 @@ logger = logging.getLogger(__name__)
 
 
 def build(*, build_steps: List[List[str]], dry_run: bool, **kwargs) -> None:
-
-    print(kwargs)
     """Build distributeables."""
     logger.info("Building source and binary distributions")
     for step in build_steps:
         run(step, dry_run=dry_run)
 
 
-def clean(*, distribution_dir: str, **kwargs) -> None:
+def clean(*, distribution_dir: str, dry_run: bool, **kwargs) -> None:
     """Remove files and dirs created during build."""
-    logger.info('Deleting "distribution_dirs" directories.')
-    shutil.rmtree(distribution_dir, ignore_errors=True)
+    logger.info(f"Deleting {distribution_dir} directories.")
+    if not dry_run:
+        shutil.rmtree(distribution_dir, ignore_errors=True)
 
 
 def release(
@@ -74,29 +73,32 @@ def release(
         logger.error(f"Only release from the default branch {git.default_branch()}")
         exit(1)
 
-    clean(distribution_dir=distribution_dir, **kwargs)
+    clean(distribution_dir=distribution_dir, dry_run=dry_run, **kwargs)
     [run(step, dry_run=dry_run, check=True) for step in lint_steps]
     [run(step, dry_run=dry_run, check=True) for step in test_steps]
 
     # Check for modifications after linters
     if check_clean_branch and not git.working_directory_clean():
         logger.error("Unstaged changes in the working directory.")
-        exit(1)
+        if not dry_run:
+            exit(1)
 
-    logger.debug("Edit the news file using default editor or nano.")
+    logger.info("Opening the news file(s) for edit using default editor or nano.")
     EDITOR = os.environ.get("EDITOR", "nano")
-
     [run([EDITOR, file], dry_run=dry_run) for file in news_files]
+
+    logger.info("Running lint steps(s)")
     run(["git", "add"] + news_files, dry_run=dry_run)
+    logger.info("Running test steps(s)")
     run(["git", "commit", "-m", f"preparing release {version}"], dry_run=dry_run)
 
-    logger.debug("Create an annotated tag, used by setuptools_scm.")
+    logger.info("Create an annotated tag, used by setuptools_scm.")
     run(["git", "tag", "-a", f"{version}", "-m",
         f"creating tag {version} for new release"], dry_run=dry_run)
 
     build(dry_run=dry_run, **kwargs)
 
-    logger.debug("upload builds to pypi and push commit and tag to repo.")
+    logger.info("upload builds to pypi and push commit and tag to repo.")
     try:
         run(["twine", "upload", f"{distribution_dir}/*"], dry_run=dry_run, check=True)
     except Exception as e:
@@ -134,13 +136,14 @@ def cli(args) -> Namespace:
             "tool", dict()).get("bouillon", dict())
 #
     parser.add_argument(
-        "--dry-run", action="store_true", help="Perform a dry run.")
-    parser.add_argument(
         "--log-level",
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICIAL"],
         default="WARNING", help="Set log level.")
     parser.add_argument(
         "--log-file", type=str, help="Set log file.")
+    parser.add_argument(
+        "--dry-run", action="store_true",
+        help="Perform a dry run, its helpfull to also set the log-level.")
 
     subparsers = parser.add_subparsers(help="Available sub commands")
 
@@ -192,27 +195,34 @@ def cli(args) -> Namespace:
         "--distribution_dir", type=str, help="Distribution directory.",
         default=bouillon_settings.get("distribution_dir", "dist"))
     parser_release.add_argument(
-        "--news_files", type=List[str], help="News files to open for edits.",
+        "--news_files", type=str, help="""News files to open for edits,
+        note that steps are appended, to overwrite set in the pyproject.toml file.""",
+        nargs="+", action="extend",
         default=bouillon_settings.get("news_files", ["NEWS.rst",]))
     parser_release.add_argument(
-        "--build_steps", type=List[str], help="List of build steps.",
+        "--build_steps", type=str, help="""List of build steps,
+        note that steps are appended, to overwrite set in the pyproject.toml file.""",
+        nargs="+", action="append",
         default=bouillon_settings.get("build_steps", [["python", "-m", "build"],]))
     parser_release.add_argument(
-        "--lint_steps", type=List[str], help="List of lint steps.",
+        "--lint_steps", type=str, help="""List of lint steps.
+        note that steps are appended, to overwrite set in the pyproject.toml file.""",
+        nargs="+", action="append",
         default=bouillon_settings.get("lint_steps", [["brundle"],]))
     parser_release.add_argument(
-        "--test_steps", type=List[str], help="List of test steps.",
+        "--test_steps", type=str, help="""List of test steps.
+        note that steps are appended, to overwrite set in the pyproject.toml file.""",
+        nargs="+", action="append",
         default=bouillon_settings.get("test_steps", [["pytest"],]))
 
     parser_release.set_defaults(function=release)
-
     return parser.parse_args(args)
 
 
 def main(*, function: Callable, log_level: str, log_file: str, **kwargs) -> None:
     """Setup logging and run a step."""
     logging.basicConfig(filename=log_file, level=log_level)
-    logger.debug(f'Running "{function.__name__}" step.')
+    logger.info(f"Running {function.__name__} step, with the argumnts: {kwargs}")
     function(**kwargs)
 
 

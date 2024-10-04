@@ -48,10 +48,10 @@ Print help for the ``release`` command::
                             [--check_clean_branch]
                             [--releaseable_branch RELEASEABLE_BRANCH]
                             [--distribution_dir DISTRIBUTION_DIR]
-                            [--news_files NEWS_FILES]
-                            [--build_steps BUILD_STEPS]
-                            [--lint_steps LINT_STEPS]
-                            [--test_steps TEST_STEPS]
+                            [--news_files NEWS_FILES [NEWS_FILES ...]]
+                            [--build_steps BUILD_STEPS [BUILD_STEPS ...]]
+                            [--lint_steps LINT_STEPS [LINT_STEPS ...]]
+                            [--test_steps TEST_STEPS [TEST_STEPS ...]]
                             version
 
     The following checks and actions will be performed:
@@ -76,20 +76,21 @@ Print help for the ``release`` command::
     version               release version (e.g. '1.2.3').
 
     options:
-    -h, --help            show this help message and exit
-    --check_clean_branch  Check that the current branch is clean. (default: True)
+    -h, --help              show this help message and exit
+    --check_clean_branch    Check that the current branch is clean. (default: True)
     --releaseable_branch RELEASEABLE_BRANCH
                             Branches from which release is allowed ('*' for any branch) (default: main)
     --distribution_dir DISTRIBUTION_DIR
                             Distribution directory. (default: dist)
-    --news_files NEWS_FILES
-                            News files to open for edits. (default: ['NEWS.rst'])
-    --build_steps BUILD_STEPS
-                            List of build steps. (default: [['python', '-m', 'build']])
-    --lint_steps LINT_STEPS
-                            List of lint steps. (default: [['brundle']])
-    --test_steps TEST_STEPS
-                            List of test steps. (default: [['pytest']])
+    --news_files NEWS_FILES [NEWS_FILES ...]
+                            News files to open for edits, Note that steps are appended, to overwrite set in the pyproject.toml file. (default: ['NEWS.rst'])
+    --build_steps BUILD_STEPS [BUILD_STEPS ...]
+                            List of build steps, note that steps are appended, to overwrite set in the pyproject.toml file. (default: [['python', '-m', 'build']])
+    --lint_steps LINT_STEPS [LINT_STEPS ...]
+                            List of lint steps. note that steps are appended, to overwrite set in the pyproject.toml file. (default: [['brundle']])
+    --test_steps TEST_STEPS [TEST_STEPS ...]
+                            List of test steps. note that steps are appended, to overwrite set in the pyproject.toml file. (default: [['pytest']])
+
 
 
 .. note::

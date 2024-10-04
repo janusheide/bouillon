@@ -38,6 +38,26 @@ def test_release_unclean_branch_ok():
         "--releaseable_branch", "*", "--check_clean_branch"])))
 
 
+def test_release_append_news_file():
+    release(**vars(cli(["--dry-run", "release", "100.0.0",
+        "--releaseable_branch", "*", "--check_clean_branch", "--news_files", "pyproject.toml"])))
+
+
+def test_release_append_build_step():
+    release(**vars(cli(["--dry-run", "release", "100.0.0",
+        "--releaseable_branch", "*", "--check_clean_branch", "--build_steps", "build"])))
+
+
+def test_release_append_lint_step():
+    release(**vars(cli(["--dry-run", "release", "100.0.0",
+        "--releaseable_branch", "*", "--check_clean_branch", "--lint_steps", "brundle"])))
+
+
+def test_release_append_test_step():
+    release(**vars(cli(["--dry-run", "release", "100.0.0",
+        "--releaseable_branch", "*", "--check_clean_branch", "--test_steps", "pytest"])))
+
+
 def test_cli():
     assert cli(sys.argv[1:])
     with pytest.raises(SystemExit):
@@ -77,4 +97,4 @@ def test_boil_release_invalid_version():
 
 
 def test_boil_clean():
-    subprocess.run(["bouillon", "--dry-run", "clean"], check=True)
+    subprocess.run(["bouillon", "clean"], check=True)
