@@ -38,8 +38,7 @@ logger = logging.getLogger(__name__)
 def build(*, build_steps: List[List[str]], dry_run: bool, **kwargs) -> None:
     """Build distributeables."""
     logger.info("Building source and binary distributions")
-    for step in build_steps:
-        run(step, dry_run=dry_run)
+    [run(step, dry_run=dry_run) for step in build_steps]
 
 
 def clean(*, distribution_dir: str, dry_run: bool, **kwargs) -> None:
@@ -58,7 +57,9 @@ def release(
     news_files: List[str],
     lint_steps: List[List[str]],
     test_steps: List[List[str]],
-    dry_run: bool, **kwargs) -> None:
+    dry_run: bool,
+    **kwargs
+) -> None:
     """Release the project."""
 
     try:
@@ -88,7 +89,7 @@ def release(
     [run([EDITOR, file], dry_run=dry_run) for file in news_files]
 
     logger.info("Running lint steps(s)")
-    run(["git", "add"] + news_files, dry_run=dry_run)
+    [run(["git", "add", file], dry_run=dry_run) for file in news_files]
     logger.info("Running test steps(s)")
     run(["git", "commit", "-m", f"preparing release {version}"], dry_run=dry_run)
 
@@ -202,19 +203,19 @@ def cli(args) -> Namespace:
         default=bouillon_settings.get("distribution_dir", "dist"))
     parser_release.add_argument(
         "--news_files", type=str, help="News files to open for edits.",
-        nargs="+", action="extend",
+        nargs="*", action="extend",
         default=input_overwrites(bouillon_settings.get("news_files", ["NEWS.rst",])))
     parser_release.add_argument(
         "--build_steps", type=str, help="List of build steps.",
-        nargs="+", action="append",
+        nargs="*", action="append",
         default=input_overwrites(bouillon_settings.get("build_steps", [["python", "-m", "build"],])))
     parser_release.add_argument(
         "--lint_steps", type=str, help="List of lint steps.",
-        nargs="+", action="append",
+        nargs="*", action="append",
         default=input_overwrites(bouillon_settings.get("lint_steps", [["brundle"],])))
     parser_release.add_argument(
         "--test_steps", type=str, help="List of test steps.",
-        nargs="+", action="append",
+        nargs="*", action="append",
         default=input_overwrites(bouillon_settings.get("test_steps", [["pytest"],])))
 
     parser_release.set_defaults(function=release)
