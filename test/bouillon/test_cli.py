@@ -38,6 +38,9 @@ def test_cli_news_files():
     a = vars(cli(["release", "100", "--news_files", "foo", "bar", "--news_files", "foobars"]))
     assert a["news_files"] == ["foo", "bar", "foobars"]
 
+    a = vars(cli(["release", "100", "--news_files"]))
+    assert a["news_files"] == []
+
 
 def test_cli_lint_steps():
     a = vars(cli(["release", "100", "--lint_steps", "foo", "bar", "--lint_steps", "foo"]))
