@@ -39,7 +39,32 @@ Will pip install packages (a venv is recommended)::
 
     pip install bouillon[standard]
     bouillon --help
-    bouillon release 0.0.1
+
+    usage: bouillon [-h]
+                    [-i INFILE]
+                    [--log-level {DEBUG,INFO,WARNING,ERROR,CRITICIAL}]
+                    [--log-file LOG_FILE]
+                    [--dry-run]
+                    {build,clean,release} ...
+
+    Bouillon
+
+    positional arguments:
+    {build,clean,release}
+                            available sub commands
+        build               build.
+        clean               clean temp files.
+        release             release me.
+
+    options:
+        -h, --help            show this help message and exit
+        -i INFILE, --infile INFILE
+                              path to input file (default: pyproject.toml)
+        --log-level {DEBUG,INFO,WARNING,ERROR,CRITICIAL}
+                              set log level. (default: WARNING)
+        --log-file LOG_FILE   set log file. (default: None)
+        --dry-run             perform a dry run, its helpfull to also set the log-level. (default: False)
+
 
 Print help for the ``release`` command::
 
@@ -77,26 +102,29 @@ Print help for the ``release`` command::
 
     options:
     -h, --help              show this help message and exit
-    --check_clean_branch    Check that the current branch is clean. (default: True)
+    --check_clean_branch    check that the current branch is clean. (default: True)
     --releaseable_branch RELEASEABLE_BRANCH
-                            Branches from which release is allowed ('*' for any branch) (default: main)
+                            branches from which release is allowed ('*' for any branch) (default: main)
     --distribution_dir DISTRIBUTION_DIR
-                            Distribution directory. (default: dist)
+                            distribution directory. (default: dist)
     --news_files NEWS_FILES [NEWS_FILES ...]
-                            News files to open for edits. (default: ['NEWS.rst'])
+                            news files to open for edits. (default: ['NEWS.rst'])
     --build_steps BUILD_STEPS [BUILD_STEPS ...]
-                            List of build steps. (default: [['python', '-m', 'build']])
+                            build steps. (default: [['python', '-m', 'build']])
     --lint_steps LINT_STEPS [LINT_STEPS ...]
-                            List of lint steps. (default: [['brundle']])
+                            lint steps. (default: [['brundle']])
     --test_steps TEST_STEPS [TEST_STEPS ...]
-                            List of test steps. (default: [['pytest']])
-
+                            test steps. (default: [['pytest']])
 
 
 .. note::
 
     If the upload to pypi fails for any reason the tag will be deleted and the
     release commit will be rolled back.
+
+Usage::
+
+    bouillon release 0.0.1
 
 
 Settings

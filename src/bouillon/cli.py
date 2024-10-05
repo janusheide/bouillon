@@ -135,7 +135,7 @@ def cli(args) -> Namespace:
         "--infile",
         default="pyproject.toml",
         type=FileType("rb"),
-        help="Path to input file",
+        help="path to input file",
     )
 
     bouillon_settings = load(
@@ -145,27 +145,28 @@ def cli(args) -> Namespace:
     parser.add_argument(
         "--log-level",
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICIAL"],
-        default="WARNING", help="Set log level.")
+        default="WARNING", help="set log level.")
     parser.add_argument(
-        "--log-file", type=str, help="Set log file.")
+        "--log-file", type=str, help="set log file.")
     parser.add_argument(
         "--dry-run", action="store_true",
-        help="Perform a dry run, its helpfull to also set the log-level.")
+        help="perform a dry run, its helpfull to also set the log-level.")
 
-    subparsers = parser.add_subparsers(help="Available sub commands")
+    subparsers = parser.add_subparsers(help="available sub commands")
 
-    parser_build = subparsers.add_parser("build", help="Build.",
+    parser_build = subparsers.add_parser("build", help="build.",
         formatter_class=ArgumentDefaultsHelpFormatter,)
     parser_build.set_defaults(function=build)
     parser_build.add_argument(
-        "--build_steps", type=List[str], help="List of build steps.",
-        default=bouillon_settings.get("build_steps", [["python", "-m", "build"],]))
+        "--build_steps", type=str, help="build steps.",
+        nargs="*", action="append",
+        default=input_overwrites(bouillon_settings.get("build_steps", [["python", "-m", "build"],])))
 
-    parser_clean = subparsers.add_parser("clean", help="Clean temp files.",
+    parser_clean = subparsers.add_parser("clean", help="clean temp files.",
         formatter_class=ArgumentDefaultsHelpFormatter,)
     parser_clean.set_defaults(function=clean)
     parser_clean.add_argument(
-        "--distribution_dir", type=str, help="Distribution directory.",
+        "--distribution_dir", type=str, help="distribution directory.",
         default=bouillon_settings.get("distribution_dir", "dist"))
 
     parser_release = subparsers.add_parser("release", help="release me.",
@@ -192,29 +193,29 @@ def cli(args) -> Namespace:
                                 help="release version (e.g. '1.2.3').")
     parser_release.add_argument(
         "--check_clean_branch", action="store_false",
-        help="Check that the current branch is clean.",
+        help="check that the current branch is clean.",
         default=bouillon_settings.get("check_clean_branch", True))
     parser_release.add_argument(
         "--releaseable_branch", type=str,
-        help="Branches from which release is allowed ('*' for any branch)",
+        help="branches from which release is allowed ('*' for any branch)",
         default=bouillon_settings.get("releaseable_branch", git.default_branch()))
     parser_release.add_argument(
-        "--distribution_dir", type=str, help="Distribution directory.",
+        "--distribution_dir", type=str, help="distribution directory.",
         default=bouillon_settings.get("distribution_dir", "dist"))
     parser_release.add_argument(
-        "--news_files", type=str, help="News files to open for edits.",
+        "--news_files", type=str, help="news files to open for edits.",
         nargs="*", action="extend",
         default=input_overwrites(bouillon_settings.get("news_files", ["NEWS.rst",])))
     parser_release.add_argument(
-        "--build_steps", type=str, help="List of build steps.",
+        "--build_steps", type=str, help="build steps.",
         nargs="*", action="append",
         default=input_overwrites(bouillon_settings.get("build_steps", [["python", "-m", "build"],])))
     parser_release.add_argument(
-        "--lint_steps", type=str, help="List of lint steps.",
+        "--lint_steps", type=str, help="lint steps.",
         nargs="*", action="append",
         default=input_overwrites(bouillon_settings.get("lint_steps", [["brundle"],])))
     parser_release.add_argument(
-        "--test_steps", type=str, help="List of test steps.",
+        "--test_steps", type=str, help="list of test steps.",
         nargs="*", action="append",
         default=input_overwrites(bouillon_settings.get("test_steps", [["pytest"],])))
 
