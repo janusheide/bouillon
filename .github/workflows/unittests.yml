@@ -30,13 +30,16 @@ jobs:
         allow-prereleases: true
 
     - name: Setup environment
+      run: pip install .[test]
+
+    - name: Run unit tests
+      run: pytest
+
+    - name: Setup environment
       run: pip install .[dev]
 
     - name: Run linters
       run: brundle
-
-    - name: Run unit tests
-      run: pytest
 
     - name: Run build step
       run: bouillon build
