@@ -25,7 +25,7 @@ def test_cli():
         assert cli(["release", "--help"])
 
     a = vars(cli(["release", "1.2.3"]))
-    assert a["check_clean_branch"]
+    assert a["check_branch"]
     assert a["releaseable_branch"] in ["main", None]  # None on github runners
     assert a["distribution_dir"] == "dist"
     assert a["news_files"] == ["NEWS.rst",]
@@ -75,27 +75,34 @@ def test_release_from_disallowed_branch():
 
 def test_release_unclean_branch_ok():
     release(**vars(cli(["--dry-run", "release", "100.0.0",
-        "--releaseable-branch", "*", "--check-clean-branch"])))
+        "--releaseable-branch", "*", "--check-branch"])))
+
+
+@pytest.mark.cicd
+def test_release_unclean_branch_ok_2():
+    """Note fails if branch is behind remote or not clean."""
+    release(**vars(cli(["--dry-run", "release", "100.0.0",
+        "--releaseable-branch", "*"])))
 
 
 def test_release_append_news_file():
     release(**vars(cli(["--dry-run", "release", "100.0.0",
-        "--releaseable-branch", "*", "--check-clean-branch", "--news-files", "pyproject.toml"])))
+        "--releaseable-branch", "*", "--check-branch", "--news-files", "pyproject.toml"])))
 
 
 def test_release_append_build_step():
     release(**vars(cli(["--dry-run", "release", "100.0.0",
-        "--releaseable-branch", "*", "--check-clean-branch", "--build-steps", "build"])))
+        "--releaseable-branch", "*", "--check-branch", "--build-steps", "build"])))
 
 
 def test_release_append_lint_step():
     release(**vars(cli(["--dry-run", "release", "100.0.0",
-        "--releaseable-branch", "*", "--check-clean-branch", "--lint-steps", "brundle"])))
+        "--releaseable-branch", "*", "--check-branch", "--lint-steps", "brundle"])))
 
 
 def test_release_append_test_step():
     release(**vars(cli(["--dry-run", "release", "100.0.0",
-        "--releaseable-branch", "*", "--check-clean-branch", "--test-steps", "pytest"])))
+        "--releaseable-branch", "*", "--check-branch", "--test-steps", "pytest"])))
 
 
 def test_boil_help():

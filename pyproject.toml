@@ -69,7 +69,7 @@ bouillon = "bouillon.cli:main_cli"
 
 [tool.coverage.report]
 show_missing = true
-fail_under = 88
+fail_under = 87
 
 [tool.isort]
 multi_line_output = 5

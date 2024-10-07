@@ -50,7 +50,7 @@ def clean(*, distribution_dir: str, dry_run: bool, **kwargs) -> None:
 
 def release(
     *,
-    check_clean_branch: bool,
+    check_branch: bool,
     releaseable_branch: str,
     version: str,
     distribution_dir: str,
@@ -70,18 +70,21 @@ def release(
         logger.error("Provided version is not a valid version identifier")
         exit(1)
 
-    if releaseable_branch not in ["*", git.current_branch()]:
-        logger.error(f"Only release from the default branch {git.default_branch()}")
-        exit(1)
-
     clean(distribution_dir=distribution_dir, dry_run=dry_run, **kwargs)
     [run(step, dry_run=dry_run, check=True) for step in lint_steps]
     [run(step, dry_run=dry_run, check=True) for step in test_steps]
 
+    if releaseable_branch not in ["*", git.current_branch()]:
+        logger.error(f"Only release from the default branch {git.default_branch()}")
+        exit(1)
+
     # Check for modifications after linters
-    if check_clean_branch and not git.working_directory_clean():
-        logger.error("Unstaged changes in the working directory.")
-        if not dry_run:
+    if check_branch:
+        if not git.working_directory_clean():
+            logger.error("Unstaged changes in the working directory.")
+            exit(1)
+        if not git.working_directory_updated():
+            logger.error("Branch is behind remote.")
             exit(1)
 
     logger.info("Opening the news file(s) for edit using default editor or nano.")
@@ -157,18 +160,19 @@ def cli(args) -> Namespace:
     parser_release = subparsers.add_parser("release", help="release me.",
         formatter_class=ArgumentDefaultsHelpFormatter,
         description="""
-        1. Check that the choosen tag does not already exists.
-        2. Check that we are releasing from the default_branch.
+        1. Check that the choosen tag is valid and does not already exists.
+        5. Cleans the distribution folder.
+        2. Check that we are ok to release from current branch.
         3. Check that there are no unstaged changes on the current branch.
-        4. Cleans the distribution folder.
-        5. Run all linters.
-        6. Run tests.
-        7. Opens all news files for editing.
-        8. Add and commit all news files.
-        9. Creates the tag.
-        10. Build the project.
-        11. Uploads to pypi.
-        12. Push the commit and tag to the origin.
+        4. Check that the current branch is not behind the remote.
+        6. Run all linters.
+        7. Run tests.
+        8. Opens all news files for editing.
+        9. Add and commit all news files.
+        10. Creates the tag.
+        11. Build the project.
+        12. Uploads to pypi.
+        13. Push the commit and tag to the origin.
 
         Note that precedence of settings in decreasing order is as follows:
         commandline arguments -> project file (pyproject.toml) -> defaults.
@@ -177,9 +181,9 @@ def cli(args) -> Namespace:
     parser_release.add_argument("version", type=str,
                                 help="release version (e.g. '1.2.3').")
     parser_release.add_argument(
-        "--check-clean-branch", action="store_false",
-        help="check that the current branch is clean.",
-        default=bouillon_settings.get("check_clean_branch", True))
+        "--check-branch", action="store_false",
+        help="check that the branch is clean and up to date with remote.",
+        default=bouillon_settings.get("check_branch", True))
     parser_release.add_argument(
         "--releaseable-branch", type=str,
         help="branches from which release is allowed ('*' for any branch)",

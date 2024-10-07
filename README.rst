@@ -70,7 +70,7 @@ Print help for the ``release`` command::
 
     bouillon release --help
     usage: bouillon release [-h]
-                            [--check-clean-branch]
+                            [--check-branch]
                             [--releaseable-branch RELEASEABLE_BRANCH]
                             [--distribution-dir DISTRIBUTION_DIR]
                             [--news-files NEWS_FILES [NEWS_FILES ...]]
@@ -102,7 +102,7 @@ Print help for the ``release`` command::
 
     options:
     -h, --help              show this help message and exit
-    --check-clean-branch    check that the current branch is clean. (default: True)
+    --check-branch          check that the branch is clean and up to date with remote.. (default: True)
     --releaseable-branch RELEASEABLE_BRANCH
                             branches from which release is allowed ('*' for any branch) (default: main)
     --distribution-dir DISTRIBUTION_DIR
@@ -133,7 +133,7 @@ Settings
 The following settings (with defaults) can be overwritten in ``pyproject.toml``::
 
     [tool.bouillon]
-    check_clean_branch = true
+    check_branch = true
     releaseable_branch = the git default branch
     distribution_dir = "dist"
     news_files = ["NEWS.rst",]
