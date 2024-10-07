@@ -35,25 +35,25 @@ def test_cli():
 
 
 def test_cli_news_files():
-    a = vars(cli(["release", "100", "--news_files", "foo", "bar", "--news_files", "foobars"]))
+    a = vars(cli(["release", "100", "--news-files", "foo", "bar", "--news-files", "foobars"]))
     assert a["news_files"] == ["foo", "bar", "foobars"]
 
-    a = vars(cli(["release", "100", "--news_files"]))
+    a = vars(cli(["release", "100", "--news-files"]))
     assert a["news_files"] == []
 
 
 def test_cli_lint_steps():
-    a = vars(cli(["release", "100", "--lint_steps", "foo", "bar", "--lint_steps", "foo"]))
+    a = vars(cli(["release", "100", "--lint-steps", "foo", "bar", "--lint-steps", "foo"]))
     assert a["lint_steps"] == [["foo", "bar"],["foo"]]
 
 
 def test_cli_test_steps():
-    a = vars(cli(["release", "100", "--test_steps", "foobar"]))
+    a = vars(cli(["release", "100", "--test-steps", "foobar"]))
     assert a["test_steps"] == [["foobar"],]
 
 
 def test_cli_build_steps():
-    a = vars(cli(["release", "100", "--build_steps", "barfoo"]))
+    a = vars(cli(["release", "100", "--build-steps", "barfoo"]))
     assert a["build_steps"] == [["barfoo"],]
 
 
@@ -70,32 +70,32 @@ def test_release_existing_version():
 def test_release_from_disallowed_branch():
     with pytest.raises(SystemExit):
         release(**vars(cli(["--dry-run", "release", "100.0.0",
-                            "--releaseable_branch", "foo",])))
+                            "--releaseable-branch", "foo",])))
 
 
 def test_release_unclean_branch_ok():
     release(**vars(cli(["--dry-run", "release", "100.0.0",
-        "--releaseable_branch", "*", "--check_clean_branch"])))
+        "--releaseable-branch", "*", "--check-clean-branch"])))
 
 
 def test_release_append_news_file():
     release(**vars(cli(["--dry-run", "release", "100.0.0",
-        "--releaseable_branch", "*", "--check_clean_branch", "--news_files", "pyproject.toml"])))
+        "--releaseable-branch", "*", "--check-clean-branch", "--news-files", "pyproject.toml"])))
 
 
 def test_release_append_build_step():
     release(**vars(cli(["--dry-run", "release", "100.0.0",
-        "--releaseable_branch", "*", "--check_clean_branch", "--build_steps", "build"])))
+        "--releaseable-branch", "*", "--check-clean-branch", "--build-steps", "build"])))
 
 
 def test_release_append_lint_step():
     release(**vars(cli(["--dry-run", "release", "100.0.0",
-        "--releaseable_branch", "*", "--check_clean_branch", "--lint_steps", "brundle"])))
+        "--releaseable-branch", "*", "--check-clean-branch", "--lint-steps", "brundle"])))
 
 
 def test_release_append_test_step():
     release(**vars(cli(["--dry-run", "release", "100.0.0",
-        "--releaseable_branch", "*", "--check_clean_branch", "--test_steps", "pytest"])))
+        "--releaseable-branch", "*", "--check-clean-branch", "--test-steps", "pytest"])))
 
 
 def test_boil_help():

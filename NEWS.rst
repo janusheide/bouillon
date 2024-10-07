@@ -6,6 +6,7 @@ Lists of changes between versions.
 Latest
 ------
 * Minor: news_files, build_steps, lint_steps, test_steps can be set to nothing to disable them.
+* Minor. Unified cli arguments.
 
 2.4.0
 -----
