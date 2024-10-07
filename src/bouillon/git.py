@@ -56,6 +56,17 @@ def working_directory_clean() -> bool:
         return False
 
 
+def working_directory_updated() -> bool:
+    """Check if the local working directory is up to date with the remote."""
+    try:
+        r = run(["git", "fetch", "--dry-run"],
+            stdout=PIPE,
+            check=True)
+    except CalledProcessError:
+        return False
+
+    return r.stdout.decode().rstrip() == ""
+
 
 def commit_id() -> str:
     """Get current git commit id."""
