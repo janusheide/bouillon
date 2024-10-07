@@ -9,7 +9,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from subprocess import PIPE, CalledProcessError
+from subprocess import PIPE, STDOUT, CalledProcessError
 
 from bouillon import run
 
@@ -61,6 +61,7 @@ def working_directory_updated() -> bool:
     try:
         r = run(["git", "fetch", "--dry-run"],
             stdout=PIPE,
+            stderr=STDOUT,
             check=True)
     except CalledProcessError:
         return False
