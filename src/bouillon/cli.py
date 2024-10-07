@@ -220,9 +220,6 @@ def cli(args) -> Namespace:
         parser.print_help()
 
     parser.set_defaults(check=True, function=_print_help)
-    # parser.set_defaults(check=True, function=parser.print_help()
-
-
     return parser.parse_args(args)
 
 
