@@ -73,16 +73,16 @@ def test_release_from_disallowed_branch():
                             "--releaseable-branch", "foo",])))
 
 
-def test_release_unclean_branch_ok():
-    release(**vars(cli(["--dry-run", "release", "100.0.0",
-        "--releaseable-branch", "*", "--check-branch"])))
-
-
 @pytest.mark.cicd
-def test_release_unclean_branch_ok_2():
+def test_release_unclean_branch():
     """Note fails if branch is behind remote or not clean."""
     release(**vars(cli(["--dry-run", "release", "100.0.0",
         "--releaseable-branch", "*"])))
+
+
+def test_release_unclean_branch_ok():
+    release(**vars(cli(["--dry-run", "release", "100.0.0",
+        "--releaseable-branch", "*", "--check-branch"])))
 
 
 def test_release_append_news_file():
