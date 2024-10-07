@@ -61,7 +61,6 @@ def release(
     **kwargs
 ) -> None:
     """Release the project."""
-
     try:
         if str(Version(version)) in git.tags():
             logger.error("Tag already exists.")
@@ -70,6 +69,7 @@ def release(
         logger.error("Provided version is not a valid version identifier")
         exit(1)
 
+    logger.info("Running lint and test steps")
     clean(distribution_dir=distribution_dir, dry_run=dry_run, **kwargs)
     [run(step, dry_run=dry_run, check=True) for step in lint_steps]
     [run(step, dry_run=dry_run, check=True) for step in test_steps]
@@ -86,13 +86,10 @@ def release(
             logger.error("Branch is behind remote.")
             exit(1)
 
-    logger.info("Opening the news file(s) for edit using default editor or nano.")
+    logger.info("Opening the news file(s) for edit and make a commit.")
     EDITOR = os.environ.get("EDITOR", "nano")
     [run([EDITOR, file], dry_run=dry_run) for file in news_files]
-
-    logger.info("Running lint steps(s)")
     [run(["git", "add", file], dry_run=dry_run) for file in news_files]
-    logger.info("Running test steps(s)")
     run(["git", "commit", "-m", f"preparing release {version}"], dry_run=dry_run)
 
     logger.info("Create an annotated tag, used by setuptools_scm.")
