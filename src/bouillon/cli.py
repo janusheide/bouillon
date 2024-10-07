@@ -75,10 +75,9 @@ def release(
     [run(step, dry_run=dry_run, check=True) for step in test_steps]
 
     if releaseable_branch not in ["*", git.current_branch()]:
-        logger.error(f"Only release from the default branch {git.default_branch()}")
+        logger.error(f"Only release from the default branch {releaseable_branch}")
         exit(1)
 
-    # Check for modifications after linters
     if check_branch:
         if not git.working_directory_clean():
             logger.error("Unstaged changes in the working directory.")
@@ -161,12 +160,12 @@ def cli(args) -> Namespace:
         formatter_class=ArgumentDefaultsHelpFormatter,
         description="""
         1. Check that the choosen tag is valid and does not already exists.
-        5. Cleans the distribution folder.
-        2. Check that we are ok to release from current branch.
-        3. Check that there are no unstaged changes on the current branch.
-        4. Check that the current branch is not behind the remote.
-        6. Run all linters.
-        7. Run tests.
+        2. Cleans the distribution folder.
+        3. Run all linters.
+        4. Run tests.
+        5. Check that we are ok to release from current branch.
+        6. Check that there are no unstaged changes on the current branch.
+        7. Check that the current branch is not behind the remote.
         8. Opens all news files for editing.
         9. Add and commit all news files.
         10. Creates the tag.

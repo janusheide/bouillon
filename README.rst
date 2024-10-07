@@ -102,7 +102,7 @@ Print help for the ``release`` command::
 
     options:
     -h, --help              show this help message and exit
-    --check-branch          check that the branch is clean and up to date with remote.. (default: True)
+    --check-branch          check that the branch is clean and up to date with remote. (default: True)
     --releaseable-branch RELEASEABLE_BRANCH
                             branches from which release is allowed ('*' for any branch) (default: main)
     --distribution-dir DISTRIBUTION_DIR
