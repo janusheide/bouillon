@@ -125,11 +125,6 @@ def cli(args) -> Namespace:
         formatter_class=ArgumentDefaultsHelpFormatter,
     )
 
-    def _print_help(**kwargs):
-        parser.print_help()
-
-    parser.set_defaults(check=True, function=_print_help)
-
     parser.add_argument(
         "-i",
         "--infile",
@@ -142,23 +137,13 @@ def cli(args) -> Namespace:
         parser.parse_args(["-i", "pyproject.toml"]).infile).get(
             "tool", dict()).get("bouillon", dict())
 #
-    parser.add_argument(
-        "--log-level",
-        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICIAL"],
-        default="WARNING", help="set log level.")
-    parser.add_argument(
-        "--log-file", type=str, help="set log file.")
-    parser.add_argument(
-        "--dry-run", action="store_true",
-        help="perform a dry run, its helpfull to also set the log-level.")
-
     subparsers = parser.add_subparsers(help="available sub commands")
 
     parser_build = subparsers.add_parser("build", help="build.",
         formatter_class=ArgumentDefaultsHelpFormatter,)
     parser_build.set_defaults(function=build)
     parser_build.add_argument(
-        "--build_steps", type=str, help="build steps.",
+        "--build-steps", type=str, help="build steps.",
         nargs="*", action="append",
         default=input_overwrites(bouillon_settings.get("build_steps", [["python", "-m", "build"],])))
 
@@ -166,7 +151,7 @@ def cli(args) -> Namespace:
         formatter_class=ArgumentDefaultsHelpFormatter,)
     parser_clean.set_defaults(function=clean)
     parser_clean.add_argument(
-        "--distribution_dir", type=str, help="distribution directory.",
+        "--distribution-dir", type=str, help="distribution directory.",
         default=bouillon_settings.get("distribution_dir", "dist"))
 
     parser_release = subparsers.add_parser("release", help="release me.",
@@ -192,34 +177,52 @@ def cli(args) -> Namespace:
     parser_release.add_argument("version", type=str,
                                 help="release version (e.g. '1.2.3').")
     parser_release.add_argument(
-        "--check_clean_branch", action="store_false",
+        "--check-clean-branch", action="store_false",
         help="check that the current branch is clean.",
         default=bouillon_settings.get("check_clean_branch", True))
     parser_release.add_argument(
-        "--releaseable_branch", type=str,
+        "--releaseable-branch", type=str,
         help="branches from which release is allowed ('*' for any branch)",
         default=bouillon_settings.get("releaseable_branch", git.default_branch()))
     parser_release.add_argument(
-        "--distribution_dir", type=str, help="distribution directory.",
+        "--distribution-dir", type=str, help="distribution directory.",
         default=bouillon_settings.get("distribution_dir", "dist"))
     parser_release.add_argument(
-        "--news_files", type=str, help="news files to open for edits.",
+        "--news-files", type=str, help="news files to open for edits.",
         nargs="*", action="extend",
         default=input_overwrites(bouillon_settings.get("news_files", ["NEWS.rst",])))
     parser_release.add_argument(
-        "--build_steps", type=str, help="build steps.",
+        "--build-steps", type=str, help="build steps.",
         nargs="*", action="append",
         default=input_overwrites(bouillon_settings.get("build_steps", [["python", "-m", "build"],])))
     parser_release.add_argument(
-        "--lint_steps", type=str, help="lint steps.",
+        "--lint-steps", type=str, help="lint steps.",
         nargs="*", action="append",
         default=input_overwrites(bouillon_settings.get("lint_steps", [["brundle"],])))
     parser_release.add_argument(
-        "--test_steps", type=str, help="list of test steps.",
+        "--test-steps", type=str, help="list of test steps.",
         nargs="*", action="append",
         default=input_overwrites(bouillon_settings.get("test_steps", [["pytest"],])))
 
     parser_release.set_defaults(function=release)
+
+    parser.add_argument(
+        "--log-level",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICIAL"],
+        default="WARNING", help="set log level.")
+    parser.add_argument(
+        "--log-file", type=str, help="set log file.")
+    parser.add_argument(
+        "--dry-run", action="store_true",
+        help="perform a dry run, its helpfull to also set the log-level.")
+
+    def _print_help(**kwargs):
+        parser.print_help()
+
+    parser.set_defaults(check=True, function=_print_help)
+    # parser.set_defaults(check=True, function=parser.print_help()
+
+
     return parser.parse_args(args)
 
 

@@ -70,13 +70,13 @@ Print help for the ``release`` command::
 
     bouillon release --help
     usage: bouillon release [-h]
-                            [--check_clean_branch]
-                            [--releaseable_branch RELEASEABLE_BRANCH]
-                            [--distribution_dir DISTRIBUTION_DIR]
-                            [--news_files NEWS_FILES [NEWS_FILES ...]]
-                            [--build_steps BUILD_STEPS [BUILD_STEPS ...]]
-                            [--lint_steps LINT_STEPS [LINT_STEPS ...]]
-                            [--test_steps TEST_STEPS [TEST_STEPS ...]]
+                            [--check-clean-branch]
+                            [--releaseable-branch RELEASEABLE_BRANCH]
+                            [--distribution-dir DISTRIBUTION_DIR]
+                            [--news-files NEWS_FILES [NEWS_FILES ...]]
+                            [--build-steps BUILD_STEPS [BUILD_STEPS ...]]
+                            [--lint-steps LINT_STEPS [LINT_STEPS ...]]
+                            [--test-steps TEST_STEPS [TEST_STEPS ...]]
                             version
 
     The following checks and actions will be performed:
@@ -102,18 +102,18 @@ Print help for the ``release`` command::
 
     options:
     -h, --help              show this help message and exit
-    --check_clean_branch    check that the current branch is clean. (default: True)
-    --releaseable_branch RELEASEABLE_BRANCH
+    --check-clean-branch    check that the current branch is clean. (default: True)
+    --releaseable-branch RELEASEABLE_BRANCH
                             branches from which release is allowed ('*' for any branch) (default: main)
-    --distribution_dir DISTRIBUTION_DIR
+    --distribution-dir DISTRIBUTION_DIR
                             distribution directory. (default: dist)
-    --news_files NEWS_FILES [NEWS_FILES ...]
+    --news-files NEWS_FILES [NEWS_FILES ...]
                             news files to open for edits. (default: ['NEWS.rst'])
-    --build_steps BUILD_STEPS [BUILD_STEPS ...]
+    --build-steps BUILD_STEPS [BUILD_STEPS ...]
                             build steps. (default: [['python', '-m', 'build']])
-    --lint_steps LINT_STEPS [LINT_STEPS ...]
+    --lint-steps LINT_STEPS [LINT_STEPS ...]
                             lint steps. (default: [['brundle']])
-    --test_steps TEST_STEPS [TEST_STEPS ...]
+    --test-steps TEST_STEPS [TEST_STEPS ...]
                             test steps. (default: [['pytest']])
 
 
