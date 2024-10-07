@@ -65,7 +65,7 @@ def working_directory_updated() -> bool:
     except CalledProcessError:
         return False
 
-    return r.stdout.decode().rstrip() is None
+    return r.stdout.decode().rstrip() == ""
 
 
 def commit_id() -> str:
