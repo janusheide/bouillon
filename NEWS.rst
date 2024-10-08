@@ -3,8 +3,8 @@ News
 
 Lists of changes between versions.
 
-Latest
-------
+2.5.0
+-----
 * Minor: Add and use bouillon.git.working-directory-updated() which check that local is up to date with remote.
 * Minor: news_files, build_steps, lint_steps, test_steps can be set to nothing to disable them.
 * Minor: Unified cli arguments.
