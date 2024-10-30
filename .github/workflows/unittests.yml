@@ -35,11 +35,11 @@ jobs:
     - name: Run unit tests
       run: pytest
 
-    - name: Setup environment
-      run: pip install .[dev]
-
     - name: Run linters
       run: brundle
+
+    - name: Setup environment
+      run: pip install .[dev]
 
     - name: Run build step
       run: bouillon build
