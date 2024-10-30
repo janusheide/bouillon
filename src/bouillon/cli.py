@@ -198,7 +198,7 @@ def cli(args) -> Namespace:
     parser_release.add_argument(
         "--lint-steps", type=str, help="lint steps.",
         nargs="*", action="append",
-        default=input_overwrites(bouillon_settings.get("lint_steps", [["brundle"], ["licensecheck"]])))
+        default=input_overwrites(bouillon_settings.get("lint_steps", [["brundle"], ["licensecheck", "--zero"]])))
     parser_release.add_argument(
         "--test-steps", type=str, help="list of test steps.",
         nargs="*", action="append",
