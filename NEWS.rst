@@ -3,8 +3,8 @@ News
 
 Lists of changes between versions.
 
-Latest
-------
+2.6.0
+-----
 * Minor: licensecheck part of release step instead of test step.
 
 2.5.0
