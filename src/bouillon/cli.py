@@ -14,13 +14,13 @@ reflects those steps. The cli specified here is used for the bouillon module.
 
 from __future__ import annotations
 
-import logging
 import os
 import shutil
 import sys
 from argparse import (
     ArgumentDefaultsHelpFormatter, ArgumentParser, FileType, Namespace,
 )
+from logging import basicConfig, getLevelName, getLogger
 from typing import Callable, List
 
 from packaging.version import InvalidVersion, Version
@@ -32,7 +32,7 @@ except ModuleNotFoundError:
 
 from bouillon import git, run
 
-logger = logging.getLogger(__name__)
+logger = getLogger(__name__)
 
 
 def build(*, build_steps: List[List[str]], dry_run: bool, **kwargs) -> None:
@@ -225,7 +225,10 @@ def cli(args) -> Namespace:
 
 def main(*, function: Callable, log_level: str, log_file: str, **kwargs) -> None:
     """Setup logging and run a step."""
-    logging.basicConfig(filename=log_file, level=log_level)
+    basicConfig(
+        filename=log_file,
+        level=getLevelName(log_level),
+    )
     logger.info(f"Running {function.__name__} step, with the argumnts: {kwargs}")
     function(**kwargs)
 

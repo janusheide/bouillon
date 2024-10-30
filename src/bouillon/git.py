@@ -3,8 +3,7 @@
 #
 # Distributed under the "BSD 3-Clause License", see LICENSE.txt.
 
-"""Git related stuff."""
-
+"""Git checks, non of them changes state."""
 
 from __future__ import annotations
 
