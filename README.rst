@@ -112,7 +112,7 @@ Print help for the ``release`` command::
     --build-steps BUILD_STEPS [BUILD_STEPS ...]
                             build steps. (default: [['python', '-m', 'build']])
     --lint-steps LINT_STEPS [LINT_STEPS ...]
-                            lint steps. (default: [['brundle']])
+                            lint steps. (default: [['brundle'], ['licensecheck']])
     --test-steps TEST_STEPS [TEST_STEPS ...]
                             test steps. (default: [['pytest']])
 

@@ -3,6 +3,10 @@ News
 
 Lists of changes between versions.
 
+Latest
+------
+* Minor: licensecheck part of release step instead of test step.
+
 2.5.0
 -----
 * Minor: Add and use bouillon.git.working-directory-updated() which check that local is up to date with remote.
