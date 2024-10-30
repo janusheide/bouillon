@@ -30,7 +30,7 @@ def test_cli():
     assert a["distribution_dir"] == "dist"
     assert a["news_files"] == ["NEWS.rst",]
     assert a["build_steps"] == [["python", "-m", "build"],]
-    assert a["lint_steps"] == [["brundle"], ["licensecheck"]]
+    assert a["lint_steps"] == [["brundle"], ["licensecheck", "--zero"]]
     assert a["test_steps"] == [["pytest"],]
 
 
