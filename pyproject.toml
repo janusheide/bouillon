@@ -40,7 +40,6 @@ dependencies = [
 test = [
     "brundle==1.1.0",
     "isort==5.13.2",
-    "licensecheck==2024.3",
     "mypy==1.13.0",
     "ruff==0.7.1",
     "pytest==8.3.3",
@@ -48,6 +47,7 @@ test = [
 ]
 release = [
     "build==1.2.2.post1",
+    "licensecheck==2024.3",
     "twine==5.1.1",
 ]
 standard = [
