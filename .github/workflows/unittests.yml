@@ -38,6 +38,15 @@ jobs:
     - name: Run linters
       run: brundle
 
+    - name: Find old dependencies
+      run: dlister test -o requirements.old
+
+    - name: Install old dependencies
+      run: pip install -r requirements.old
+
+    - name: Run unit tests with old dependencies
+      run: pytest
+
     - name: Setup environment
       run: pip install .[dev]
 
