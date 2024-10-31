@@ -38,7 +38,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-    "brundle==1.1.0",
+    "brundle==1.2.0",
     "dlister==0.1.0",
     "isort==5.13.2",
     "mypy==1.13.0",
