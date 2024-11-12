@@ -3,6 +3,10 @@ News
 
 Lists of changes between versions.
 
+2.7.0
+-----
+* Minor: Upgraded dependencies.
+
 2.6.0
 -----
 * Minor: licensecheck part of release step instead of test step.
