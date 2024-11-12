@@ -32,17 +32,17 @@ classifiers = [
 keywords = ["building", "maintenance", "utility"]
 
 dependencies = [
-    "packaging<=24.1,>=22",
+    "packaging<=24.2,>=22",
     "tomli<3,>=2; python_version < \"3.11\"",
 ]
 
 [project.optional-dependencies]
 test = [
     "brundle==1.2.0",
-    "dlister==0.1.0",
+    "dlister==1.1.0",
     "isort==5.13.2",
     "mypy==1.13.0",
-    "ruff==0.7.1",
+    "ruff==0.7.3",
     "pytest==8.3.3",
     "pytest-cov<=6.0.0,>=5.0.0",
 ]
