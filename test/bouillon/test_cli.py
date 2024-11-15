@@ -32,11 +32,13 @@ def test_cli():
     assert a["build_steps"] == [["python", "-m", "build"],]
     assert a["lint_steps"] == [["brundle"], ["licensecheck", "--zero"]]
     assert a["test_steps"] == [["pytest"],]
+    a["infile"].close()
 
 
 def test_cli_news_files():
     a = vars(cli(["release", "100", "--news-files", "foo", "bar", "--news-files", "foobars"]))
     assert a["news_files"] == ["foo", "bar", "foobars"]
+    a["infile"].close()
 
     a = vars(cli(["release", "100", "--news-files"]))
     assert a["news_files"] == []

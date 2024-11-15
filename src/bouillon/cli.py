@@ -132,9 +132,9 @@ def cli(args) -> Namespace:
         help="path to input file",
     )
 
-    bouillon_settings = load(
-        parser.parse_args(["-i", "pyproject.toml"]).infile).get(
-            "tool", dict()).get("bouillon", dict())
+    infile = parser.parse_args(["-i", "pyproject.toml"]).infile
+    bouillon_settings = load(infile).get("tool", dict()).get("bouillon", dict())
+    infile.close()
 #
     subparsers = parser.add_subparsers(help="available sub commands")
 
