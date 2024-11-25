@@ -21,7 +21,7 @@ from argparse import (
     ArgumentDefaultsHelpFormatter, ArgumentParser, FileType, Namespace,
 )
 from logging import basicConfig, getLevelName, getLogger
-from typing import Callable, List
+from typing import Callable
 
 from packaging.version import InvalidVersion, Version
 
@@ -35,7 +35,7 @@ from bouillon import git, run
 logger = getLogger(__name__)
 
 
-def build(*, build_steps: List[List[str]], dry_run: bool, **kwargs) -> None:
+def build(*, build_steps: list[list[str]], dry_run: bool, **kwargs) -> None:
     """Build distributeables."""
     logger.info("Building source and binary distributions")
     [run(step, dry_run=dry_run) for step in build_steps]
@@ -54,9 +54,9 @@ def release(
     releaseable_branch: str,
     version: str,
     distribution_dir: str,
-    news_files: List[str],
-    lint_steps: List[List[str]],
-    test_steps: List[List[str]],
+    news_files: list[str],
+    lint_steps: list[list[str]],
+    test_steps: list[list[str]],
     dry_run: bool,
     **kwargs
 ) -> None:
