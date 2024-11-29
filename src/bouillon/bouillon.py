@@ -14,7 +14,6 @@ from __future__ import annotations
 import logging
 import shutil
 import subprocess
-from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -44,41 +43,3 @@ def run(
             args, 2, "dry-run output", "dry-run error")
 
     return subprocess.run(args, shell=shell, **kwargs)
-
-
-def check_for_test_files(
-    src_path: str,
-    test_path: str,
-    *,
-    prefix: str = "test_",
-    suffix: str = ".py",
-    ignore: list[str] = ["__init__.py"],
-) -> bool:
-    """Check for test files.
-
-    Check that all source files, all files in src_path with the defined suffix,
-    have a correponding test file in the test_path with the defined prefix and
-    suffix.
-    """
-    assert Path(src_path).exists(), f"path does not exist {src_path}"
-    assert Path(test_path).exists(), f"path does not exist {test_path}"
-
-    # Find all source files
-    srcs = Path(src_path).rglob(f"*{suffix}")
-    relative_srcs = list(map(lambda s: s.relative_to(src_path), srcs))
-    if len(relative_srcs) == 0:
-        logger.warning("No source files found.")
-
-    # Find all test files
-    tests = Path(test_path).rglob(f"{prefix}*{suffix}")
-    relative_tests = map(lambda t: t.relative_to(test_path), tests)
-
-    # Remove all tests files from the list of source files
-    for t in relative_tests:
-        relative_srcs.remove(Path(str(t).replace(prefix, "")))
-
-    if len(relative_srcs) == 0:
-        return True
-
-    logger.warning(f"Missing tests for files: {relative_srcs}")
-    return False
