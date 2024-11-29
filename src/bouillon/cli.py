@@ -1,4 +1,3 @@
-#! /usr/bin/env python3
 #
 # Copyright (c) 2020, Janus Heide.
 # All rights reserved.
@@ -58,16 +57,16 @@ def release(
     lint_steps: list[list[str]],
     test_steps: list[list[str]],
     dry_run: bool,
-    **kwargs
+    **kwargs,
 ) -> None:
     """Release the project."""
     try:
         if str(Version(version)) in git.tags():
             logger.error("Tag already exists.")
-            exit(1)
+            sys.exit(1)
     except InvalidVersion:
-        logger.error("Provided version is not a valid version identifier")
-        exit(1)
+        logger.exception("Provided version is not a valid version identifier")
+        sys.exit(1)
 
     logger.info("Running lint and test steps")
     clean(distribution_dir=distribution_dir, dry_run=dry_run, **kwargs)
@@ -76,15 +75,15 @@ def release(
 
     if releaseable_branch not in ["*", git.current_branch()]:
         logger.error(f"Only release from the default branch {releaseable_branch}")
-        exit(1)
+        sys.exit(1)
 
     if check_branch:
         if not git.working_directory_clean():
             logger.error("Unstaged changes in the working directory.")
-            exit(1)
+            sys.exit(1)
         if not git.working_directory_updated():
             logger.error("Branch is behind remote.")
-            exit(1)
+            sys.exit(1)
 
     logger.info("Opening the news file(s) for edit and make a commit.")
     EDITOR = os.environ.get("EDITOR", "nano")
@@ -101,19 +100,21 @@ def release(
     logger.info("upload builds to pypi and push commit and tag to repo.")
     try:
         run(["twine", "upload", f"{distribution_dir}/*"], dry_run=dry_run, check=True)
-    except Exception as e:
-        logger.error(f"Upload failed with error {e}, cleaning")
+    except Exception:
+        logger.exception("Upload failed, cleaning")
         run(["git", "tag", "-d", f"{version}"], dry_run=dry_run)
         run(["git", "reset", "--hard", "HEAD~1"], dry_run=dry_run)
-        exit(1)
+        sys.exit(1)
 
     run(["git", "push"], dry_run=dry_run)
     run(["git", "push", "origin", f"{version}"], dry_run=dry_run)
 
 
-class input_overwrites(list):
+class InputOverwrites(list):
     """Avoid copying default argument(s), when appending inputs."""
-    def __copy__(self):
+
+    def __copy__(self) -> list:
+        """Copy."""
         return []
 
 
@@ -133,21 +134,22 @@ def cli(args) -> Namespace:
     )
 
     infile = parser.parse_args(["-i", "pyproject.toml"]).infile
-    bouillon_settings = load(infile).get("tool", dict()).get("bouillon", dict())
+    bouillon_settings = load(infile).get("tool", {}).get("bouillon", {})
     infile.close()
-#
+
     subparsers = parser.add_subparsers(help="available sub commands")
 
     parser_build = subparsers.add_parser("build", help="build.",
-        formatter_class=ArgumentDefaultsHelpFormatter,)
+        formatter_class=ArgumentDefaultsHelpFormatter)
     parser_build.set_defaults(function=build)
     parser_build.add_argument(
         "--build-steps", type=str, help="build steps.",
         nargs="*", action="append",
-        default=input_overwrites(bouillon_settings.get("build_steps", [["python", "-m", "build"],])))
+        default=InputOverwrites(bouillon_settings.get(
+            "build_steps", [["python", "-m", "build"]])))
 
     parser_clean = subparsers.add_parser("clean", help="clean temp files.",
-        formatter_class=ArgumentDefaultsHelpFormatter,)
+        formatter_class=ArgumentDefaultsHelpFormatter)
     parser_clean.set_defaults(function=clean)
     parser_clean.add_argument(
         "--distribution-dir", type=str, help="distribution directory.",
@@ -172,8 +174,7 @@ def cli(args) -> Namespace:
 
         Note that precedence of settings in decreasing order is as follows:
         commandline arguments -> project file (pyproject.toml) -> defaults.
-        """
-        )
+        """)
     parser_release.add_argument("version", type=str,
                                 help="release version (e.g. '1.2.3').")
     parser_release.add_argument(
@@ -190,19 +191,21 @@ def cli(args) -> Namespace:
     parser_release.add_argument(
         "--news-files", type=str, help="news files to open for edits.",
         nargs="*", action="extend",
-        default=input_overwrites(bouillon_settings.get("news_files", ["NEWS.rst",])))
+        default=InputOverwrites(bouillon_settings.get("news_files", ["NEWS.rst"])))
     parser_release.add_argument(
         "--build-steps", type=str, help="build steps.",
         nargs="*", action="append",
-        default=input_overwrites(bouillon_settings.get("build_steps", [["python", "-m", "build"],])))
+        default=InputOverwrites(bouillon_settings.get(
+            "build_steps", [["python", "-m", "build"]])))
     parser_release.add_argument(
         "--lint-steps", type=str, help="lint steps.",
         nargs="*", action="append",
-        default=input_overwrites(bouillon_settings.get("lint_steps", [["brundle"], ["licensecheck", "--zero"]])))
+        default=InputOverwrites(bouillon_settings.get(
+            "lint_steps", [["brundle"], ["licensecheck", "--zero"]])))
     parser_release.add_argument(
         "--test-steps", type=str, help="list of test steps.",
         nargs="*", action="append",
-        default=input_overwrites(bouillon_settings.get("test_steps", [["pytest"],])))
+        default=InputOverwrites(bouillon_settings.get("test_steps", [["pytest"]])))
 
     parser_release.set_defaults(function=release)
 
@@ -216,7 +219,7 @@ def cli(args) -> Namespace:
         "--dry-run", action="store_true",
         help="perform a dry run, its helpfull to also set the log-level.")
 
-    def _print_help(**kwargs):
+    def _print_help(**kwargs) -> None:
         parser.print_help()
 
     parser.set_defaults(check=True, function=_print_help)
@@ -234,6 +237,7 @@ def main(*, function: Callable, log_level: str, log_file: str, **kwargs) -> None
 
 
 def main_cli() -> None:
+    """Main cli."""
     main(**vars(cli(sys.argv[1:])))
 
 

@@ -28,15 +28,16 @@ def test_cli():
     assert a["check_branch"]
     assert a["releaseable_branch"] in ["main", None]  # None on github runners
     assert a["distribution_dir"] == "dist"
-    assert a["news_files"] == ["NEWS.rst",]
-    assert a["build_steps"] == [["python", "-m", "build"],]
+    assert a["news_files"] == ["NEWS.rst"]
+    assert a["build_steps"] == [["python", "-m", "build"]]
     assert a["lint_steps"] == [["brundle"], ["licensecheck", "--zero"]]
-    assert a["test_steps"] == [["pytest"],]
+    assert a["test_steps"] == [["pytest"]]
     a["infile"].close()
 
 
 def test_cli_news_files():
-    a = vars(cli(["release", "100", "--news-files", "foo", "bar", "--news-files", "foobars"]))
+    a = vars(cli(
+        ["release", "100", "--news-files", "foo", "bar", "--news-files", "foobars"]))
     assert a["news_files"] == ["foo", "bar", "foobars"]
     a["infile"].close()
 
@@ -45,18 +46,19 @@ def test_cli_news_files():
 
 
 def test_cli_lint_steps():
-    a = vars(cli(["release", "100", "--lint-steps", "foo", "bar", "--lint-steps", "foo"]))
+    a = vars(cli(
+        ["release", "100", "--lint-steps", "foo", "bar", "--lint-steps", "foo"]))
     assert a["lint_steps"] == [["foo", "bar"],["foo"]]
 
 
 def test_cli_test_steps():
     a = vars(cli(["release", "100", "--test-steps", "foobar"]))
-    assert a["test_steps"] == [["foobar"],]
+    assert a["test_steps"] == [["foobar"]]
 
 
 def test_cli_build_steps():
     a = vars(cli(["release", "100", "--build-steps", "barfoo"]))
-    assert a["build_steps"] == [["barfoo"],]
+    assert a["build_steps"] == [["barfoo"]]
 
 
 def test_release_invalid_version():
@@ -72,7 +74,7 @@ def test_release_existing_version():
 def test_release_from_disallowed_branch():
     with pytest.raises(SystemExit):
         release(**vars(cli(["--dry-run", "release", "100.0.0",
-                            "--releaseable-branch", "foo",])))
+                            "--releaseable-branch", "foo"])))
 
 
 @pytest.mark.cicd
@@ -89,7 +91,8 @@ def test_release_unclean_branch_ok():
 
 def test_release_append_news_file():
     release(**vars(cli(["--dry-run", "release", "100.0.0",
-        "--releaseable-branch", "*", "--check-branch", "--news-files", "pyproject.toml"])))
+        "--releaseable-branch", "*", "--check-branch",
+        "--news-files", "pyproject.toml"])))
 
 
 def test_release_append_build_step():

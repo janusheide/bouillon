@@ -3,6 +3,10 @@ News
 
 Lists of changes between versions.
 
+Latest
+------
+* Minor: Stop exporting various internal implemntation details.
+
 2.8.0
 -----
 * Minor: Simpler dependency managment.

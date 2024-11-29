@@ -10,7 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 from subprocess import PIPE, STDOUT, CalledProcessError
 
-from bouillon import run
+from bouillon.bouillon import run
 
 
 def repository_name() -> str:
@@ -37,7 +37,7 @@ def default_branch() -> str | None:
         r = run(["git", "rev-parse", "--abbrev-ref", "origin/HEAD"],
             stdout=PIPE,
             check=True)
-        return r.stdout.decode().rstrip().lstrip("origin/")
+        return r.stdout.decode().rstrip().removeprefix("origin/")
 
     except CalledProcessError:
         return None
@@ -49,11 +49,11 @@ def working_directory_clean() -> bool:
         run(["git", "diff", "--quiet", "--exit-code"],
             stdout=PIPE,
             check=True)
-        return True
 
     except CalledProcessError:
         return False
 
+    return True
 
 def working_directory_updated() -> bool:
     """Check if the local working directory is up to date with the remote."""
