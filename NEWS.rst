@@ -3,8 +3,8 @@ News
 
 Lists of changes between versions.
 
-Latest
-------
+2.9.0
+-----
 * Minor: Stop exporting various internal implemntation details.
 
 2.8.0
