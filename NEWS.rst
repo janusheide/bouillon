@@ -3,9 +3,13 @@ News
 
 Lists of changes between versions.
 
+Latest
+------
+* Major: Drop python 3.8 supprt.
+
 2.9.0
 -----
-* Minor: Stop exporting various internal implemntation details.
+* Minor: Stop exporting various internal implementation details.
 
 2.8.0
 -----
